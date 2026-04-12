@@ -1,0 +1,62 @@
+[
+  {
+    "id": "calc_001",
+    "description": "계산 질문은 calculator를 사용하고 정답을 반환해야 한다",
+    "question": "25 / 5 + 7을 계산해줘",
+    "output_mode": "cli",
+    "response_language": "ko",
+    "expected_tools": ["calculator"],
+    "tool_match_mode": "exact",
+    "expected_answer_contains": ["12"],
+    "forbidden_answer_contains": ["영어로만"],
+    "expected_status": "completed"
+  },
+  {
+    "id": "notes_001",
+    "description": "RAG 노트 질문은 search_notes 후 read_note를 사용해야 한다",
+    "question": "내 노트에서 RAG 관련 내용을 자세히 요약해줘",
+    "output_mode": "cli",
+    "response_language": "ko",
+    "expected_tools": ["search_notes", "read_note"],
+    "tool_match_mode": "exact",
+    "expected_answer_contains": ["RAG", "검색", "답변"],
+    "forbidden_answer_contains": [],
+    "expected_status": "completed"
+  },
+  {
+    "id": "notes_002",
+    "description": "리스트와 튜플 질문은 노트 검색과 읽기를 거쳐 한국어로 설명해야 한다",
+    "question": "내가 정리한 파이썬 리스트와 튜플 차이 내용을 자세히 설명해줘",
+    "output_mode": "cli",
+    "response_language": "ko",
+    "expected_tools": ["search_notes", "read_note"],
+    "tool_match_mode": "exact",
+    "expected_answer_contains": ["리스트", "튜플", "가변", "불변"],
+    "forbidden_answer_contains": ["The list", "tuple is"],
+    "expected_status": "completed"
+  },
+  {
+    "id": "notes_003",
+    "description": "장고 ORM 질문은 관련 노트를 읽고 핵심을 정리해야 한다",
+    "question": "장고 ORM 관련 메모를 읽고 핵심만 정리해줘",
+    "output_mode": "markdown",
+    "response_language": "ko",
+    "expected_tools": ["search_notes", "read_note"],
+    "tool_match_mode": "exact",
+    "expected_answer_contains": ["Django", "ORM"],
+    "forbidden_answer_contains": [],
+    "expected_status": "completed"
+  },
+  {
+    "id": "general_001",
+    "description": "일반 질문은 툴 없이 답할 수 있어야 한다",
+    "question": "파이썬 함수가 무엇인지 간단히 설명해줘",
+    "output_mode": "cli",
+    "response_language": "ko",
+    "expected_tools": [],
+    "tool_match_mode": "exact",
+    "expected_answer_contains": ["함수"],
+    "forbidden_answer_contains": [],
+    "expected_status": "completed"
+  }
+]
