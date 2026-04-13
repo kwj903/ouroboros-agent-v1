@@ -8,6 +8,7 @@ from app.tools.search_notes import search_notes
 from app.tools.workspace_tools import (
     list_dir,
     read_file,
+    request_batch_operations,
     request_delete_path,
     request_replace_text_in_file,
     request_search_files,
@@ -39,6 +40,7 @@ TOOLS: dict[str, ToolFunc] = {
     "request_write_file": request_write_file,
     "request_replace_text_in_file": request_replace_text_in_file,
     "request_delete_path": request_delete_path,
+    "request_batch_operations": request_batch_operations,
     "save_memory_note": save_memory_note_tool,
     "search_memory_notes": search_memory_notes_tool,
     "list_recent_memory_notes": list_recent_memory_notes_tool,
@@ -342,6 +344,85 @@ TOOL_SCHEMAS = [
                     }
                 },
                 "required": ["path"],
+                "additionalProperties": False
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "request_batch_operations",
+            "description": (
+                "여러 개의 파일/폴더 변경 작업을 하나의 승인 요청으로 묶는다. "
+                "사용자가 복수 단계의 파일 생성/수정/삭제를 한 번에 지시했을 때 사용한다. "
+                "즉시 실행되지 않고 사용자 승인 후 순서대로 실행된다."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "operations": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "create_file",
+                                        "write_file",
+                                        "replace_text_in_file",
+                                        "delete_path"
+                                    ]
+                                },
+                                "path": {
+                                    "type": "string",
+                                    "description": "작업 대상 경로"
+                                },
+                                "content": {
+                                    "type": "string",
+                                    "description": "write_file에서 쓸 전체 내용"
+                                },
+                                "mode": {
+                                    "type": "string",
+                                    "description": "write_file mode: overwrite, append, create_only"
+                                },
+                                "create_parents": {
+                                    "type": "boolean",
+                                    "description": "상위 폴더 자동 생성 여부"
+                                },
+                                "overwrite": {
+                                    "type": "boolean",
+                                    "description": "create_file에서 기존 파일 덮어쓰기 여부"
+                                },
+                                "old_text": {
+                                    "type": "string",
+                                    "description": "replace_text_in_file의 기존 텍스트"
+                                },
+                                "new_text": {
+                                    "type": "string",
+                                    "description": "replace_text_in_file의 새 텍스트"
+                                },
+                                "replace_all": {
+                                    "type": "boolean",
+                                    "description": "전체 교체 여부"
+                                },
+                                "recursive": {
+                                    "type": "boolean",
+                                    "description": "delete_path에서 디렉터리 재귀 삭제 여부"
+                                }
+                            },
+                            "required": ["type", "path"],
+                            "additionalProperties": False
+                        }
+                    },
+                    "continue_on_error": {
+                        "type": "boolean",
+                        "description": "중간 작업 실패 시 다음 작업 계속 여부",
+                        "default": False
+                    }
+                },
+                "required": ["operations"],
                 "additionalProperties": False
             },
         },

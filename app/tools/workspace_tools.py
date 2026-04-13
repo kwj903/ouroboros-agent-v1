@@ -302,7 +302,195 @@ def request_delete_path(path: str, recursive: bool = False) -> str:
     return _format_approval_response(action_id, summary)
 
 
+def _summarize_single_operation(operation: dict[str, Any]) -> str:
+    op_type = operation.get("type", "unknown")
+    path = operation.get("path", "?")
+    return f"{op_type}({path})"
 
+
+def _summarize_batch_operations(
+    operations: list[dict[str, Any]],
+    preview_limit: int = 3,
+) -> str:
+    previews = [_summarize_single_operation(op) for op in operations[:preview_limit]]
+    preview_text = ", ".join(previews)
+
+    remaining = len(operations) - len(previews)
+    if remaining > 0:
+        preview_text += f", ... (+{remaining} more)"
+
+    return preview_text
+
+
+def _validate_batch_operation(operation: dict[str, Any], index: int) -> None:
+    if not isinstance(operation, dict):
+        raise ValueError(f"{index}번째 operation이 dict가 아닙니다.")
+
+    op_type = operation.get("type")
+    if not op_type:
+        raise ValueError(f"{index}번째 operation에 type이 없습니다.")
+
+    if op_type not in {
+        "create_file",
+        "write_file",
+        "replace_text_in_file",
+        "delete_path",
+    }:
+        raise ValueError(
+            f"{index}번째 operation의 type이 지원되지 않습니다: {op_type}"
+        )
+
+    path = operation.get("path")
+    if not isinstance(path, str) or not path.strip():
+        raise ValueError(f"{index}번째 operation에 유효한 path가 없습니다.")
+
+    if op_type == "write_file":
+        if "content" not in operation:
+            raise ValueError(f"{index}번째 write_file operation에는 content가 필요합니다.")
+
+    elif op_type == "replace_text_in_file":
+        if "old_text" not in operation or "new_text" not in operation:
+            raise ValueError(
+                f"{index}번째 replace_text_in_file operation에는 old_text, new_text가 필요합니다."
+            )
+
+
+def request_batch_operations(
+    operations: list[dict[str, Any]],
+    continue_on_error: bool = False,
+) -> str:
+    if not operations:
+        return "ERROR: operations가 비어 있습니다."
+
+    for index, operation in enumerate(operations, start=1):
+        try:
+            _validate_batch_operation(operation, index)
+        except ValueError as e:
+            return f"ERROR: {e}"
+
+    preview_text = _summarize_batch_operations(operations)
+
+    summary = (
+        f"배치 작업 요청 - operations={len(operations)}, "
+        f"continue_on_error={continue_on_error}, preview={preview_text}"
+    )
+    payload = {
+        "operations": operations,
+        "continue_on_error": continue_on_error,
+    }
+
+    action_id = create_pending_action(
+        "batch_operations",
+        payload,
+        summary,
+        session_id=get_current_session_id(),
+    )
+    return _format_approval_response(action_id, summary)
+
+
+def _execute_single_operation(operation: dict[str, Any]) -> str:
+    op_type = operation["type"]
+
+    if op_type == "create_file":
+        return _execute_create_file(
+            path=operation["path"],
+            create_parents=operation.get("create_parents", True),
+            overwrite=operation.get("overwrite", False),
+        )
+
+    if op_type == "write_file":
+        return _write_file(
+            path=operation["path"],
+            content=operation["content"],
+            mode=operation.get("mode", "overwrite"),
+            create_parents=operation.get("create_parents", True),
+        )
+
+    if op_type == "replace_text_in_file":
+        return _replace_text_in_file(
+            path=operation["path"],
+            old_text=operation["old_text"],
+            new_text=operation["new_text"],
+            replace_all=operation.get("replace_all", False),
+        )
+
+    if op_type == "delete_path":
+        return _delete_path(
+            path=operation["path"],
+            recursive=operation.get("recursive", False),
+        )
+
+    raise ValueError(f"지원하지 않는 batch operation type입니다: {op_type}")
+
+
+def _execute_batch_operations(
+    operations: list[dict[str, Any]],
+    continue_on_error: bool = False,
+) -> dict[str, Any]:
+    if not operations:
+        return {
+            "ok": False,
+            "report": "배치 작업 실행 실패\noperations가 비어 있습니다.",
+        }
+
+    success_count = 0
+    failed_count = 0
+    processed_count = 0
+    lines: list[str] = []
+
+    for index, operation in enumerate(operations, start=1):
+        try:
+            _validate_batch_operation(operation, index)
+        except ValueError as e:
+            failed_count += 1
+            processed_count += 1
+            lines.append(f"{index}. [FAIL] {_summarize_single_operation(operation)}")
+            lines.append(f"   결과: ERROR: {e}")
+
+            if not continue_on_error:
+                break
+            continue
+
+        result = _execute_single_operation(operation)
+        processed_count += 1
+
+        if isinstance(result, str) and result.startswith("ERROR:"):
+            failed_count += 1
+            lines.append(f"{index}. [FAIL] {_summarize_single_operation(operation)}")
+            lines.append(f"   결과: {result}")
+
+            if not continue_on_error:
+                break
+        else:
+            success_count += 1
+            lines.append(f"{index}. [OK] {_summarize_single_operation(operation)}")
+            lines.append(f"   결과: {result}")
+
+    skipped_count = len(operations) - processed_count
+    ok = failed_count == 0
+
+    header = "배치 작업 실행 완료" if ok else "배치 작업 실행 실패"
+
+    report_lines = [
+        header,
+        f"총 작업 수: {len(operations)}",
+        f"성공: {success_count}",
+        f"실패: {failed_count}",
+    ]
+
+    if skipped_count > 0:
+        report_lines.append(f"미실행: {skipped_count}")
+
+    if failed_count > 0 and not continue_on_error:
+        report_lines.append("중단: continue_on_error=False")
+
+    report_lines.append("")
+    report_lines.extend(lines)
+
+    return {
+        "ok": ok,
+        "report": "\n".join(report_lines),
+    }
 
 
 def _search_files(
@@ -483,6 +671,14 @@ def execute_pending_action(action_id: str) -> str:
             result = _delete_path(**payload)
         elif action_type == "create_file":
             result = _execute_create_file(**payload)
+        elif action_type == "batch_operations":
+            batch_result = _execute_batch_operations(**payload)
+
+            if not batch_result["ok"]:
+                mark_failed(action_id, batch_result["report"])
+                return f"실행 실패: action_id={action_id}\n{batch_result['report']}"
+
+            result = batch_result["report"]
         else:
             raise ValueError(f"지원하지 않는 action_type입니다: {action_type}")
     except Exception as e:

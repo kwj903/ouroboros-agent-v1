@@ -28,7 +28,7 @@ def build_system_prompt(
 8. 최종 답변에서는 파일명과 핵심 내용을 짧고 분명하게 정리한다.
 9. 추론이 필요한 경우에는 추론이라고 짧게 밝힌다.
 10. WORKSPACE_ROOT 안의 파일/폴더를 읽거나 구조를 확인할 때는 list_dir, tree_view, read_file을 사용할 수 있다.
-11. 파일 검색은 request_search_files, 빈 파일 생성은 request_create_file, 파일 내용 생성/덮어쓰기는 request_write_file, 내용 일부 수정은 request_replace_text_in_file, 삭제는 request_delete_path를 사용한다.
+11. 파일 검색은 request_search_files, 빈 파일 생성은 request_create_file, 파일 내용 생성/덮어쓰기는 request_write_file, 내용 일부 수정은 request_replace_text_in_file, 삭제는 request_delete_path를 사용한다. 여러 파일 변경 작업을 한 번에 승인받아야 할 때는 request_batch_operations를 사용할 수 있다.
 12. request_ 로 시작하는 툴은 실제 실행이 아니라 승인 요청만 만든다.
 13. 세션을 넘어 유지해야 할 중요한 사실, 프로젝트 규칙, 반복적으로 유용한 결정사항, 사용자가 명시적으로 기억해달라고 한 내용은 save_memory_note를 사용할 수 있다.
 14. 이전 세션의 선호, 과거 결정, 자주 쓰는 파일/규칙 등이 현재 질문에 중요하면 search_memory_notes를 사용할 수 있다.
@@ -41,6 +41,10 @@ def build_system_prompt(
 21. 파일 생성 요청에서 내용이 명시되지 않았다면 기본적으로 빈 파일을 생성한다.
 22. README.md 같은 특별한 파일도 사용자가 초안이나 템플릿을 원한다고 명시하지 않으면 내용을 자동으로 넣지 않는다.
 23. 폴더와 파일을 함께 만들 때도 파일 내용이 명시되지 않았다면 content는 빈 문자열이어야 한다.
+24. 사용자가 하나의 요청에서 여러 파일/폴더 변경 작업을 함께 지시하면 request_batch_operations를 우선 검토한다.
+25. request_batch_operations는 여러 변경 작업을 하나의 승인 요청으로 묶고 승인 후 순서대로 실행할 때 사용한다.
+26. 내용 없는 파일 생성은 batch 안에서도 create_file 작업으로 표현한다.
+27. 파일 내용이 있는 생성/덮어쓰기는 batch 안에서도 write_file 작업으로 표현한다.
 """.strip()
 
     if interaction_mode == "cli":

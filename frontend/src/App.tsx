@@ -173,6 +173,8 @@ export default function App() {
         return "파일/폴더 삭제"
       case "search_files":
         return "파일 검색"
+      case "batch_operations":
+        return "배치 작업"
       default:
         return item.action_type
     }
@@ -186,6 +188,11 @@ export default function App() {
   function extractContentLengthFromSummary(summary: string): number | null {
     const match = summary.match(/content_length=(\d+)/)
     return match ? Number(match[1]) : null
+  }
+
+  function extractOperationCount(item: ApprovalItem): number | null {
+    const operations = item.payload?.operations
+    return Array.isArray(operations) ? operations.length : null
   }
 
   async function handleSaveSuggestion(suggestionId: string) {
@@ -772,6 +779,7 @@ export default function App() {
                 approvals.map((item) => {
                   const path = extractPathFromSummary(item.summary)
                   const contentLength = extractContentLengthFromSummary(item.summary)
+                  const operationCount = extractOperationCount(item)
 
                   return (
                     <div key={item.action_id} className="approval-card">
@@ -785,6 +793,12 @@ export default function App() {
                       {item.action_type === "write_file" && contentLength !== null && (
                         <div className="approval-meta-line">
                           content_length: {contentLength}
+                        </div>
+                      )}
+
+                      {item.action_type === "batch_operations" && operationCount !== null && (
+                        <div className="approval-meta-line">
+                          operations: {operationCount}
                         </div>
                       )}
 
