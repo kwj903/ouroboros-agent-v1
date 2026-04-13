@@ -9,10 +9,9 @@ from pathlib import Path
 from typing import Any
 
 from app.logger import utc_now_iso
+from app.paths import STATE_DIR
 
-
-STATE_ROOT = Path(".agent_state")
-
+STATE_ROOT = STATE_DIR
 
 def _now_local_session_prefix() -> str:
     return datetime.now().strftime("%Y%m%d_%H%M%S")

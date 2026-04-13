@@ -5,7 +5,13 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from app.paths import WORKSPACE_ROOT, ensure_ouroboros_dirs, OUROBOROS_HOME
 
+
+# 1) 전역 기본 환경변수
+load_dotenv(OUROBOROS_HOME / ".env")
+
+# 2) 현재 디렉터리(프로젝트) 환경변수로 override 가능
 load_dotenv()
 
 
@@ -28,6 +34,8 @@ def _validate_choice(name: str, value: str, allowed: set[str]) -> str:
     return value
 
 
+ensure_ouroboros_dirs()
+
 # LLM provider settings
 GROQ_API_KEY = _get_env("GROQ_API_KEY")
 GROQ_BASE_URL = _get_env("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
@@ -46,7 +54,6 @@ DEFAULT_RESPONSE_LANGUAGE = _validate_choice(
     {"ko", "en"},
 )
 
-WORKSPACE_ROOT = Path(_get_env("WORKSPACE_ROOT", ".")).expanduser().resolve()
 if not WORKSPACE_ROOT.exists():
     raise RuntimeError(f"WORKSPACE_ROOT 경로가 존재하지 않습니다: {WORKSPACE_ROOT}")
 if not WORKSPACE_ROOT.is_dir():

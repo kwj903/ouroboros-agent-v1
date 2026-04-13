@@ -2,16 +2,16 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
-from pathlib import Path
 from typing import Any
 
+from app.paths import LOGS_DIR
 
-LOG_DIR = Path("logs")
-TRACE_FILE = LOG_DIR / "agent_trace.jsonl"
+
+TRACE_FILE = LOGS_DIR / "agent_trace.jsonl"
 
 
 def ensure_log_dir() -> None:
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def utc_now_iso() -> str:

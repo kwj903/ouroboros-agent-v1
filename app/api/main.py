@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.api.schemas import (
     ChatRequest,
@@ -39,6 +42,9 @@ app = FastAPI(
     title="Free Model Test API",
     version="0.1.0",
 )
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+FRONTEND_DIST_DIR = PROJECT_ROOT / "frontend" / "dist"
 
 origins = [
     "http://localhost:3000",
@@ -182,3 +188,10 @@ def approve_action(action_id: str) -> dict:
 @app.post("/approvals/{action_id}/reject")
 def reject_action(action_id: str) -> dict:
     return reject_action_api(action_id)
+
+if FRONTEND_DIST_DIR.exists():
+    app.mount(
+        "/",
+        StaticFiles(directory=FRONTEND_DIST_DIR, html=True),
+        name="frontend",
+    )

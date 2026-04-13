@@ -124,6 +124,8 @@ export default function App() {
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
   const previousMessageCountRef = useRef(0)
+
+  const [isSyncing, setIsSyncing] = useState(false)
   
   function toggleSection(key: keyof typeof sectionOpen) {
     setSectionOpen((prev) => ({
@@ -388,6 +390,54 @@ export default function App() {
     setToolPanel(data)
   }
 
+  async function refreshRightSidebar(sessionId: string | null) {
+    await Promise.all([
+      refreshApprovals(),
+      refreshMemories(),
+      refreshMemorySuggestions(),
+      refreshWorkspaceState(sessionId),
+      refreshToolLogs(sessionId),
+      refreshToolPanel(sessionId),
+    ])
+  }
+
+  async function refreshSessionView(sessionId: string | null) {
+    if (!sessionId) {
+      setMessages([])
+      setWorkspaceState(null)
+      setToolLogs([])
+      setToolPanel(null)
+
+      await Promise.all([
+        refreshSessions(),
+        refreshApprovals(),
+        refreshMemories(),
+        refreshMemorySuggestions(),
+      ])
+      return
+    }
+
+    const [history] = await Promise.all([
+      fetchSessionHistory(sessionId),
+      refreshSessions(),
+      refreshRightSidebar(sessionId),
+    ])
+
+    setMessages(history)
+  }
+
+  async function handleManualSync() {
+    try {
+      setError(null)
+      setIsSyncing(true)
+      await refreshSessionView(currentSessionId)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "동기화 실패")
+    } finally {
+      setIsSyncing(false)
+    }
+  }
+
   async function bootstrap() {
     try {
       setError(null)
@@ -419,6 +469,19 @@ export default function App() {
     bootstrap()
   }, [])
 
+  useEffect(() => {
+    if (!currentSessionId) return
+    if (!loading && approvals.length === 0) return
+
+    const timer = window.setInterval(() => {
+      refreshRightSidebar(currentSessionId).catch(() => {
+        // polling 실패는 조용히 무시
+      })
+    }, 4000)
+
+    return () => window.clearInterval(timer)
+  }, [currentSessionId, loading, approvals.length])
+
   async function handleCreateSession() {
     try {
       setError(null)
@@ -438,18 +501,7 @@ export default function App() {
     try {
       setError(null)
       setCurrentSessionId(sessionId)
-
-      const [history, state, logs, panel] = await Promise.all([
-        fetchSessionHistory(sessionId),
-        fetchSessionWorkspaceState(sessionId),
-        fetchSessionToolLogs(sessionId, 50),
-        fetchSessionToolPanel(sessionId),
-      ])
-
-      setMessages(history)
-      setWorkspaceState(state)
-      setToolLogs(logs)
-      setToolPanel(panel)
+      await refreshSessionView(sessionId)
     } catch (err) {
       setError(err instanceof Error ? err.message : "세션 히스토리 로딩 실패")
     }
@@ -487,15 +539,7 @@ export default function App() {
         },
       ])
 
-      await Promise.all([
-        refreshSessions(),
-        refreshApprovals(),
-        refreshMemories(),
-        refreshMemorySuggestions(),
-        refreshWorkspaceState(result.session_id),
-        refreshToolLogs(result.session_id),
-        refreshToolPanel(result.session_id),
-      ])
+      await refreshSessionView(result.session_id)
     } catch (err) {
       setError(err instanceof Error ? err.message : "채팅 요청 실패")
     } finally {
@@ -510,26 +554,10 @@ export default function App() {
 
       if (result.session_id) {
         setCurrentSessionId(result.session_id)
-
-        const [history, state, logs, panel] = await Promise.all([
-          fetchSessionHistory(result.session_id),
-          fetchSessionWorkspaceState(result.session_id),
-          fetchSessionToolLogs(result.session_id, 50),
-          fetchSessionToolPanel(result.session_id),
-        ])
-
-        setMessages(history)
-        setWorkspaceState(state)
-        setToolLogs(logs)
-        setToolPanel(panel)
+        await refreshSessionView(result.session_id)
+      } else {
+        await refreshRightSidebar(currentSessionId)
       }
-
-      await Promise.all([
-        refreshApprovals(),
-        refreshSessions(),
-        refreshMemories(),
-        refreshMemorySuggestions(),
-      ])
     } catch (err) {
       setError(err instanceof Error ? err.message : "승인 처리 실패")
     }
@@ -542,25 +570,10 @@ export default function App() {
 
       if (result.session_id) {
         setCurrentSessionId(result.session_id)
-
-        const [history, state, logs, panel] = await Promise.all([
-          fetchSessionHistory(result.session_id),
-          fetchSessionWorkspaceState(result.session_id),
-          fetchSessionToolLogs(result.session_id, 50),
-          fetchSessionToolPanel(result.session_id),
-        ])
-
-        setMessages(history)
-        setWorkspaceState(state)
-        setToolLogs(logs)
-        setToolPanel(panel)
+        await refreshSessionView(result.session_id)
+      } else {
+        await refreshRightSidebar(currentSessionId)
       }
-
-      await Promise.all([
-        refreshApprovals(),
-        refreshSessions(),
-        refreshMemorySuggestions(),
-      ])
     } catch (err) {
       setError(err instanceof Error ? err.message : "거부 처리 실패")
     }
@@ -709,11 +722,6 @@ export default function App() {
                 title="툴 실행 로그"
                 isOpen={sectionOpen.toolLogs}
                 onToggle={() => toggleSection("toolLogs")}
-                actions={
-                    <button onClick={() => refreshToolLogs(currentSessionId)}>
-                        새로고침
-                    </button>
-                }
             >
                 {!currentSessionId ? (
                     <div className="empty-box">선택된 세션이 없습니다.</div>
@@ -766,12 +774,17 @@ export default function App() {
 
       {rightSidebarOpen ? (
         <aside className="panel side-panel right-panel">
+          <div className="inline-actions" style={{ marginBottom: 10 }}>
+            <button onClick={handleManualSync} disabled={isSyncing}>
+              {isSyncing ? "동기화 중..." : "동기화"}
+            </button>
+          </div>
+
           <div className="sidebar-scroll">
             <CollapsibleSection
               title="승인 대기"
               isOpen={sectionOpen.approvals}
               onToggle={() => toggleSection("approvals")}
-              actions={<button onClick={refreshApprovals}>새로고침</button>}
             >
               {approvals.length === 0 ? (
                 <div className="empty-box">대기 중인 승인 요청이 없습니다.</div>
@@ -823,11 +836,6 @@ export default function App() {
               title="작업 상태"
               isOpen={sectionOpen.workspace}
               onToggle={() => toggleSection("workspace")}
-              actions={
-                <button onClick={() => refreshWorkspaceState(currentSessionId)}>
-                  새로고침
-                </button>
-              }
             >
               {!currentSessionId ? (
                 <div className="empty-box">선택된 세션이 없습니다.</div>
@@ -932,11 +940,6 @@ export default function App() {
               title="노트 / 파일 결과"
               isOpen={sectionOpen.resources}
               onToggle={() => toggleSection("resources")}
-              actions={
-                <button onClick={() => refreshToolPanel(currentSessionId)}>
-                  새로고침
-                </button>
-              }
             >
               {!currentSessionId ? (
                 <div className="empty-box">선택된 세션이 없습니다.</div>
@@ -1017,7 +1020,6 @@ export default function App() {
               title="기억 후보"
               isOpen={sectionOpen.suggestions}
               onToggle={() => toggleSection("suggestions")}
-              actions={<button onClick={refreshMemorySuggestions}>새로고침</button>}
             >
               {memorySuggestions.length === 0 ? (
                 <div className="empty-box">저장 제안된 장기 기억이 없습니다.</div>
@@ -1056,7 +1058,6 @@ export default function App() {
               title="장기 기억"
               isOpen={sectionOpen.memories}
               onToggle={() => toggleSection("memories")}
-              actions={<button onClick={refreshMemories}>새로고침</button>}
             >
               <div className="memory-create-box">
                 <textarea

@@ -5,8 +5,10 @@ from collections import Counter
 from pathlib import Path
 from statistics import mean
 
+from app.paths import LOGS_DIR
 
-TRACE_FILE = Path("logs/agent_trace.jsonl")
+
+TRACE_FILE = LOGS_DIR / "agent_trace.jsonl"
 
 
 def load_traces() -> list[dict]:

@@ -9,10 +9,11 @@ from typing import Any
 
 from app.logger import utc_now_iso
 from app.runtime_context import get_current_session_id
+from app.paths import STATE_DIR
 
 
-DEFAULT_MEMORY_FILE = Path(".agent_state") / "memory_notes.jsonl"
-DEFAULT_SUGGESTIONS_FILE = Path(".agent_state") / "memory_suggestions.json"
+DEFAULT_MEMORY_FILE = STATE_DIR / "memory_notes.jsonl"
+DEFAULT_SUGGESTIONS_FILE = STATE_DIR / "memory_suggestions.json"
 
 _MEMORY_FILE_OVERRIDE: Path | None = None
 _SUGGESTIONS_FILE_OVERRIDE: Path | None = None

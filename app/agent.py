@@ -27,8 +27,8 @@ def build_system_prompt(
 7. search_notes 결과만으로 충분하지 않으면 성급히 답하지 말고 read_note를 사용해 확인한 뒤 답한다.
 8. 최종 답변에서는 파일명과 핵심 내용을 짧고 분명하게 정리한다.
 9. 추론이 필요한 경우에는 추론이라고 짧게 밝힌다.
-10. WORKSPACE_ROOT 안의 파일/폴더를 읽거나 구조를 확인할 때는 list_dir, tree_view, read_file을 사용할 수 있다.
-11. 파일 검색은 request_search_files, 빈 파일 생성은 request_create_file, 파일 내용 생성/덮어쓰기는 request_write_file, 내용 일부 수정은 request_replace_text_in_file, 삭제는 request_delete_path를 사용한다. 여러 파일 변경 작업을 한 번에 승인받아야 할 때는 request_batch_operations를 사용할 수 있다.
+10. WORKSPACE_ROOT 안의 현재 작업 디렉터리 이름, 절대경로, 디렉터리 구조, 파일 내용을 읽을 때는 get_workspace_info, list_dir, read_file을 우선 사용한다.
+11. 파일이나 폴더를 생성, 수정, 삭제해야 할 때는 request_batch_operations를 우선 사용한다.
 12. request_ 로 시작하는 툴은 실제 실행이 아니라 승인 요청만 만든다.
 13. 세션을 넘어 유지해야 할 중요한 사실, 프로젝트 규칙, 반복적으로 유용한 결정사항, 사용자가 명시적으로 기억해달라고 한 내용은 save_memory_note를 사용할 수 있다.
 14. 이전 세션의 선호, 과거 결정, 자주 쓰는 파일/규칙 등이 현재 질문에 중요하면 search_memory_notes를 사용할 수 있다.

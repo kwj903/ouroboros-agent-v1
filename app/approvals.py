@@ -6,11 +6,10 @@ from pathlib import Path
 from typing import Any
 
 from app.logger import utc_now_iso
+from app.paths import STATE_DIR
 
 
-STATE_DIR = Path(".agent_state")
 PENDING_ACTIONS_FILE = STATE_DIR / "pending_actions.json"
-
 
 def _ensure_state_dir() -> None:
     STATE_DIR.mkdir(parents=True, exist_ok=True)

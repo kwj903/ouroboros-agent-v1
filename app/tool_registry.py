@@ -6,6 +6,7 @@ from app.tools.calculator import calculate
 from app.tools.read_note import read_note
 from app.tools.search_notes import search_notes
 from app.tools.workspace_tools import (
+    get_workspace_info,
     list_dir,
     read_file,
     request_batch_operations,
@@ -32,6 +33,7 @@ TOOLS: dict[str, ToolFunc] = {
     "calculator": calculate,
     "search_notes": search_notes,
     "read_note": read_note,
+    "get_workspace_info": get_workspace_info,
     "list_dir": list_dir,
     "tree_view": tree_view,
     "read_file": read_file,
@@ -110,6 +112,22 @@ TOOL_SCHEMAS = [
                     }
                 },
                 "required": ["path"],
+                "additionalProperties": False
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_workspace_info",
+            "description": (
+                "현재 작업 디렉터리와 WORKSPACE_ROOT의 절대경로 및 디렉터리 이름을 "
+                "읽기 전용으로 확인한다. 현재 디렉터리 이름, 루트 폴더 이름, "
+                "절대경로를 묻는 질문에 사용한다."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {},
                 "additionalProperties": False
             },
         },
@@ -364,56 +382,104 @@ TOOL_SCHEMAS = [
                         "type": "array",
                         "minItems": 1,
                         "items": {
-                            "type": "object",
-                            "properties": {
-                                "type": {
-                                    "type": "string",
-                                    "enum": [
-                                        "create_file",
-                                        "write_file",
-                                        "replace_text_in_file",
-                                        "delete_path"
-                                    ]
+                            "oneOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": ["create_file"]
+                                        },
+                                        "path": {
+                                            "type": "string",
+                                            "description": "생성할 파일 경로"
+                                        },
+                                        "create_parents": {
+                                            "type": "boolean",
+                                            "description": "상위 폴더 자동 생성 여부"
+                                        },
+                                        "overwrite": {
+                                            "type": "boolean",
+                                            "description": "기존 파일 덮어쓰기 여부"
+                                        }
+                                    },
+                                    "required": ["type", "path"],
+                                    "additionalProperties": False
                                 },
-                                "path": {
-                                    "type": "string",
-                                    "description": "작업 대상 경로"
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": ["write_file"]
+                                        },
+                                        "path": {
+                                            "type": "string",
+                                            "description": "쓸 파일 경로"
+                                        },
+                                        "content": {
+                                            "type": "string",
+                                            "description": "파일에 쓸 전체 내용"
+                                        },
+                                        "mode": {
+                                            "type": "string",
+                                            "description": "overwrite, append, create_only 중 하나"
+                                        },
+                                        "create_parents": {
+                                            "type": "boolean",
+                                            "description": "상위 폴더 자동 생성 여부"
+                                        }
+                                    },
+                                    "required": ["type", "path", "content"],
+                                    "additionalProperties": False
                                 },
-                                "content": {
-                                    "type": "string",
-                                    "description": "write_file에서 쓸 전체 내용"
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": ["replace_text_in_file"]
+                                        },
+                                        "path": {
+                                            "type": "string",
+                                            "description": "수정할 파일 경로"
+                                        },
+                                        "old_text": {
+                                            "type": "string",
+                                            "description": "기존 텍스트"
+                                        },
+                                        "new_text": {
+                                            "type": "string",
+                                            "description": "새 텍스트"
+                                        },
+                                        "replace_all": {
+                                            "type": "boolean",
+                                            "description": "전체 교체 여부"
+                                        }
+                                    },
+                                    "required": ["type", "path", "old_text", "new_text"],
+                                    "additionalProperties": False
                                 },
-                                "mode": {
-                                    "type": "string",
-                                    "description": "write_file mode: overwrite, append, create_only"
-                                },
-                                "create_parents": {
-                                    "type": "boolean",
-                                    "description": "상위 폴더 자동 생성 여부"
-                                },
-                                "overwrite": {
-                                    "type": "boolean",
-                                    "description": "create_file에서 기존 파일 덮어쓰기 여부"
-                                },
-                                "old_text": {
-                                    "type": "string",
-                                    "description": "replace_text_in_file의 기존 텍스트"
-                                },
-                                "new_text": {
-                                    "type": "string",
-                                    "description": "replace_text_in_file의 새 텍스트"
-                                },
-                                "replace_all": {
-                                    "type": "boolean",
-                                    "description": "전체 교체 여부"
-                                },
-                                "recursive": {
-                                    "type": "boolean",
-                                    "description": "delete_path에서 디렉터리 재귀 삭제 여부"
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": ["delete_path"]
+                                        },
+                                        "path": {
+                                            "type": "string",
+                                            "description": "삭제할 경로"
+                                        },
+                                        "recursive": {
+                                            "type": "boolean",
+                                            "description": "디렉터리 재귀 삭제 여부"
+                                        }
+                                    },
+                                    "required": ["type", "path"],
+                                    "additionalProperties": False
                                 }
-                            },
-                            "required": ["type", "path"],
-                            "additionalProperties": False
+                            ]
                         }
                     },
                     "continue_on_error": {
@@ -554,4 +620,25 @@ TOOL_SCHEMAS = [
             },
         },
     },
+]
+
+EXPOSED_TOOL_NAMES = {
+    "calculator",
+    "search_notes",
+    "read_note",
+    "get_workspace_info",
+    "list_dir",
+    "read_file",
+    "request_batch_operations",
+    "save_memory_note",
+    "search_memory_notes",
+    "list_recent_memory_notes",
+    "update_memory_note",
+    "delete_memory_note",
+}
+
+TOOL_SCHEMAS = [
+    schema
+    for schema in TOOL_SCHEMAS
+    if schema["function"]["name"] in EXPOSED_TOOL_NAMES
 ]

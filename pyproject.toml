@@ -1,7 +1,11 @@
+[build-system]
+requires = ["hatchling>=1.27.0"]
+build-backend = "hatchling.build"
+
 [project]
-name = "free-model-test"
+name = "ouroboros"
 version = "0.1.0"
-description = "Add your description here"
+description = "Ouroboros local agent"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -13,3 +17,9 @@ dependencies = [
     "python-dotenv>=1.2.2",
     "uvicorn[standard]>=0.44.0",
 ]
+
+[project.scripts]
+ouroboros = "app.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]

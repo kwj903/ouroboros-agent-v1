@@ -272,31 +272,6 @@ wheels = [
 ]
 
 [[package]]
-name = "free-model-test"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "fastapi" },
-    { name = "google-genai" },
-    { name = "groq" },
-    { name = "openai" },
-    { name = "openrouter" },
-    { name = "python-dotenv" },
-    { name = "uvicorn", extra = ["standard"] },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fastapi", specifier = ">=0.135.3" },
-    { name = "google-genai", specifier = ">=1.72.0" },
-    { name = "groq", specifier = ">=1.1.2" },
-    { name = "openai", specifier = ">=2.31.0" },
-    { name = "openrouter", specifier = ">=0.8.1" },
-    { name = "python-dotenv", specifier = ">=1.2.2" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.44.0" },
-]
-
-[[package]]
 name = "google-auth"
 version = "2.49.2"
 source = { registry = "https://pypi.org/simple" }
@@ -530,6 +505,31 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/39/52/4f9fdb605c8d4ecc106a55bb034f09f8f4270bd11b0e7ad3f05f2d52a8e3/openrouter-0.8.1.tar.gz", hash = "sha256:d272f743a58ed34827d531f48e3745f5eea0dd11ab0d4022e49106286f6f358a", size = 163740, upload-time = "2026-04-02T14:23:41.457Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d8/96/d168d2a28dc1be4e33e05d1656ceb9466f844211e6ffbba389804fbb5a84/openrouter-0.8.1-py3-none-any.whl", hash = "sha256:b8ec0711eb2971560cf8a5a6fbd5c52e3d704c58ab310f72ecf05ba567534513", size = 337196, upload-time = "2026-04-02T14:23:40.263Z" },
+]
+
+[[package]]
+name = "ouroboros"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "fastapi" },
+    { name = "google-genai" },
+    { name = "groq" },
+    { name = "openai" },
+    { name = "openrouter" },
+    { name = "python-dotenv" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fastapi", specifier = ">=0.135.3" },
+    { name = "google-genai", specifier = ">=1.72.0" },
+    { name = "groq", specifier = ">=1.1.2" },
+    { name = "openai", specifier = ">=2.31.0" },
+    { name = "openrouter", specifier = ">=0.8.1" },
+    { name = "python-dotenv", specifier = ">=1.2.2" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.44.0" },
 ]
 
 [[package]]

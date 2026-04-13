@@ -190,6 +190,24 @@ def read_file(path: str, start_line: int = 1, end_line: int = 200) -> str:
     return "\n".join(rendered)
 
 
+def get_workspace_info() -> str:
+    cwd = Path.cwd().resolve()
+
+    lines = [
+        f"workspace_root_abs: {WORKSPACE_ROOT.as_posix()}",
+        f"workspace_root_name: {WORKSPACE_ROOT.name or WORKSPACE_ROOT.as_posix()}",
+        f"cwd_abs: {cwd.as_posix()}",
+        f"cwd_name: {cwd.name or cwd.as_posix()}",
+    ]
+
+    if cwd == WORKSPACE_ROOT:
+        lines.append("cwd_matches_workspace_root: true")
+    else:
+        lines.append("cwd_matches_workspace_root: false")
+
+    return "\n".join(lines)
+
+
 def request_search_files(
     query: str,
     path: str = ".",
@@ -305,6 +323,11 @@ def request_delete_path(path: str, recursive: bool = False) -> str:
 def _summarize_single_operation(operation: dict[str, Any]) -> str:
     op_type = operation.get("type", "unknown")
     path = operation.get("path", "?")
+
+    if op_type == "write_file":
+        content = operation.get("content", "")
+        return f"{op_type}({path}, content_length={len(content)})"
+
     return f"{op_type}({path})"
 
 
@@ -320,6 +343,37 @@ def _summarize_batch_operations(
         preview_text += f", ... (+{remaining} more)"
 
     return preview_text
+
+
+def _normalize_batch_operation(operation: dict[str, Any]) -> dict[str, Any]:
+    normalized = dict(operation)
+    op_type = normalized.get("type")
+
+    # create_file인데 content가 있으면 write_file로 자동 보정
+    if op_type == "create_file":
+        content = normalized.get("content")
+        if isinstance(content, str) and content != "":
+            normalized["type"] = "write_file"
+            normalized.setdefault("mode", "create_only")
+            normalized.setdefault("create_parents", True)
+
+    return normalized
+
+
+def _normalize_batch_operation(operation: dict[str, Any]) -> dict[str, Any]:
+    normalized = dict(operation)
+    op_type = normalized.get("type")
+
+    # create_file인데 content가 들어오면 write_file로 보정
+    # create "의도"를 살리기 위해 기본 mode는 create_only로 둔다.
+    if op_type == "create_file":
+        content = normalized.get("content")
+        if isinstance(content, str) and content != "":
+            normalized["type"] = "write_file"
+            normalized.setdefault("mode", "create_only")
+            normalized.setdefault("create_parents", True)
+
+    return normalized
 
 
 def _validate_batch_operation(operation: dict[str, Any], index: int) -> None:
@@ -344,14 +398,49 @@ def _validate_batch_operation(operation: dict[str, Any], index: int) -> None:
     if not isinstance(path, str) or not path.strip():
         raise ValueError(f"{index}번째 operation에 유효한 path가 없습니다.")
 
-    if op_type == "write_file":
+    if op_type == "create_file":
+        # create_file에는 write/replace/delete 계열 필드가 섞이면 안 됨
+        forbidden_fields = {
+            "content",
+            "mode",
+            "old_text",
+            "new_text",
+            "replace_all",
+            "recursive",
+        }
+        invalid = [field for field in forbidden_fields if field in operation]
+        if invalid:
+            raise ValueError(
+                f"{index}번째 create_file operation에 허용되지 않는 필드가 있습니다: {', '.join(invalid)}"
+            )
+
+    elif op_type == "write_file":
         if "content" not in operation:
-            raise ValueError(f"{index}번째 write_file operation에는 content가 필요합니다.")
+            raise ValueError(
+                f"{index}번째 write_file operation에는 content가 필요합니다."
+            )
 
     elif op_type == "replace_text_in_file":
         if "old_text" not in operation or "new_text" not in operation:
             raise ValueError(
                 f"{index}번째 replace_text_in_file operation에는 old_text, new_text가 필요합니다."
+            )
+
+    elif op_type == "delete_path":
+        # delete_path에는 write/replace 계열 필드가 섞이면 안 됨
+        forbidden_fields = {
+            "content",
+            "mode",
+            "old_text",
+            "new_text",
+            "replace_all",
+            "overwrite",
+            "create_parents",
+        }
+        invalid = [field for field in forbidden_fields if field in operation]
+        if invalid:
+            raise ValueError(
+                f"{index}번째 delete_path operation에 허용되지 않는 필드가 있습니다: {', '.join(invalid)}"
             )
 
 
@@ -362,20 +451,26 @@ def request_batch_operations(
     if not operations:
         return "ERROR: operations가 비어 있습니다."
 
+    normalized_operations: list[dict[str, Any]] = []
+
     for index, operation in enumerate(operations, start=1):
+        normalized = _normalize_batch_operation(operation)
+
         try:
-            _validate_batch_operation(operation, index)
+            _validate_batch_operation(normalized, index)
         except ValueError as e:
             return f"ERROR: {e}"
 
-    preview_text = _summarize_batch_operations(operations)
+        normalized_operations.append(normalized)
+
+    preview_text = _summarize_batch_operations(normalized_operations)
 
     summary = (
-        f"배치 작업 요청 - operations={len(operations)}, "
+        f"배치 작업 요청 - operations={len(normalized_operations)}, "
         f"continue_on_error={continue_on_error}, preview={preview_text}"
     )
     payload = {
-        "operations": operations,
+        "operations": normalized_operations,
         "continue_on_error": continue_on_error,
     }
 
@@ -439,8 +534,10 @@ def _execute_batch_operations(
     lines: list[str] = []
 
     for index, operation in enumerate(operations, start=1):
+        normalized = _normalize_batch_operation(operation)
+
         try:
-            _validate_batch_operation(operation, index)
+            _validate_batch_operation(normalized, index)
         except ValueError as e:
             failed_count += 1
             processed_count += 1
@@ -451,19 +548,19 @@ def _execute_batch_operations(
                 break
             continue
 
-        result = _execute_single_operation(operation)
+        result = _execute_single_operation(normalized)
         processed_count += 1
 
         if isinstance(result, str) and result.startswith("ERROR:"):
             failed_count += 1
-            lines.append(f"{index}. [FAIL] {_summarize_single_operation(operation)}")
+            lines.append(f"{index}. [FAIL] {_summarize_single_operation(normalized)}")
             lines.append(f"   결과: {result}")
 
             if not continue_on_error:
                 break
         else:
             success_count += 1
-            lines.append(f"{index}. [OK] {_summarize_single_operation(operation)}")
+            lines.append(f"{index}. [OK] {_summarize_single_operation(normalized)}")
             lines.append(f"   결과: {result}")
 
     skipped_count = len(operations) - processed_count

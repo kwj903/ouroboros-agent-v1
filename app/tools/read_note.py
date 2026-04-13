@@ -1,15 +1,14 @@
-from __future__ import annotations
-
 from pathlib import Path
 
+from app.paths import NOTES_DIR
 
-NOTES_DIR = Path("notes").resolve()
+
 ALLOWED_EXTENSIONS = {".md", ".txt"}
 
 
 def _is_within_notes_dir(path: Path) -> bool:
     try:
-        path.resolve().relative_to(NOTES_DIR)
+        path.resolve().relative_to(NOTES_DIR.resolve())
         return True
     except ValueError:
         return False
@@ -17,8 +16,8 @@ def _is_within_notes_dir(path: Path) -> bool:
 
 def read_note(path: str, max_chars: int = 4000) -> str:
     """
-    notes/ 폴더 아래의 특정 노트 파일 내용을 읽는다.
-    path는 반드시 notes/ 하위 파일이어야 한다.
+    NOTES_DIR 아래의 특정 노트 파일 내용을 읽는다.
+    path는 반드시 NOTES_DIR 하위 파일이어야 한다.
     """
     if not path.strip():
         return "ERROR: path가 비어 있습니다."
@@ -26,12 +25,12 @@ def read_note(path: str, max_chars: int = 4000) -> str:
     target = Path(path)
 
     if not target.is_absolute():
-        target = target.resolve()
+        target = (NOTES_DIR / target).resolve()
     else:
         target = target.resolve()
 
     if not _is_within_notes_dir(target):
-        return "ERROR: notes 폴더 바깥 파일은 읽을 수 없습니다."
+        return "ERROR: notes 저장소 바깥 파일은 읽을 수 없습니다."
 
     if not target.exists():
         return f"ERROR: 파일이 존재하지 않습니다: {path}"

@@ -1,10 +1,9 @@
-from __future__ import annotations
-
 from pathlib import Path
 from typing import Iterable
 
+from app.paths import NOTES_DIR
 
-NOTES_DIR = Path("notes")
+
 ALLOWED_EXTENSIONS = {".md", ".txt"}
 
 
@@ -46,7 +45,7 @@ def _make_excerpt(content: str, keywords: list[str], max_length: int = 220) -> s
 
 def search_notes(query: str, max_results: int = 3) -> str:
     """
-    notes/ 폴더 아래의 .md, .txt 파일에서
+    NOTES_DIR 아래의 .md, .txt 파일에서
     query 키워드를 단순 검색해 관련도가 높은 파일을 반환한다.
     """
     query = query.strip()
@@ -59,7 +58,7 @@ def search_notes(query: str, max_results: int = 3) -> str:
 
     files = list(_iter_note_files())
     if not files:
-        return "notes 폴더에 검색할 파일이 없습니다."
+        return "notes 저장소에 검색할 파일이 없습니다."
 
     scored_results: list[tuple[int, Path, str]] = []
 
@@ -80,7 +79,6 @@ def search_notes(query: str, max_results: int = 3) -> str:
         for keyword in keywords:
             score += lowered.count(keyword)
 
-        # 파일명에 키워드가 있으면 가중치 조금 추가
         filename_lower = file_path.name.lower()
         for keyword in keywords:
             if keyword in filename_lower:
