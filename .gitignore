@@ -44,6 +44,7 @@ htmlcov/
 # Logs / local run artifacts
 # =========================
 logs/
+.agent_state/
 *.log
 
 # =========================

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -30,7 +31,7 @@ def _validate_choice(name: str, value: str, allowed: set[str]) -> str:
 # LLM provider settings
 GROQ_API_KEY = _get_env("GROQ_API_KEY")
 GROQ_BASE_URL = _get_env("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
-GROQ_MODEL = _get_env("GROQ_MODEL", "openai/gpt-oss-120b")
+GROQ_MODEL = _get_env("GROQ_MODEL", "openai/gpt-oss-20b")
 
 # App defaults
 DEFAULT_OUTPUT_MODE = _validate_choice(
@@ -44,3 +45,9 @@ DEFAULT_RESPONSE_LANGUAGE = _validate_choice(
     _get_env("DEFAULT_RESPONSE_LANGUAGE", "ko"),
     {"ko", "en"},
 )
+
+WORKSPACE_ROOT = Path(_get_env("WORKSPACE_ROOT", ".")).expanduser().resolve()
+if not WORKSPACE_ROOT.exists():
+    raise RuntimeError(f"WORKSPACE_ROOT 경로가 존재하지 않습니다: {WORKSPACE_ROOT}")
+if not WORKSPACE_ROOT.is_dir():
+    raise RuntimeError(f"WORKSPACE_ROOT는 디렉터리여야 합니다: {WORKSPACE_ROOT}")

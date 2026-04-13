@@ -12,6 +12,7 @@ from app.tool_registry import TOOLS, TOOL_SCHEMAS
 def build_system_prompt(
     output_mode: str = "cli",
     response_language: str = "ko",
+    interaction_mode: str = "cli",
 ) -> str:
     base = """
 너는 도구를 사용할 수 있는 실용적인 AI 어시스턴트다.
@@ -26,7 +27,41 @@ def build_system_prompt(
 7. search_notes 결과만으로 충분하지 않으면 성급히 답하지 말고 read_note를 사용해 확인한 뒤 답한다.
 8. 최종 답변에서는 파일명과 핵심 내용을 짧고 분명하게 정리한다.
 9. 추론이 필요한 경우에는 추론이라고 짧게 밝힌다.
+10. WORKSPACE_ROOT 안의 파일/폴더를 읽거나 구조를 확인할 때는 list_dir, tree_view, read_file을 사용할 수 있다.
+11. 파일 검색은 request_search_files, 빈 파일 생성은 request_create_file, 파일 내용 생성/덮어쓰기는 request_write_file, 내용 일부 수정은 request_replace_text_in_file, 삭제는 request_delete_path를 사용한다.
+12. request_ 로 시작하는 툴은 실제 실행이 아니라 승인 요청만 만든다.
+13. 세션을 넘어 유지해야 할 중요한 사실, 프로젝트 규칙, 반복적으로 유용한 결정사항, 사용자가 명시적으로 기억해달라고 한 내용은 save_memory_note를 사용할 수 있다.
+14. 이전 세션의 선호, 과거 결정, 자주 쓰는 파일/규칙 등이 현재 질문에 중요하면 search_memory_notes를 사용할 수 있다.
+15. 사소하거나 일시적인 정보는 장기 기억에 저장하지 않는다.
+16. 장기 기억은 tool 결과로 확인된 내용 또는 사용자가 직접 말한 안정적인 정보만 저장한다.
+17. 사용자가 장기 기억을 보여달라고 하면 list_recent_memory_notes 또는 search_memory_notes를 사용할 수 있다.
+18. 사용자가 특정 장기 기억을 수정하거나 삭제해달라고 하면 update_memory_note, delete_memory_note를 사용할 수 있다.
+19. 장기 기억 후보는 자동 저장하지 말고, 사용자가 확인 후 저장하는 흐름을 우선한다.
+20. 사용자가 파일이나 폴더를 만들어달라고만 했고 파일 내용은 명시하지 않았다면, 내용을 추측하거나 설명문을 파일에 쓰지 않는다.
+21. 파일 생성 요청에서 내용이 명시되지 않았다면 기본적으로 빈 파일을 생성한다.
+22. README.md 같은 특별한 파일도 사용자가 초안이나 템플릿을 원한다고 명시하지 않으면 내용을 자동으로 넣지 않는다.
+23. 폴더와 파일을 함께 만들 때도 파일 내용이 명시되지 않았다면 content는 빈 문자열이어야 한다.
 """.strip()
+
+    if interaction_mode == "cli":
+        interaction_rules = """
+상호작용 규칙:
+1. request_ 툴이 action_id를 반환하면 작업이 끝난 것처럼 말하지 않는다.
+2. 승인 전에는 수정, 삭제, 검색이 실제 수행되었다고 말하면 안 된다.
+3. 승인 필요 작업이면 approve <action_id> 또는 reject <action_id> 로 처리하라고 안내한다.
+4. 승인 후에는 실제 수행된 결과를 알려준다.
+""".strip()
+    elif interaction_mode == "web":
+        interaction_rules = """
+상호작용 규칙:
+1. request_ 툴이 action_id를 반환하면 작업이 끝난 것처럼 말하지 않는다.
+2. 승인 전에는 수정, 삭제, 검색이 실제 수행되었다고 말하면 안 된다.
+3. 승인 필요 작업이면 action_id와 요청 내용을 알려주고, 웹 UI 또는 approvals API로 승인/거부를 처리해야 한다고 안내한다.
+4. CLI 명령어 y/n, approve, reject는 언급하지 않는다.
+5. 승인 후에는 실제 수행된 결과를 알려준다.
+""".strip()
+    else:
+        raise ValueError(f"지원하지 않는 interaction_mode입니다: {interaction_mode}")
 
     if response_language == "ko":
         language_rules = """
@@ -67,7 +102,7 @@ Language rules:
     else:
         raise ValueError(f"지원하지 않는 output_mode입니다: {output_mode}")
 
-    return f"{base}\n\n{language_rules}\n\n{mode_rules}"
+    return f"{base}\n\n{interaction_rules}\n\n{language_rules}\n\n{mode_rules}"
 
 
 def _debug_print(enabled: bool, label: str, content: Any = "") -> None:
@@ -110,6 +145,67 @@ def _postprocess_output(text: str, output_mode: str) -> str:
     return text.strip()
 
 
+def _extract_pending_approval(text: str) -> dict[str, str] | None:
+    if not text.startswith("__PENDING_APPROVAL__"):
+        return None
+
+    data: dict[str, str] = {}
+    for line in text.splitlines()[1:]:
+        if "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        data[key.strip()] = value.strip()
+
+    if "action_id" not in data:
+        return None
+
+    return data
+
+
+def _format_pending_approval_message(
+    data: dict[str, str],
+    output_mode: str,
+    interaction_mode: str = "cli",
+) -> str:
+    action_id = data.get("action_id", "")
+    summary = data.get("summary", "")
+    message = data.get("message", "이 작업은 사용자 승인이 필요합니다.")
+
+    if interaction_mode == "web":
+        if output_mode == "markdown":
+            return (
+                f"## 승인 필요\n\n"
+                f"- action_id: `{action_id}`\n"
+                f"- 요청 내용: {summary}\n"
+                f"- 안내: {message}\n\n"
+                f"웹 UI 또는 approvals API로 승인/거부를 진행하세요."
+            )
+        return (
+            f"승인 필요\n"
+            f"action_id: {action_id}\n"
+            f"요청 내용: {summary}\n"
+            f"안내: {message}\n"
+            f"웹 UI 또는 approvals API로 승인/거부를 진행하세요."
+        )
+
+    if output_mode == "markdown":
+        return (
+            f"## 승인 필요\n\n"
+            f"- action_id: `{action_id}`\n"
+            f"- 요청 내용: {summary}\n"
+            f"- 안내: {message}\n\n"
+            f"CLI에서는 `approve {action_id}` / `reject {action_id}` 또는 y/n으로 처리할 수 있습니다."
+        )
+
+    return (
+        f"승인 필요\n"
+        f"action_id: {action_id}\n"
+        f"요청 내용: {summary}\n"
+        f"안내: {message}\n"
+        f"CLI에서 y/n 또는 approve/reject로 처리하세요."
+    )
+
+
 def run_agent(
     user_input: str,
     max_steps: int = 5,
@@ -117,16 +213,36 @@ def run_agent(
     output_mode: str = "cli",
     response_language: str = "ko",
     return_trace: bool = False,
+    chat_history: list[dict[str, str]] | None = None,
+    memory_context: str | None = None,
+    interaction_mode: str = "cli",
 ) -> str | tuple[str, dict[str, Any]]:
     system_prompt = build_system_prompt(
         output_mode=output_mode,
         response_language=response_language,
+        interaction_mode=interaction_mode,
     )
 
     messages: list[dict[str, Any]] = [
         {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_input},
     ]
+
+    if memory_context:
+        messages.append(
+            {
+                "role": "system",
+                "content": (
+                    "아래는 이전 대화와 작업 상태를 압축한 메모리다.\n"
+                    "필요한 경우에만 참고하고, 현재 사용자 요청을 우선하라.\n\n"
+                    f"{memory_context}"
+                ),
+            }
+        )
+
+    if chat_history:
+        messages.extend(chat_history)
+
+    messages.append({"role": "user", "content": user_input})
 
     trace_record: dict[str, Any] = {
         "timestamp": utc_now_iso(),
@@ -240,6 +356,25 @@ def run_agent(
                         "result": tool_result,
                     }
                 )
+
+                pending_data = _extract_pending_approval(tool_result)
+                if pending_data is not None:
+                    trace_record["steps"].append(step_record)
+
+                    final_message = _format_pending_approval_message(
+                        pending_data,
+                        output_mode=output_mode,
+                        interaction_mode=interaction_mode,
+                    )
+                    trace_record["status"] = "awaiting_approval"
+                    trace_record["final_answer"] = final_message
+
+                    _debug_print(debug, "PENDING APPROVAL", final_message)
+                    append_trace(trace_record)
+
+                    if return_trace:
+                        return final_message, trace_record
+                    return final_message
 
                 messages.append(
                     {

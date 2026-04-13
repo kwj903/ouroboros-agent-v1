@@ -1,0 +1,139 @@
+[
+  {
+    "id": "memory_search_001",
+    "description": "기본 응답 언어 기억은 관련 질문에서 검색되어야 한다",
+    "setup_memories": [
+      {
+        "alias": "lang",
+        "content": "이 프로젝트의 기본 응답 언어는 한국어다",
+        "tags": ["language", "default"],
+        "importance": 5,
+        "note_type": "preference"
+      },
+      {
+        "alias": "readme",
+        "content": "README.md는 프로젝트 소개 문서다",
+        "tags": ["readme", "document"],
+        "importance": 4,
+        "note_type": "general"
+      }
+    ],
+    "operation": {
+      "type": "search",
+      "query": "기본 응답 언어",
+      "max_results": 3
+    },
+    "min_results": 1,
+    "must_include_contents": ["이 프로젝트의 기본 응답 언어는 한국어다"],
+    "forbidden_contents": ["README.md는 프로젝트 소개 문서다"]
+  },
+  {
+    "id": "memory_search_002",
+    "description": "README 질문에서는 README 기억이 검색되어야 한다",
+    "setup_memories": [
+      {
+        "alias": "lang",
+        "content": "이 프로젝트의 기본 응답 언어는 한국어다",
+        "tags": ["language", "default"],
+        "importance": 5,
+        "note_type": "preference"
+      },
+      {
+        "alias": "readme",
+        "content": "README.md는 프로젝트 소개 문서다",
+        "tags": ["readme", "document"],
+        "importance": 4,
+        "note_type": "general"
+      }
+    ],
+    "operation": {
+      "type": "search",
+      "query": "README 문서",
+      "max_results": 3
+    },
+    "min_results": 1,
+    "must_include_contents": ["README.md는 프로젝트 소개 문서다"],
+    "forbidden_contents": ["이 프로젝트의 기본 응답 언어는 한국어다"]
+  },
+  {
+    "id": "memory_update_001",
+    "description": "기억 수정 후에는 새 내용이 반영되어야 한다",
+    "setup_memories": [
+      {
+        "alias": "readme",
+        "content": "README.md는 프로젝트 소개 문서다",
+        "tags": ["readme", "document"],
+        "importance": 4,
+        "note_type": "general"
+      }
+    ],
+    "operation": {
+      "type": "update",
+      "target_alias": "readme",
+      "new_content": "README.md는 프로젝트 소개와 사용법 문서다",
+      "verify_query": "README"
+    },
+    "must_include_contents": ["README.md는 프로젝트 소개와 사용법 문서다"],
+    "forbidden_contents": ["README.md는 프로젝트 소개 문서다"]
+  },
+  {
+    "id": "memory_delete_001",
+    "description": "기억 삭제 후에는 검색에 나타나면 안 된다",
+    "setup_memories": [
+      {
+        "alias": "readme",
+        "content": "README.md는 프로젝트 소개 문서다",
+        "tags": ["readme", "document"],
+        "importance": 4,
+        "note_type": "general"
+      },
+      {
+        "alias": "lang",
+        "content": "이 프로젝트의 기본 응답 언어는 한국어다",
+        "tags": ["language", "default"],
+        "importance": 5,
+        "note_type": "preference"
+      }
+    ],
+    "operation": {
+      "type": "delete",
+      "target_alias": "readme",
+      "verify_query": "README"
+    },
+    "expected_deleted": true,
+    "must_include_contents": [],
+    "forbidden_contents": ["README.md는 프로젝트 소개 문서다"]
+  },
+  {
+    "id": "memory_suggest_001",
+    "description": "프로젝트 규칙 문장은 기억 후보로 제안되어야 한다",
+    "setup_memories": [],
+    "operation": {
+      "type": "suggest",
+      "user_input": "이 프로젝트의 기본 규칙은 승인 없는 파일 수정은 하지 않는 것이다",
+      "answer": "알겠습니다. 이 프로젝트의 기본 규칙은 승인 없는 파일 수정은 하지 않는 것이다.",
+      "trace_record": {
+        "steps": []
+      }
+    },
+    "min_suggestions": 1,
+    "must_include_suggestions": ["이 프로젝트의 기본 규칙은 승인 없는 파일 수정은 하지 않는 것이다"]
+  },
+  {
+    "id": "memory_suggest_002",
+    "description": "사용자 규칙과 거의 같은 assistant 재진술은 중복 후보로 추가되면 안 된다",
+    "setup_memories": [],
+    "operation": {
+      "type": "suggest",
+      "user_input": "이 프로젝트의 기본 규칙은 승인 없는 파일 수정은 하지 않는 것이다",
+      "answer": "알겠습니다. 파일 수정은 반드시 승인 후에 진행하겠습니다.",
+      "trace_record": {
+        "steps": []
+      }
+    },
+    "min_suggestions": 1,
+    "max_suggestions": 1,
+    "must_include_suggestions": ["이 프로젝트의 기본 규칙은 승인 없는 파일 수정은 하지 않는 것이다"],
+    "forbidden_suggestions": ["파일 수정은 반드시 승인 후에 진행하겠습니다"]
+  }
+]
