@@ -37,9 +37,9 @@ def _validate_choice(name: str, value: str, allowed: set[str]) -> str:
 ensure_ouroboros_dirs()
 
 # LLM provider settings
-GROQ_API_KEY = _get_env("GROQ_API_KEY")
-GROQ_BASE_URL = _get_env("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
-GROQ_MODEL = _get_env("GROQ_MODEL", "openai/gpt-oss-20b")
+ALL_API_KEY = _get_env("ALL_API_KEY")
+ALL_BASE_URL = _get_env("ALL_BASE_URL", "https://api.groq.com/openai/v1")
+ALL_MODEL = _get_env("ALL_MODEL", "openai/gpt-oss-20b")
 
 # App defaults
 DEFAULT_OUTPUT_MODE = _validate_choice(

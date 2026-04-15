@@ -345,36 +345,55 @@ def _summarize_batch_operations(
     return preview_text
 
 
-def _normalize_batch_operation(operation: dict[str, Any]) -> dict[str, Any]:
-    normalized = dict(operation)
-    op_type = normalized.get("type")
+def _normalize_write_mode(mode: str | None) -> str:
+    if mode is None:
+        return "overwrite"
 
-    # create_file인데 content가 있으면 write_file로 자동 보정
-    if op_type == "create_file":
-        content = normalized.get("content")
-        if isinstance(content, str) and content != "":
-            normalized["type"] = "write_file"
-            normalized.setdefault("mode", "create_only")
-            normalized.setdefault("create_parents", True)
+    normalized = str(mode).strip().lower()
 
-    return normalized
+    aliases = {
+        "create": "create_only",
+        "create-only": "create_only",
+        "createonly": "create_only",
+        "new": "create_only",
+        "new_only": "create_only",
+    }
+
+    return aliases.get(normalized, normalized)
 
 
-def _normalize_batch_operation(operation: dict[str, Any]) -> dict[str, Any]:
-    normalized = dict(operation)
-    op_type = normalized.get("type")
+def _normalize_batch_operations(
+    operations: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    normalized_ops: list[dict[str, Any]] = []
 
-    # create_file인데 content가 들어오면 write_file로 보정
-    # create "의도"를 살리기 위해 기본 mode는 create_only로 둔다.
-    if op_type == "create_file":
-        content = normalized.get("content")
-        if isinstance(content, str) and content != "":
-            normalized["type"] = "write_file"
-            normalized.setdefault("mode", "create_only")
-            normalized.setdefault("create_parents", True)
+    for operation in operations:
+        normalized = _normalize_batch_operation(operation)
 
-    return normalized
+        # create_file(path) 바로 뒤에 write_file(path)가 오면
+        # 하나의 write_file(create_only)로 합친다.
+        if (
+            normalized.get("type") == "write_file"
+            and normalized_ops
+            and normalized_ops[-1].get("type") == "create_file"
+            and normalized_ops[-1].get("path") == normalized.get("path")
+        ):
+            prev = normalized_ops.pop()
 
+            merged = dict(normalized)
+            merged["type"] = "write_file"
+            merged["mode"] = "create_only"
+            merged.setdefault(
+                "create_parents",
+                prev.get("create_parents", normalized.get("create_parents", True)),
+            )
+
+            normalized_ops.append(merged)
+            continue
+
+        normalized_ops.append(normalized)
+
+    return normalized_ops
 
 def _validate_batch_operation(operation: dict[str, Any], index: int) -> None:
     if not isinstance(operation, dict):
@@ -399,7 +418,6 @@ def _validate_batch_operation(operation: dict[str, Any], index: int) -> None:
         raise ValueError(f"{index}번째 operation에 유효한 path가 없습니다.")
 
     if op_type == "create_file":
-        # create_file에는 write/replace/delete 계열 필드가 섞이면 안 됨
         forbidden_fields = {
             "content",
             "mode",
@@ -420,6 +438,12 @@ def _validate_batch_operation(operation: dict[str, Any], index: int) -> None:
                 f"{index}번째 write_file operation에는 content가 필요합니다."
             )
 
+        mode = operation.get("mode", "overwrite")
+        if mode not in {"overwrite", "append", "create_only"}:
+            raise ValueError(
+                f"{index}번째 write_file operation의 mode가 올바르지 않습니다: {mode}"
+            )
+
     elif op_type == "replace_text_in_file":
         if "old_text" not in operation or "new_text" not in operation:
             raise ValueError(
@@ -427,7 +451,6 @@ def _validate_batch_operation(operation: dict[str, Any], index: int) -> None:
             )
 
     elif op_type == "delete_path":
-        # delete_path에는 write/replace 계열 필드가 섞이면 안 됨
         forbidden_fields = {
             "content",
             "mode",
@@ -451,17 +474,13 @@ def request_batch_operations(
     if not operations:
         return "ERROR: operations가 비어 있습니다."
 
-    normalized_operations: list[dict[str, Any]] = []
+    normalized_operations = _normalize_batch_operations(operations)
 
-    for index, operation in enumerate(operations, start=1):
-        normalized = _normalize_batch_operation(operation)
-
+    for index, operation in enumerate(normalized_operations, start=1):
         try:
-            _validate_batch_operation(normalized, index)
+            _validate_batch_operation(operation, index)
         except ValueError as e:
             return f"ERROR: {e}"
-
-        normalized_operations.append(normalized)
 
     preview_text = _summarize_batch_operations(normalized_operations)
 
@@ -518,6 +537,23 @@ def _execute_single_operation(operation: dict[str, Any]) -> str:
     raise ValueError(f"지원하지 않는 batch operation type입니다: {op_type}")
 
 
+def _normalize_batch_operation(operation: dict[str, Any]) -> dict[str, Any]:
+    normalized = dict(operation)
+    op_type = normalized.get("type")
+
+    if op_type == "create_file":
+        content = normalized.get("content")
+        if isinstance(content, str) and content != "":
+            normalized["type"] = "write_file"
+            normalized["mode"] = "create_only"
+            normalized.setdefault("create_parents", True)
+
+    elif op_type == "write_file":
+        normalized["mode"] = _normalize_write_mode(normalized.get("mode"))
+
+    return normalized
+
+
 def _execute_batch_operations(
     operations: list[dict[str, Any]],
     continue_on_error: bool = False,
@@ -528,16 +564,16 @@ def _execute_batch_operations(
             "report": "배치 작업 실행 실패\noperations가 비어 있습니다.",
         }
 
+    normalized_operations = _normalize_batch_operations(operations)
+
     success_count = 0
     failed_count = 0
     processed_count = 0
     lines: list[str] = []
 
-    for index, operation in enumerate(operations, start=1):
-        normalized = _normalize_batch_operation(operation)
-
+    for index, operation in enumerate(normalized_operations, start=1):
         try:
-            _validate_batch_operation(normalized, index)
+            _validate_batch_operation(operation, index)
         except ValueError as e:
             failed_count += 1
             processed_count += 1
@@ -548,29 +584,29 @@ def _execute_batch_operations(
                 break
             continue
 
-        result = _execute_single_operation(normalized)
+        result = _execute_single_operation(operation)
         processed_count += 1
 
         if isinstance(result, str) and result.startswith("ERROR:"):
             failed_count += 1
-            lines.append(f"{index}. [FAIL] {_summarize_single_operation(normalized)}")
+            lines.append(f"{index}. [FAIL] {_summarize_single_operation(operation)}")
             lines.append(f"   결과: {result}")
 
             if not continue_on_error:
                 break
         else:
             success_count += 1
-            lines.append(f"{index}. [OK] {_summarize_single_operation(normalized)}")
+            lines.append(f"{index}. [OK] {_summarize_single_operation(operation)}")
             lines.append(f"   결과: {result}")
 
-    skipped_count = len(operations) - processed_count
+    skipped_count = len(normalized_operations) - processed_count
     ok = failed_count == 0
 
     header = "배치 작업 실행 완료" if ok else "배치 작업 실행 실패"
 
     report_lines = [
         header,
-        f"총 작업 수: {len(operations)}",
+        f"총 작업 수: {len(normalized_operations)}",
         f"성공: {success_count}",
         f"실패: {failed_count}",
     ]
@@ -653,6 +689,8 @@ def _write_file(
 
     if create_parents:
         target.parent.mkdir(parents=True, exist_ok=True)
+
+    mode = _normalize_write_mode(mode)
 
     if mode not in {"overwrite", "append", "create_only"}:
         return f"ERROR: 지원하지 않는 mode입니다: {mode}"
