@@ -507,45 +507,65 @@ export default function App() {
     }
   }
 
-  async function handleSend() {
-    const trimmed = input.trim()
-    if (!trimmed || loading) return
-
-    const userMessage: ChatMessage = {
-      role: "user",
-      content: trimmed,
-    }
-
-    setMessages((prev) => [...prev, userMessage])
-    setInput("")
-    setLoading(true)
-    setError(null)
-
-    try {
-      const result = await sendChat({
-        message: trimmed,
-        session_id: currentSessionId,
-        output_mode: "markdown",
-        response_language: "ko",
-      })
-
-      setCurrentSessionId(result.session_id)
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: result.answer,
-        },
-      ])
-
-      await refreshSessionView(result.session_id)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "채팅 요청 실패")
-    } finally {
-      setLoading(false)
-    }
-  }
+   async function handleSend() {
+     const trimmed = input.trim()
+     if (!trimmed || loading) return
+ 
+     const userMessage: ChatMessage = {
+       role: "user",
+       content: trimmed,
+     }
+ 
+     setMessages((prev) => [...prev, userMessage])
+     setInput("")
+     setLoading(true)
+     setError(null)
+ 
+     try {
+       const result = await sendChat({
+         message: trimmed,
+         session_id: currentSessionId,
+         output_mode: "markdown",
+         response_language: "ko",
+       })
+ 
+       setCurrentSessionId(result.session_id)
+ 
+       setMessages((prev) => [
+         ...prev,
+         {
+           role: "assistant",
+           content: result.answer,
+         },
+       ])
+ 
+       // 히스토리는 로컬에 이미 추가되었으므로, 사이드바 정보만 업데이트
+       if (result.action_id && result.action_required) {
+         // 승인 요청: 즉시 로컬 approvals에 추가하고 모달 표시
+         const newApproval: ApprovalItem = {
+           action_id: result.action_id,
+           action_type: "batch_operations",
+           summary: result.action_summary || "승인 대기 작업",
+           status: "pending",
+           payload: {},
+           created_at: new Date().toISOString(),
+         }
+         setApprovals((prev) => [newApproval, ...prev])
+         setSelectedApprovalId(result.action_id)
+         setApprovalModalOpen(true)
+         
+         // 백그라운드에서 전체 승인 목록 동기화
+         refreshApprovals().catch(() => {})
+       } else {
+         // 일반 응답: 전체 세션 뷰 새로고침 (히스토리 + 사이드바)
+         await refreshSessionView(result.session_id)
+       }
+     } catch (err) {
+       setError(err instanceof Error ? err.message : "채팅 요청 실패")
+     } finally {
+       setLoading(false)
+     }
+   }
 
   async function handleApprove(actionId: string) {
     try {

@@ -24,6 +24,7 @@ export async function fetchSessionWorkspaceState(
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${BASE_URL}${path}`, {
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
       ...(init?.headers ?? {}),
