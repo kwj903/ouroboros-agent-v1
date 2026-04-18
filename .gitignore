@@ -72,3 +72,13 @@ Thumbs.db
 # 연습용
 # =========================
 연습용/
+
+# =========================
+# 에이전트 문서 정리
+# =========================
+.kilo/
+docs/
+AGENTS.md
+IMPLEMENTATION_COMPLETE.md
+IMPLEMENTATION_SUMMARY.md
+PROJECT_HANDOFF_detailed.md
