@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+import json
 from typing import Any
 
 from app.conversation_state import SessionState
 from app.logger import utc_now_iso
+
+
+PLANNER_TOOL_NAME = "__planner__"
 
 
 def _safe_preview(value: Any, max_length: int = 400) -> str:
@@ -22,8 +26,116 @@ def _extract_result_text(tool_result: Any) -> str:
     return str(tool_result)
 
 
+def _normalize_planner_tasks(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+
+    tasks: list[str] = []
+    for item in value:
+        if not isinstance(item, str):
+            continue
+        cleaned = " ".join(item.split()).strip()
+        if cleaned:
+            tasks.append(cleaned)
+    return tasks
+
+
+def _build_planner_log_entry(planner: dict[str, Any]) -> dict[str, Any]:
+    used = bool(planner.get("used"))
+    status = str(planner.get("status") or "unknown")
+    tasks = _normalize_planner_tasks(planner.get("tasks"))
+
+    if used and tasks:
+        preview = f"계획 생성 완료 · {len(tasks)}단계"
+    elif status == "fallback":
+        preview = "계획 요약 없이 직접 실행"
+    else:
+        preview = f"planner 상태: {status}"
+
+    raw = json.dumps(
+        {
+            "used": used,
+            "status": status,
+            "tasks": tasks,
+        },
+        ensure_ascii=False,
+    )
+
+    return {
+        "timestamp": utc_now_iso(),
+        "step_index": 0,
+        "tool_name": PLANNER_TOOL_NAME,
+        "arguments": {
+            "used": used,
+            "status": status,
+            "tasks": tasks,
+        },
+        "result_preview": preview,
+        "result_raw": raw,
+    }
+
+
+def _parse_pending_approval(raw_text: str) -> dict[str, Any] | None:
+    if not raw_text.startswith("__PENDING_APPROVAL__"):
+        return None
+
+    data: dict[str, Any] = {}
+    for line in raw_text.splitlines()[1:]:
+        if "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        data[key.strip()] = value.strip()
+
+    if not data:
+        return None
+
+    return {
+        "action_id": data.get("action_id"),
+        "summary": data.get("summary"),
+        "message": data.get("message"),
+    }
+
+
+def _classify_result_kind(raw_text: str) -> str:
+    if _parse_pending_approval(raw_text) is not None:
+        return "pending_approval"
+    if raw_text.strip().startswith("ERROR:"):
+        return "error"
+    return "ok"
+
+
+def _parse_plan_summary(entry: dict[str, Any]) -> dict[str, Any]:
+    arguments = entry.get("arguments")
+    if not isinstance(arguments, dict):
+        return {
+            "used": False,
+            "status": "unknown",
+            "tasks": [],
+        }
+
+    return {
+        "used": bool(arguments.get("used")),
+        "status": str(arguments.get("status") or "unknown"),
+        "tasks": _normalize_planner_tasks(arguments.get("tasks")),
+    }
+
+
+def _build_latest_execution(entry: dict[str, Any]) -> dict[str, Any]:
+    raw_text = str(entry.get("result_raw", ""))
+    return {
+        "tool_name": str(entry.get("tool_name") or "unknown_tool"),
+        "step_index": int(entry.get("step_index") or 0),
+        "result_kind": _classify_result_kind(raw_text),
+        "result_preview": str(entry.get("result_preview") or _safe_preview(raw_text)),
+    }
+
+
 def persist_tool_trace(session_state: SessionState, trace_record: dict[str, Any]) -> None:
     steps = trace_record.get("steps", [])
+    planner = trace_record.get("planner")
+
+    if isinstance(planner, dict):
+        session_state.append_tool_log(_build_planner_log_entry(planner))
 
     for step_index, step in enumerate(steps, start=1):
         tool_calls = step.get("tool_calls", [])
@@ -134,11 +246,24 @@ def build_tool_panel(session_state: SessionState) -> dict[str, Any]:
         "last_note_search": None,
         "last_note_read": None,
         "last_file_read": None,
+        "plan_summary": None,
+        "latest_execution": None,
+        "pending_approval": None,
     }
 
     for entry in reversed(logs):
         tool_name = entry.get("tool_name")
         raw = entry.get("result_raw", "")
+
+        if tool_name == PLANNER_TOOL_NAME and panel["plan_summary"] is None:
+            panel["plan_summary"] = _parse_plan_summary(entry)
+            continue
+
+        if tool_name != PLANNER_TOOL_NAME and panel["latest_execution"] is None:
+            panel["latest_execution"] = _build_latest_execution(entry)
+            pending = _parse_pending_approval(raw)
+            if pending is not None:
+                panel["pending_approval"] = pending
 
         if tool_name == "search_notes" and panel["last_note_search"] is None:
             panel["last_note_search"] = _parse_search_notes_result(raw)
@@ -148,8 +273,5 @@ def build_tool_panel(session_state: SessionState) -> dict[str, Any]:
 
         elif tool_name == "read_file" and panel["last_file_read"] is None:
             panel["last_file_read"] = _parse_read_text_result(raw)
-
-        if all(panel.values()):
-            break
 
     return panel

@@ -623,10 +623,24 @@ TOOL_SCHEMAS = [
 ]
 
 EXPOSED_TOOL_NAMES = {
+    "calculator",
+    "search_notes",
+    "read_note",
+    "get_workspace_info",
+    "list_dir",
+    "tree_view",
     "read_file",
+    "request_search_files",
+    "request_create_file",
     "request_write_file",
+    "request_replace_text_in_file",
+    "request_delete_path",
+    "request_batch_operations",
+    "save_memory_note",
     "search_memory_notes",
     "list_recent_memory_notes",
+    "update_memory_note",
+    "delete_memory_note",
 }
 
 TOOL_SCHEMAS = [

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 from app.paths import LOGS_DIR
@@ -15,7 +15,7 @@ def ensure_log_dir() -> None:
 
 
 def utc_now_iso() -> str:
-    return datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    return datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
 def append_trace(record: dict[str, Any]) -> None:

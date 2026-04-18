@@ -1,74 +1,91 @@
 #!/usr/bin/env python3
-"""Test script to verify the implementation"""
+"""Manual smoke check for local repository sanity.
+
+This script is intentionally not part of default pytest collection.
+Use it when you want a quick import/registry/session sanity check from the repo root.
+"""
+
+from __future__ import annotations
 
 import sys
-sys.path.insert(0, '/Users/kwj903/workspace/sandbox/free-model-test')
+from pathlib import Path
 
-# Test imports
-print("Testing imports...")
-import app
+
+ROOT = Path(__file__).resolve().parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from app.agent import run_agent
-from app.tool_registry import TOOLS, TOOL_SCHEMAS, EXPOSED_TOOL_NAMES
-from app.approvals import create_pending_action, list_pending_actions
-from app.conversation_state import SessionState, create_new_session
-from app.memory_manager import build_memory_context, compact_history_if_needed
-from app.paths import OUROBOROS_HOME, STATE_DIR, LOGS_DIR, NOTES_DIR, WORKSPACE_ROOT
-from app.tool_trace_manager import persist_tool_trace, build_tool_panel
-from app.long_term_memory import add_memory_note, search_memory_records
+from app.approvals import create_pending_action
+from app.conversation_state import generate_session_id
+from app.logger import utc_now_iso
+from app.memory_manager import build_memory_context
+from app.paths import LOGS_DIR, NOTES_DIR, OUROBOROS_HOME, STATE_DIR, WORKSPACE_ROOT
+from app.tool_registry import EXPOSED_TOOL_NAMES, TOOLS, TOOL_SCHEMAS
+from app.tool_trace_manager import persist_tool_trace
 
-print("✓ All imports successful")
 
-# Test key functions exist
-print("\nTesting key functions...")
-assert hasattr(run_agent, '__call__'), "run_agent should be callable"
-assert hasattr(create_pending_action, '__call__'), "create_pending_action should be callable"
-assert hasattr(build_memory_context, '__call__'), "build_memory_context should be callable"
-assert hasattr(persist_tool_trace, '__call__'), "persist_tool_trace should be callable"
-print("✓ Key functions exist")
+EXPECTED_BASELINE_TOOLS = {
+    "calculator",
+    "search_notes",
+    "read_note",
+    "get_workspace_info",
+    "list_dir",
+    "tree_view",
+    "read_file",
+    "request_search_files",
+    "request_create_file",
+    "request_write_file",
+    "request_replace_text_in_file",
+    "request_delete_path",
+    "request_batch_operations",
+    "save_memory_note",
+    "search_memory_notes",
+    "list_recent_memory_notes",
+    "update_memory_note",
+    "delete_memory_note",
+}
 
-# Test tool registry
-print("\nTesting tool registry...")
-print(f"  Total tools registered: {len(TOOLS)}")
-assert len(TOOLS) == 18, f"Expected 18 tools, got {len(TOOLS)}"
-print(f"  Exposed tools: {len(EXPOSED_TOOL_NAMES)}")
-assert len(EXPOSED_TOOL_NAMES) == 5, f"Expected 5 exposed tools, got {len(EXPOSED_TOOL_NAMES)}"
-print("✓ Tool registry correct")
 
-# Test schemas
-print("\nTesting schemas...")
-assert len(TOOL_SCHEMAS) == 18, f"Expected 18 schemas, got {len(TOOL_SCHEMAS)}"
-print("✓ Schemas loaded")
+def main() -> None:
+    print("Running manual smoke check...")
 
-# Test paths
-print("\nTesting paths...")
-print(f"  OUROBOROS_HOME: {OUROBOROS_HOME}")
-print(f"  STATE_DIR: {STATE_DIR}")
-print(f"  LOGS_DIR: {LOGS_DIR}")
-print(f"  NOTES_DIR: {NOTES_DIR}")
-print(f"  WORKSPACE_ROOT: {WORKSPACE_ROOT}")
-assert OUROBOROS_HOME.exists() or True, "Home directory should exist or be creatable"
-print("✓ Paths configured")
+    print("\nChecking core callables...")
+    assert callable(run_agent), "run_agent should be callable"
+    assert callable(create_pending_action), "create_pending_action should be callable"
+    assert callable(build_memory_context), "build_memory_context should be callable"
+    assert callable(persist_tool_trace), "persist_tool_trace should be callable"
+    print("✓ Core callables available")
 
-# Test session state
-print("\nTesting session state...")
-session = create_new_session()
-assert session is not None, "Session should be created"
-print(f"  Created session: {session.session_id}")
-print("✓ Session state works")
+    print("\nChecking tool registry...")
+    schema_names = {
+        schema.get("function", {}).get("name")
+        for schema in TOOL_SCHEMAS
+        if isinstance(schema, dict)
+    }
+    assert set(TOOLS) == EXPECTED_BASELINE_TOOLS, "Registered tools differ from expected baseline"
+    assert EXPOSED_TOOL_NAMES == EXPECTED_BASELINE_TOOLS, "Exposed tool set differs from baseline"
+    assert schema_names == EXPECTED_BASELINE_TOOLS, "Tool schemas differ from baseline"
+    print(f"✓ Registered tools: {len(TOOLS)}")
+    print(f"✓ Exposed tools: {len(EXPOSED_TOOL_NAMES)}")
 
-# Test memory operations
-print("\nTesting memory operations...")
-import tempfile
-import os
-with tempfile.TemporaryDirectory() as tmpdir:
-    test_note_path = os.path.join(tmpdir, "test_note.md")
-    # Test writing a note
-    from app.paths import NOTES_DIR
-    original_notes_dir = NOTES_DIR
-    # We won't actually write to the real notes dir, just test the function exists
-    print("✓ Memory operations available")
+    print("\nChecking paths and timestamp formatting...")
+    assert WORKSPACE_ROOT.exists(), "WORKSPACE_ROOT should exist"
+    assert utc_now_iso().endswith("Z"), "utc_now_iso should return a UTC Z suffix"
+    print(f"  OUROBOROS_HOME: {OUROBOROS_HOME}")
+    print(f"  STATE_DIR: {STATE_DIR}")
+    print(f"  LOGS_DIR: {LOGS_DIR}")
+    print(f"  NOTES_DIR: {NOTES_DIR}")
+    print(f"  WORKSPACE_ROOT: {WORKSPACE_ROOT}")
+    print("✓ Paths and timestamp formatting look sane")
 
-print("\n" + "="*50)
-print("ALL TESTS PASSED ✓")
-print("="*50)
-print("\nProject implementation is complete and working!")
+    print("\nChecking session id generation...")
+    session_id = generate_session_id()
+    assert session_id, "Session id should not be empty"
+    print(f"✓ Generated session id: {session_id}")
+
+    print("\nManual smoke check passed.")
+
+
+if __name__ == "__main__":
+    main()

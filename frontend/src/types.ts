@@ -95,7 +95,29 @@ export type ToolPanelReadItem = {
   raw: string
 }
 
+export type PlanSummaryItem = {
+  used: boolean
+  status: string
+  tasks: string[]
+}
+
+export type LatestExecutionItem = {
+  tool_name: string
+  step_index: number
+  result_kind: string
+  result_preview: string
+}
+
+export type PendingApprovalItem = {
+  action_id?: string | null
+  summary?: string | null
+  message?: string | null
+}
+
 export type ToolPanelData = {
+  plan_summary: PlanSummaryItem | null
+  latest_execution: LatestExecutionItem | null
+  pending_approval: PendingApprovalItem | null
   last_note_search: {
     query?: string | null
     items: ToolPanelSearchItem[]

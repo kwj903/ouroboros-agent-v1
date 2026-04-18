@@ -9,7 +9,28 @@ from app.model import create_response
 from app.tool_registry import TOOLS, TOOL_SCHEMAS
 
 
-def plan_tasks(user_input: str, memory_context: str | None = None) -> list[str]:
+def _normalize_planner_tasks(tasks: list[str]) -> list[str]:
+    normalized: list[str] = []
+    seen: set[str] = set()
+
+    for item in tasks:
+        if not isinstance(item, str):
+            continue
+
+        cleaned = " ".join(item.split()).strip()
+        if not cleaned or cleaned in seen:
+            continue
+
+        normalized.append(cleaned)
+        seen.add(cleaned)
+
+    return normalized
+
+
+def plan_tasks(
+    user_input: str,
+    memory_context: str | None = None,
+) -> tuple[list[str], str]:
     """사용자의 요청을 분석해서 task list를 생성한다."""
     planning_prompt = """
 너는 사용자의 복잡한 요청을 작은 실행 가능한 task들로 분해하는 planner다.
@@ -50,13 +71,17 @@ task 리스트:
 
     try:
         tasks = json.loads(content.strip())
-        if isinstance(tasks, list) and all(isinstance(t, str) for t in tasks):
-            return tasks
     except json.JSONDecodeError:
-        pass
+        tasks = None
+
+    if isinstance(tasks, list) and all(isinstance(t, str) for t in tasks):
+        normalized_tasks = _normalize_planner_tasks(tasks)
+        if normalized_tasks:
+            return normalized_tasks, "planned"
+        return [f"사용자 요청 처리: {user_input}"], "invalid"
 
     # 파싱 실패 시 기본 task로 분해
-    return [f"사용자 요청 처리: {user_input}"]
+    return [f"사용자 요청 처리: {user_input}"], "fallback"
 
 
 def build_system_prompt(
@@ -69,35 +94,32 @@ def build_system_prompt(
 
 공통 규칙:
 1. 계산이 필요한 질문이면 calculator 툴을 사용한다.
-2. 사용자의 로컬 노트, 메모, 정리한 내용, 기록한 지식을 찾는 질문이면 search_notes 툴을 사용한다.
-3. search_notes 결과에서 적절한 파일을 찾았고, 사용자가 자세한 설명, 요약, 내용 확인을 원하면 read_note 툴로 그 파일을 실제로 읽는다.
-4. 계산이 필요 없고 노트 검색도 필요 없으면 바로 자연스럽게 답한다.
-5. 노트 기반 질문의 최종 답변은 tool 결과에서 확인된 내용만 사용한다.
-6. tool 결과에 없는 사실을 일반 지식으로 보충하지 않는다.
-7. search_notes 결과만으로 충분하지 않으면 성급히 답하지 말고 read_note를 사용해 확인한 뒤 답한다.
-8. 최종 답변에서는 파일명과 핵심 내용을 짧고 분명하게 정리한다.
-9. 추론이 필요한 경우에는 추론이라고 짧게 밝힌다.
-10. WORKSPACE_ROOT 안의 현재 작업 디렉터리 이름, 절대경로, 디렉터리 구조, 파일 내용을 읽을 때는 get_workspace_info, list_dir, read_file을 우선 사용한다.
-11. 파일이나 폴더를 생성, 수정, 삭제해야 할 때는 request_batch_operations를 우선 사용한다.
-12. request_ 로 시작하는 툴은 실제 실행이 아니라 승인 요청만 만든다.
-13. 세션을 넘어 유지해야 할 중요한 사실, 프로젝트 규칙, 반복적으로 유용한 결정사항, 사용자가 명시적으로 기억해달라고 한 내용은 save_memory_note를 사용할 수 있다.
-14. 이전 세션의 선호, 과거 결정, 자주 쓰는 파일/규칙 등이 현재 질문에 중요하면 search_memory_notes를 사용할 수 있다.
-15. 사소하거나 일시적인 정보는 장기 기억에 저장하지 않는다.
-16. 장기 기억은 tool 결과로 확인된 내용 또는 사용자가 직접 말한 안정적인 정보만 저장한다.
-17. 사용자가 장기 기억을 보여달라고 하면 list_recent_memory_notes 또는 search_memory_notes를 사용할 수 있다.
-18. 사용자가 특정 장기 기억을 수정하거나 삭제해달라고 하면 update_memory_note, delete_memory_note를 사용할 수 있다.
-19. 장기 기억 후보는 자동 저장하지 말고, 사용자가 확인 후 저장하는 흐름을 우선한다.
-20. 사용자가 파일이나 폴더를 만들어달라고만 했고 파일 내용은 명시하지 않았다면, 내용을 추측하거나 설명문을 파일에 쓰지 않는다.
-21. 파일 생성 요청에서 내용이 명시되지 않았다면 기본적으로 빈 파일을 생성한다.
-22. README.md 같은 특별한 파일도 사용자가 초안이나 템플릿을 원한다고 명시하지 않으면 내용을 자동으로 넣지 않는다.
-23. 폴더와 파일을 함께 만들 때도 파일 내용이 명시되지 않았다면 content는 빈 문자열이어야 한다.
-    24. 사용자가 하나의 요청에서 여러 파일/폴더 변경 작업을 함께 지시하면 request_batch_operations를 우선 검토한다.
-    25. request_batch_operations는 여러 변경 작업을 하나의 승인 요청으로 묶고 승인 후 순서대로 실행할 때 사용한다.
-    26. 내용 없는 파일 생성은 batch 안에서도 create_file 작업으로 표현한다.
-    27. 파일 내용이 있는 생성/덮어쓰기는 batch 안에서도 write_file 작업으로 표현한다.
-    28. 복잡한 다단계 작업은 먼저 전체 계획을 세우고 단계별로 실행한다.
-    29. 각 단계가 끝나면 결과를 확인하고 다음 단계로 진행한다.
-    30. 필요한 경우 중간 결과를 장기 기억에 저장한다.
+2. 사용자의 로컬 notes 저장소에서 지식, 메모, 정리한 내용을 찾는 질문이면 search_notes 툴을 사용한다.
+3. search_notes 결과만으로 충분하지 않으면 read_note 툴로 실제 파일 내용을 확인한 뒤 답한다.
+4. 노트 기반 질문의 최종 답변은 tool 결과에서 확인된 내용만 사용한다.
+5. tool 결과에 없는 사실을 일반 지식으로 보충하지 않는다.
+6. WORKSPACE_ROOT 안의 현재 작업 디렉터리 이름, 절대경로를 확인할 때는 get_workspace_info를 사용한다.
+7. WORKSPACE_ROOT 안의 디렉터리 구조를 볼 때는 list_dir 또는 tree_view를 사용한다.
+8. WORKSPACE_ROOT 안의 파일 내용을 읽을 때는 read_file을 사용한다.
+9. WORKSPACE_ROOT 안에서 파일 내용을 검색해야 할 때는 request_search_files를 사용한다.
+10. request_ 로 시작하는 툴은 실제 실행이 아니라 승인 요청만 만든다.
+11. 여러 파일/폴더 변경을 한 번에 처리하거나 하나의 승인으로 묶는 것이 자연스러우면 request_batch_operations를 우선 사용한다.
+12. 단일 파일 생성이고 내용이 없으면 request_create_file을 사용한다.
+13. 단일 파일 생성/덮어쓰기/append 처리가 필요하면 request_write_file을 사용한다.
+14. 단일 파일의 특정 텍스트를 바꾸려면 request_replace_text_in_file을 사용한다.
+15. 단일 파일 또는 폴더 삭제 요청은 request_delete_path를 사용한다.
+16. 사용자가 파일이나 폴더를 만들어달라고만 했고 파일 내용은 명시하지 않았다면 내용을 추측해 쓰지 않는다.
+17. README.md 같은 특별한 파일도 사용자가 초안이나 템플릿을 원한다고 명시하지 않으면 내용을 자동으로 넣지 않는다.
+18. 세션을 넘어 유지해야 할 중요한 사실, 프로젝트 규칙, 반복적으로 유용한 결정사항, 사용자가 명시적으로 기억해달라고 한 내용은 save_memory_note를 사용할 수 있다.
+19. 이전 세션의 선호, 과거 결정, 자주 쓰는 파일/규칙 등이 현재 질문에 중요하면 search_memory_notes를 사용할 수 있다.
+20. 사용자가 장기 기억을 보여달라고 하면 list_recent_memory_notes 또는 search_memory_notes를 사용할 수 있다.
+21. 사용자가 특정 장기 기억을 수정하거나 삭제해달라고 하면 update_memory_note, delete_memory_note를 사용할 수 있다.
+22. 사소하거나 일시적인 정보는 장기 기억에 저장하지 않는다.
+23. 장기 기억은 tool 결과로 확인된 내용 또는 사용자가 직접 말한 안정적인 정보만 저장한다.
+24. 장기 기억 후보는 자동 저장하지 말고, 사용자가 확인 후 저장하는 흐름을 우선한다.
+25. 복잡한 다단계 작업은 먼저 전체 계획을 세우고 단계별로 실행한다.
+26. 각 단계가 끝나면 결과를 확인하고 다음 단계로 진행한다.
+27. 추론이 필요한 경우에는 추론이라고 짧게 밝힌다.
     """.strip()
 
     if interaction_mode == "cli":
@@ -302,8 +324,10 @@ def run_agent(
     messages.append({"role": "user", "content": user_input})
 
     # Planning 단계: 복잡한 요청을 task로 분해
-    tasks = plan_tasks(user_input, memory_context)
-    if len(tasks) > 1:
+    tasks, planner_status = plan_tasks(user_input, memory_context)
+    planner_used = planner_status == "planned" and len(tasks) > 1
+
+    if planner_used:
         # 다단계 작업이면 task 리스트를 시스템 메시지에 추가
         task_list_text = "\n".join(f"{i+1}. {task}" for i, task in enumerate(tasks))
         messages.append({
@@ -317,6 +341,11 @@ def run_agent(
         "output_mode": output_mode,
         "response_language": response_language,
         "max_steps": max_steps,
+        "planner": {
+            "used": planner_used,
+            "status": planner_status,
+            "tasks": tasks,
+        },
         "tasks": tasks,
         "status": "running",
         "steps": [],

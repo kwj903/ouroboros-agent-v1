@@ -1,5 +1,8 @@
 # Ouroboros - 로컬 AI 에이전트
 
+운영 기준 문서는 `docs/` 와 루트 `AGENTS.md` 를 정본으로 사용한다.
+특히 작업 전에는 `docs/PRODUCT.md`, `docs/ARCHITECTURE.md`, `docs/CURRENT_SCOPE.md`, `docs/TASKS.md` 를 먼저 확인한다.
+
 ## 개요
 
 이 프로젝트는 메모리 관리, 작업 승인 워크플로우, CLI 인터페이스를 갖춘 파이썬 기반 로컬 AI 에이전트입니다.
@@ -32,7 +35,7 @@ free-model-test/
 │   ├── tools/
 │   │   └── workspace_tools.py  # 워크스페이스 작업 도구
 │   └── __pycache__/
-├── tests/                  # 테스트 디렉토리 (현재 비어있음)
+├── tests/                  # 기본 단위 테스트
 ├── .venv/                 # 가상 환경
 ├── pyproject.toml         # 프로젝트 구성
 ├── README.md              # 이 파일
@@ -47,23 +50,26 @@ free-model-test/
 - **의존성**: pyproject.toml 및 uv.lock을 통해 관리
 
 ### 테스트 실행
-테스트가 없는 경우 다음 명령을 사용:
+기본 검증은 `tests/` 범위에서 실행하는 것을 기준으로 한다:
 ```bash
-# 모든 테스트 실행 (있는 경우)
-python3 -m pytest tests/ -v
+# 권장: 기본 단위 테스트만 실행
+uv run pytest -q tests
 
 # 특정 테스트 이름으로 실행
-python3 -m pytest tests/ -k "test_name" -v
+uv run pytest tests/ -k "test_name" -v
 
 # 상세 출력으로 테스트 실행
-python3 -m pytest tests/ -v
+uv run pytest tests/ -v
 
 # 특정 테스트 파일 실행
-python3 -m pytest tests/test_file.py -v
+uv run pytest tests/test_file.py -v
 
 # 커버리지 포함 테스트 실행 (설정된 경우)
-python3 -m pytest --cov=app tests/
+uv run pytest --cov=app tests/
 ```
+
+주의:
+- 현재 저장소 루트에서 `uv run pytest -q` 를 바로 실행하면 `model-test-space/` 아래 실험용 스크립트까지 수집되어 실패할 수 있다.
 
 ### 린팅 및 포맷팅
 표준 Python 규칙을 사용합니다. 일반 린팅 도구는 다음과 같습니다:
@@ -81,15 +87,18 @@ flake8 .
 
 ### 코드 실행
 ```bash
-# 메인 애플리케이션 실행
-python3 main.py
-
 # CLI 실행
-ouroboros
+uv run ouroboros
 
-# 특정 모듈 실행
-python3 -m app.cli
+# CLI 모듈 직접 실행
+.venv/bin/python -m app.cli
+
+# 상태 확인
+.venv/bin/python -m app.cli doctor
 ```
+
+주의:
+- 루트의 `main.py` 는 현재 실제 앱 엔트리포인트가 아니라 단순 placeholder 출력용 파일이다.
 
 ## 코드 스타일 가이드라인
 
