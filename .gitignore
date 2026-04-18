@@ -82,3 +82,10 @@ AGENTS.md
 IMPLEMENTATION_COMPLETE.md
 IMPLEMENTATION_SUMMARY.md
 PROJECT_HANDOFF_detailed.md
+
+# =========================
+# Graphify
+# =========================
+htmlcov/
+node_modules/
+coverage/
