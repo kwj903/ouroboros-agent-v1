@@ -82,10 +82,21 @@ AGENTS.md
 IMPLEMENTATION_COMPLETE.md
 IMPLEMENTATION_SUMMARY.md
 PROJECT_HANDOFF_detailed.md
+node_modules/
 
 # =========================
 # Graphify
 # =========================
+# Graphify intermediate/state
+.graphify_*.json
+.graphify_uncached.txt
+
+# Graphify local state
+graphify-out/.graphify_*
+graphify-out/cache/
+graphify-out/memory/
+graphify-out/cost.json
+
+# optional generated outputs
 htmlcov/
-node_modules/
 coverage/
