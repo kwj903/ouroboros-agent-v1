@@ -164,7 +164,7 @@
       "source_file": "test_implementation.py",
       "source_location": "L1",
       "id": "test_implementation_py",
-      "community": 0,
+      "community": 1,
       "norm_label": "test_implementation.py"
     },
     {
@@ -173,7 +173,7 @@
       "source_file": "test_implementation.py",
       "source_location": "L50",
       "id": "test_implementation_main",
-      "community": 0,
+      "community": 1,
       "norm_label": "main()"
     },
     {
@@ -182,7 +182,7 @@
       "source_file": "main.py",
       "source_location": "L1",
       "id": "main_py",
-      "community": 0,
+      "community": 1,
       "norm_label": "main.py"
     },
     {
@@ -191,7 +191,7 @@
       "source_file": "app/main.py",
       "source_location": "L340",
       "id": "main_main",
-      "community": 0,
+      "community": 1,
       "norm_label": "main()"
     },
     {
@@ -245,7 +245,7 @@
       "source_file": "app/memory_manager.py",
       "source_location": "L1",
       "id": "app_memory_manager_py",
-      "community": 0,
+      "community": 1,
       "norm_label": "memory_manager.py"
     },
     {
@@ -254,7 +254,7 @@
       "source_file": "app/memory_manager.py",
       "source_location": "L15",
       "id": "memory_manager_parse_pending_approval",
-      "community": 0,
+      "community": 1,
       "norm_label": "_parse_pending_approval()"
     },
     {
@@ -263,7 +263,7 @@
       "source_file": "app/memory_manager.py",
       "source_location": "L32",
       "id": "memory_manager_format_records_for_summary",
-      "community": 0,
+      "community": 1,
       "norm_label": "_format_records_for_summary()"
     },
     {
@@ -272,7 +272,7 @@
       "source_file": "app/memory_manager.py",
       "source_location": "L52",
       "id": "memory_manager_build_memory_context",
-      "community": 0,
+      "community": 1,
       "norm_label": "build_memory_context()"
     },
     {
@@ -281,7 +281,7 @@
       "source_file": "app/memory_manager.py",
       "source_location": "L87",
       "id": "memory_manager_compact_history_if_needed",
-      "community": 0,
+      "community": 1,
       "norm_label": "compact_history_if_needed()"
     },
     {
@@ -290,7 +290,7 @@
       "source_file": "app/memory_manager.py",
       "source_location": "L135",
       "id": "memory_manager_update_workspace_state_from_trace",
-      "community": 0,
+      "community": 1,
       "norm_label": "update_workspace_state_from_trace()"
     },
     {
@@ -299,7 +299,7 @@
       "source_file": "app/memory_manager.py",
       "source_location": "L178",
       "id": "memory_manager_update_workspace_state_from_approval",
-      "community": 0,
+      "community": 1,
       "norm_label": "update_workspace_state_from_approval()"
     },
     {
@@ -353,7 +353,7 @@
       "source_file": "app/approvals.py",
       "source_location": "L61",
       "id": "approvals_get_action",
-      "community": 0,
+      "community": 1,
       "norm_label": "get_action()"
     },
     {
@@ -452,7 +452,7 @@
       "source_file": "app/runtime_context.py",
       "source_location": "L1",
       "id": "app_runtime_context_py",
-      "community": 0,
+      "community": 4,
       "norm_label": "runtime_context.py"
     },
     {
@@ -461,7 +461,7 @@
       "source_file": "app/runtime_context.py",
       "source_location": "L12",
       "id": "runtime_context_set_current_session_id",
-      "community": 0,
+      "community": 1,
       "norm_label": "set_current_session_id()"
     },
     {
@@ -506,7 +506,7 @@
       "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py",
       "source_location": "L1",
       "id": "users_kwj903_workspace_sandbox_free_model_test_app_tool_trace_manager_py",
-      "community": 8,
+      "community": 9,
       "norm_label": "tool_trace_manager.py"
     },
     {
@@ -515,7 +515,7 @@
       "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py",
       "source_location": "L13",
       "id": "tool_trace_manager_safe_preview",
-      "community": 8,
+      "community": 9,
       "norm_label": "_safe_preview()"
     },
     {
@@ -524,7 +524,7 @@
       "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py",
       "source_location": "L21",
       "id": "tool_trace_manager_extract_result_text",
-      "community": 8,
+      "community": 9,
       "norm_label": "_extract_result_text()"
     },
     {
@@ -533,7 +533,7 @@
       "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py",
       "source_location": "L29",
       "id": "tool_trace_manager_normalize_planner_tasks",
-      "community": 8,
+      "community": 9,
       "norm_label": "_normalize_planner_tasks()"
     },
     {
@@ -542,7 +542,7 @@
       "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py",
       "source_location": "L43",
       "id": "tool_trace_manager_build_planner_log_entry",
-      "community": 8,
+      "community": 9,
       "norm_label": "_build_planner_log_entry()"
     },
     {
@@ -551,7 +551,7 @@
       "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py",
       "source_location": "L82",
       "id": "tool_trace_manager_parse_pending_approval",
-      "community": 8,
+      "community": 9,
       "norm_label": "_parse_pending_approval()"
     },
     {
@@ -560,7 +560,7 @@
       "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py",
       "source_location": "L103",
       "id": "tool_trace_manager_classify_result_kind",
-      "community": 8,
+      "community": 9,
       "norm_label": "_classify_result_kind()"
     },
     {
@@ -569,7 +569,7 @@
       "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py",
       "source_location": "L111",
       "id": "tool_trace_manager_parse_plan_summary",
-      "community": 8,
+      "community": 9,
       "norm_label": "_parse_plan_summary()"
     },
     {
@@ -578,7 +578,7 @@
       "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py",
       "source_location": "L127",
       "id": "tool_trace_manager_build_latest_execution",
-      "community": 8,
+      "community": 9,
       "norm_label": "_build_latest_execution()"
     },
     {
@@ -587,7 +587,7 @@
       "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py",
       "source_location": "L137",
       "id": "tool_trace_manager_persist_tool_trace",
-      "community": 8,
+      "community": 9,
       "norm_label": "persist_tool_trace()"
     },
     {
@@ -596,7 +596,7 @@
       "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py",
       "source_location": "L173",
       "id": "tool_trace_manager_parse_search_notes_result",
-      "community": 8,
+      "community": 9,
       "norm_label": "_parse_search_notes_result()"
     },
     {
@@ -605,7 +605,7 @@
       "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py",
       "source_location": "L222",
       "id": "tool_trace_manager_parse_read_text_result",
-      "community": 8,
+      "community": 9,
       "norm_label": "_parse_read_text_result()"
     },
     {
@@ -614,7 +614,7 @@
       "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py",
       "source_location": "L246",
       "id": "tool_trace_manager_build_tool_panel",
-      "community": 8,
+      "community": 9,
       "norm_label": "build_tool_panel()"
     },
     {
@@ -623,7 +623,7 @@
       "source_file": "app/logger.py",
       "source_location": "L1",
       "id": "app_logger_py",
-      "community": 9,
+      "community": 8,
       "norm_label": "logger.py"
     },
     {
@@ -632,7 +632,7 @@
       "source_file": "app/logger.py",
       "source_location": "L13",
       "id": "logger_ensure_log_dir",
-      "community": 9,
+      "community": 8,
       "norm_label": "ensure_log_dir()"
     },
     {
@@ -641,7 +641,7 @@
       "source_file": "app/logger.py",
       "source_location": "L17",
       "id": "logger_utc_now_iso",
-      "community": 0,
+      "community": 1,
       "norm_label": "utc_now_iso()"
     },
     {
@@ -650,7 +650,7 @@
       "source_file": "app/logger.py",
       "source_location": "L21",
       "id": "logger_append_trace",
-      "community": 9,
+      "community": 8,
       "norm_label": "append_trace()"
     },
     {
@@ -884,7 +884,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L1",
       "id": "app_conversation_state_py",
-      "community": 0,
+      "community": 1,
       "norm_label": "conversation_state.py"
     },
     {
@@ -893,7 +893,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L16",
       "id": "conversation_state_now_local_session_prefix",
-      "community": 0,
+      "community": 1,
       "norm_label": "_now_local_session_prefix()"
     },
     {
@@ -902,7 +902,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L20",
       "id": "conversation_state_shorten",
-      "community": 0,
+      "community": 1,
       "norm_label": "_shorten()"
     },
     {
@@ -911,7 +911,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L27",
       "id": "conversation_state_generate_session_id",
-      "community": 0,
+      "community": 1,
       "norm_label": "generate_session_id()"
     },
     {
@@ -920,7 +920,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L32",
       "id": "conversation_state_sessionstate",
-      "community": 0,
+      "community": 1,
       "norm_label": "sessionstate"
     },
     {
@@ -929,7 +929,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L43",
       "id": "conversation_state_sessionstate_post_init",
-      "community": 0,
+      "community": 1,
       "norm_label": ".__post_init__()"
     },
     {
@@ -938,7 +938,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L66",
       "id": "conversation_state_sessionstate_load_meta",
-      "community": 0,
+      "community": 1,
       "norm_label": "._load_meta()"
     },
     {
@@ -947,7 +947,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L77",
       "id": "conversation_state_sessionstate_save_meta",
-      "community": 0,
+      "community": 1,
       "norm_label": "._save_meta()"
     },
     {
@@ -956,7 +956,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L83",
       "id": "conversation_state_sessionstate_touch_meta",
-      "community": 0,
+      "community": 1,
       "norm_label": ".touch_meta()"
     },
     {
@@ -965,7 +965,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L88",
       "id": "conversation_state_sessionstate_set_title_if_missing",
-      "community": 0,
+      "community": 1,
       "norm_label": ".set_title_if_missing()"
     },
     {
@@ -974,7 +974,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L101",
       "id": "conversation_state_sessionstate_set_title",
-      "community": 0,
+      "community": 1,
       "norm_label": ".set_title()"
     },
     {
@@ -983,7 +983,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L112",
       "id": "conversation_state_sessionstate_get_meta",
-      "community": 0,
+      "community": 1,
       "norm_label": ".get_meta()"
     },
     {
@@ -992,7 +992,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L115",
       "id": "conversation_state_sessionstate_read_history_records",
-      "community": 0,
+      "community": 1,
       "norm_label": ".read_history_records()"
     },
     {
@@ -1001,7 +1001,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L128",
       "id": "conversation_state_sessionstate_append_history",
-      "community": 0,
+      "community": 1,
       "norm_label": ".append_history()"
     },
     {
@@ -1010,7 +1010,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L143",
       "id": "conversation_state_sessionstate_overwrite_history",
-      "community": 0,
+      "community": 1,
       "norm_label": ".overwrite_history()"
     },
     {
@@ -1019,7 +1019,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L150",
       "id": "conversation_state_sessionstate_get_recent_history",
-      "community": 0,
+      "community": 1,
       "norm_label": ".get_recent_history()"
     },
     {
@@ -1028,7 +1028,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L161",
       "id": "conversation_state_sessionstate_load_summary",
-      "community": 0,
+      "community": 1,
       "norm_label": ".load_summary()"
     },
     {
@@ -1037,7 +1037,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L166",
       "id": "conversation_state_sessionstate_save_summary",
-      "community": 0,
+      "community": 1,
       "norm_label": ".save_summary()"
     },
     {
@@ -1046,7 +1046,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L170",
       "id": "conversation_state_sessionstate_load_workspace_state",
-      "community": 0,
+      "community": 1,
       "norm_label": ".load_workspace_state()"
     },
     {
@@ -1055,7 +1055,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L179",
       "id": "conversation_state_sessionstate_update_workspace_state",
-      "community": 0,
+      "community": 1,
       "norm_label": ".update_workspace_state()"
     },
     {
@@ -1064,7 +1064,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L192",
       "id": "conversation_state_sessionstate_append_tool_log",
-      "community": 0,
+      "community": 1,
       "norm_label": ".append_tool_log()"
     },
     {
@@ -1082,7 +1082,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L219",
       "id": "conversation_state_create_new_session",
-      "community": 0,
+      "community": 1,
       "norm_label": "create_new_session()"
     },
     {
@@ -1091,7 +1091,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L223",
       "id": "conversation_state_list_sessions",
-      "community": 0,
+      "community": 1,
       "norm_label": "list_sessions()"
     },
     {
@@ -1100,7 +1100,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L255",
       "id": "conversation_state_resolve_session_choice",
-      "community": 0,
+      "community": 1,
       "norm_label": "resolve_session_choice()"
     },
     {
@@ -1109,7 +1109,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L275",
       "id": "conversation_state_format_session_list",
-      "community": 0,
+      "community": 1,
       "norm_label": "format_session_list()"
     },
     {
@@ -1118,7 +1118,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L294",
       "id": "conversation_state_delete_session_by_id",
-      "community": 0,
+      "community": 1,
       "norm_label": "delete_session_by_id()"
     },
     {
@@ -1127,7 +1127,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L303",
       "id": "conversation_state_delete_session_choice",
-      "community": 0,
+      "community": 1,
       "norm_label": "delete_session_choice()"
     },
     {
@@ -1136,7 +1136,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L315",
       "id": "conversation_state_rename_session_by_id",
-      "community": 0,
+      "community": 1,
       "norm_label": "rename_session_by_id()"
     },
     {
@@ -1145,7 +1145,7 @@
       "source_file": "app/conversation_state.py",
       "source_location": "L324",
       "id": "conversation_state_rename_session_choice",
-      "community": 0,
+      "community": 1,
       "norm_label": "rename_session_choice()"
     },
     {
@@ -1397,7 +1397,7 @@
       "source_file": "app/eval_runner.py",
       "source_location": "L1",
       "id": "app_eval_runner_py",
-      "community": 9,
+      "community": 8,
       "norm_label": "eval_runner.py"
     },
     {
@@ -1406,7 +1406,7 @@
       "source_file": "app/eval_runner.py",
       "source_location": "L15",
       "id": "eval_runner_load_eval_cases",
-      "community": 9,
+      "community": 8,
       "norm_label": "load_eval_cases()"
     },
     {
@@ -1415,7 +1415,7 @@
       "source_file": "app/eval_runner.py",
       "source_location": "L23",
       "id": "eval_runner_extract_used_tools",
-      "community": 9,
+      "community": 8,
       "norm_label": "extract_used_tools()"
     },
     {
@@ -1424,7 +1424,7 @@
       "source_file": "app/eval_runner.py",
       "source_location": "L35",
       "id": "eval_runner_check_tool_match",
-      "community": 9,
+      "community": 8,
       "norm_label": "check_tool_match()"
     },
     {
@@ -1433,7 +1433,7 @@
       "source_file": "app/eval_runner.py",
       "source_location": "L63",
       "id": "eval_runner_check_contains",
-      "community": 9,
+      "community": 8,
       "norm_label": "check_contains()"
     },
     {
@@ -1442,7 +1442,7 @@
       "source_file": "app/eval_runner.py",
       "source_location": "L68",
       "id": "eval_runner_check_forbidden",
-      "community": 9,
+      "community": 8,
       "norm_label": "check_forbidden()"
     },
     {
@@ -1451,7 +1451,7 @@
       "source_file": "app/eval_runner.py",
       "source_location": "L73",
       "id": "eval_runner_run_single_eval",
-      "community": 9,
+      "community": 8,
       "norm_label": "run_single_eval()"
     },
     {
@@ -1460,7 +1460,7 @@
       "source_file": "app/eval_runner.py",
       "source_location": "L132",
       "id": "eval_runner_print_result",
-      "community": 9,
+      "community": 8,
       "norm_label": "print_result()"
     },
     {
@@ -1469,7 +1469,7 @@
       "source_file": "app/eval_runner.py",
       "source_location": "L157",
       "id": "eval_runner_main",
-      "community": 9,
+      "community": 8,
       "norm_label": "main()"
     },
     {
@@ -1478,7 +1478,7 @@
       "source_file": "app/eval_runner.py",
       "source_location": "L186",
       "id": "eval_runner_save_eval_run",
-      "community": 9,
+      "community": 8,
       "norm_label": "save_eval_run()"
     },
     {
@@ -1487,7 +1487,7 @@
       "source_file": "app/memory_eval_runner.py",
       "source_location": "L1",
       "id": "app_memory_eval_runner_py",
-      "community": 1,
+      "community": 0,
       "norm_label": "memory_eval_runner.py"
     },
     {
@@ -1496,7 +1496,7 @@
       "source_file": "app/memory_eval_runner.py",
       "source_location": "L29",
       "id": "memory_eval_runner_load_cases",
-      "community": 1,
+      "community": 0,
       "norm_label": "load_cases()"
     },
     {
@@ -1505,7 +1505,7 @@
       "source_file": "app/memory_eval_runner.py",
       "source_location": "L37",
       "id": "memory_eval_runner_contains_all",
-      "community": 1,
+      "community": 0,
       "norm_label": "_contains_all()"
     },
     {
@@ -1514,7 +1514,7 @@
       "source_file": "app/memory_eval_runner.py",
       "source_location": "L42",
       "id": "memory_eval_runner_contains_none",
-      "community": 1,
+      "community": 0,
       "norm_label": "_contains_none()"
     },
     {
@@ -1523,7 +1523,7 @@
       "source_file": "app/memory_eval_runner.py",
       "source_location": "L47",
       "id": "memory_eval_runner_seed_memories",
-      "community": 1,
+      "community": 0,
       "norm_label": "_seed_memories()"
     },
     {
@@ -1532,7 +1532,7 @@
       "source_file": "app/memory_eval_runner.py",
       "source_location": "L65",
       "id": "memory_eval_runner_run_search_case",
-      "community": 1,
+      "community": 0,
       "norm_label": "_run_search_case()"
     },
     {
@@ -1541,7 +1541,7 @@
       "source_file": "app/memory_eval_runner.py",
       "source_location": "L94",
       "id": "memory_eval_runner_run_update_case",
-      "community": 1,
+      "community": 0,
       "norm_label": "_run_update_case()"
     },
     {
@@ -1550,7 +1550,7 @@
       "source_file": "app/memory_eval_runner.py",
       "source_location": "L126",
       "id": "memory_eval_runner_run_delete_case",
-      "community": 1,
+      "community": 0,
       "norm_label": "_run_delete_case()"
     },
     {
@@ -1559,7 +1559,7 @@
       "source_file": "app/memory_eval_runner.py",
       "source_location": "L158",
       "id": "memory_eval_runner_run_suggest_case",
-      "community": 1,
+      "community": 0,
       "norm_label": "_run_suggest_case()"
     },
     {
@@ -1568,7 +1568,7 @@
       "source_file": "app/memory_eval_runner.py",
       "source_location": "L197",
       "id": "memory_eval_runner_run_case",
-      "community": 1,
+      "community": 0,
       "norm_label": "run_case()"
     },
     {
@@ -1577,7 +1577,7 @@
       "source_file": "app/memory_eval_runner.py",
       "source_location": "L222",
       "id": "memory_eval_runner_save_eval_run",
-      "community": 1,
+      "community": 0,
       "norm_label": "save_eval_run()"
     },
     {
@@ -1586,7 +1586,7 @@
       "source_file": "app/memory_eval_runner.py",
       "source_location": "L244",
       "id": "memory_eval_runner_print_case_result",
-      "community": 1,
+      "community": 0,
       "norm_label": "print_case_result()"
     },
     {
@@ -1595,7 +1595,7 @@
       "source_file": "app/memory_eval_runner.py",
       "source_location": "L266",
       "id": "memory_eval_runner_main",
-      "community": 1,
+      "community": 0,
       "norm_label": "main()"
     },
     {
@@ -1604,7 +1604,7 @@
       "source_file": "app/main.py",
       "source_location": "L1",
       "id": "app_main_py",
-      "community": 0,
+      "community": 1,
       "norm_label": "main.py"
     },
     {
@@ -1613,7 +1613,7 @@
       "source_file": "app/main.py",
       "source_location": "L42",
       "id": "main_extract_action_id_from_answer",
-      "community": 0,
+      "community": 1,
       "norm_label": "_extract_action_id_from_answer()"
     },
     {
@@ -1622,7 +1622,7 @@
       "source_file": "app/main.py",
       "source_location": "L50",
       "id": "main_ask_approval_and_execute",
-      "community": 0,
+      "community": 1,
       "norm_label": "_ask_approval_and_execute()"
     },
     {
@@ -1631,7 +1631,7 @@
       "source_file": "app/main.py",
       "source_location": "L63",
       "id": "main_ask_yes_no",
-      "community": 0,
+      "community": 1,
       "norm_label": "_ask_yes_no()"
     },
     {
@@ -1640,7 +1640,7 @@
       "source_file": "app/main.py",
       "source_location": "L76",
       "id": "main_get_session_for_action",
-      "community": 0,
+      "community": 1,
       "norm_label": "_get_session_for_action()"
     },
     {
@@ -1649,7 +1649,7 @@
       "source_file": "app/main.py",
       "source_location": "L88",
       "id": "main_handle_local_command",
-      "community": 0,
+      "community": 1,
       "norm_label": "_handle_local_command()"
     },
     {
@@ -1658,7 +1658,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L1",
       "id": "app_long_term_memory_py",
-      "community": 1,
+      "community": 0,
       "norm_label": "long_term_memory.py"
     },
     {
@@ -1667,7 +1667,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L22",
       "id": "long_term_memory_configure_memory_store",
-      "community": 1,
+      "community": 0,
       "norm_label": "configure_memory_store()"
     },
     {
@@ -1676,7 +1676,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L34",
       "id": "long_term_memory_reset_memory_store_config",
-      "community": 1,
+      "community": 0,
       "norm_label": "reset_memory_store_config()"
     },
     {
@@ -1685,7 +1685,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L40",
       "id": "long_term_memory_get_memory_file",
-      "community": 1,
+      "community": 0,
       "norm_label": "_get_memory_file()"
     },
     {
@@ -1694,7 +1694,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L44",
       "id": "long_term_memory_get_suggestions_file",
-      "community": 1,
+      "community": 0,
       "norm_label": "_get_suggestions_file()"
     },
     {
@@ -1703,7 +1703,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L48",
       "id": "long_term_memory_ensure_state_files",
-      "community": 1,
+      "community": 0,
       "norm_label": "_ensure_state_files()"
     },
     {
@@ -1712,7 +1712,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L61",
       "id": "long_term_memory_clear_memory_store",
-      "community": 1,
+      "community": 0,
       "norm_label": "clear_memory_store()"
     },
     {
@@ -1721,7 +1721,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L67",
       "id": "long_term_memory_tokenize",
-      "community": 1,
+      "community": 0,
       "norm_label": "_tokenize()"
     },
     {
@@ -1730,7 +1730,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L71",
       "id": "long_term_memory_load_all_memory_records",
-      "community": 1,
+      "community": 0,
       "norm_label": "_load_all_memory_records()"
     },
     {
@@ -1739,7 +1739,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L87",
       "id": "long_term_memory_write_all_memory_records",
-      "community": 1,
+      "community": 0,
       "norm_label": "_write_all_memory_records()"
     },
     {
@@ -1748,7 +1748,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L95",
       "id": "long_term_memory_append_record",
-      "community": 1,
+      "community": 0,
       "norm_label": "_append_record()"
     },
     {
@@ -1757,7 +1757,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L102",
       "id": "long_term_memory_load_suggestions",
-      "community": 1,
+      "community": 0,
       "norm_label": "_load_suggestions()"
     },
     {
@@ -1766,7 +1766,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L110",
       "id": "long_term_memory_save_suggestions",
-      "community": 1,
+      "community": 0,
       "norm_label": "_save_suggestions()"
     },
     {
@@ -1775,7 +1775,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L118",
       "id": "long_term_memory_add_memory_note",
-      "community": 1,
+      "community": 0,
       "norm_label": "add_memory_note()"
     },
     {
@@ -1784,7 +1784,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L148",
       "id": "long_term_memory_list_recent_memory_notes",
-      "community": 1,
+      "community": 0,
       "norm_label": "list_recent_memory_notes()"
     },
     {
@@ -1793,7 +1793,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L154",
       "id": "long_term_memory_get_memory_record",
-      "community": 1,
+      "community": 0,
       "norm_label": "get_memory_record()"
     },
     {
@@ -1802,7 +1802,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L162",
       "id": "long_term_memory_delete_memory_note",
-      "community": 1,
+      "community": 0,
       "norm_label": "delete_memory_note()"
     },
     {
@@ -1811,7 +1811,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L173",
       "id": "long_term_memory_update_memory_note",
-      "community": 1,
+      "community": 0,
       "norm_label": "update_memory_note()"
     },
     {
@@ -1820,7 +1820,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L212",
       "id": "long_term_memory_score_memory_record",
-      "community": 1,
+      "community": 0,
       "norm_label": "_score_memory_record()"
     },
     {
@@ -1829,7 +1829,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L258",
       "id": "long_term_memory_search_memory_records",
-      "community": 1,
+      "community": 0,
       "norm_label": "search_memory_records()"
     },
     {
@@ -1838,7 +1838,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L271",
       "id": "long_term_memory_format_memory_records",
-      "community": 1,
+      "community": 0,
       "norm_label": "format_memory_records()"
     },
     {
@@ -1847,7 +1847,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L288",
       "id": "long_term_memory_save_memory_note_tool",
-      "community": 1,
+      "community": 0,
       "norm_label": "save_memory_note_tool()"
     },
     {
@@ -1856,7 +1856,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L310",
       "id": "long_term_memory_search_memory_notes_tool",
-      "community": 1,
+      "community": 0,
       "norm_label": "search_memory_notes_tool()"
     },
     {
@@ -1865,7 +1865,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L321",
       "id": "long_term_memory_list_recent_memory_notes_tool",
-      "community": 1,
+      "community": 0,
       "norm_label": "list_recent_memory_notes_tool()"
     },
     {
@@ -1874,7 +1874,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L326",
       "id": "long_term_memory_update_memory_note_tool",
-      "community": 1,
+      "community": 0,
       "norm_label": "update_memory_note_tool()"
     },
     {
@@ -1883,7 +1883,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L353",
       "id": "long_term_memory_delete_memory_note_tool",
-      "community": 1,
+      "community": 0,
       "norm_label": "delete_memory_note_tool()"
     },
     {
@@ -1892,7 +1892,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L360",
       "id": "long_term_memory_extract_candidate_sentences",
-      "community": 1,
+      "community": 0,
       "norm_label": "_extract_candidate_sentences()"
     },
     {
@@ -1901,7 +1901,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L372",
       "id": "long_term_memory_normalize_for_similarity",
-      "community": 1,
+      "community": 0,
       "norm_label": "_normalize_for_similarity()"
     },
     {
@@ -1910,7 +1910,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L379",
       "id": "long_term_memory_token_set",
-      "community": 1,
+      "community": 0,
       "norm_label": "_token_set()"
     },
     {
@@ -1919,7 +1919,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L383",
       "id": "long_term_memory_jaccard_similarity",
-      "community": 1,
+      "community": 0,
       "norm_label": "_jaccard_similarity()"
     },
     {
@@ -1928,7 +1928,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L398",
       "id": "long_term_memory_is_low_value_assistant_sentence",
-      "community": 1,
+      "community": 0,
       "norm_label": "_is_low_value_assistant_sentence()"
     },
     {
@@ -1937,7 +1937,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L423",
       "id": "long_term_memory_infer_note_type_and_tags",
-      "community": 1,
+      "community": 0,
       "norm_label": "_infer_note_type_and_tags()"
     },
     {
@@ -1946,7 +1946,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L459",
       "id": "long_term_memory_looks_memory_worthy",
-      "community": 1,
+      "community": 0,
       "norm_label": "_looks_memory_worthy()"
     },
     {
@@ -1955,7 +1955,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L476",
       "id": "long_term_memory_trace_contains_memory_write",
-      "community": 1,
+      "community": 0,
       "norm_label": "_trace_contains_memory_write()"
     },
     {
@@ -1964,7 +1964,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L488",
       "id": "long_term_memory_generate_memory_suggestions",
-      "community": 1,
+      "community": 0,
       "norm_label": "generate_memory_suggestions()"
     },
     {
@@ -1973,7 +1973,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L618",
       "id": "long_term_memory_list_memory_suggestions",
-      "community": 1,
+      "community": 0,
       "norm_label": "list_memory_suggestions()"
     },
     {
@@ -1982,7 +1982,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L625",
       "id": "long_term_memory_format_memory_suggestions",
-      "community": 0,
+      "community": 1,
       "norm_label": "format_memory_suggestions()"
     },
     {
@@ -1991,7 +1991,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L642",
       "id": "long_term_memory_resolve_suggestion_choice",
-      "community": 1,
+      "community": 0,
       "norm_label": "_resolve_suggestion_choice()"
     },
     {
@@ -2000,7 +2000,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L661",
       "id": "long_term_memory_accept_memory_suggestion",
-      "community": 1,
+      "community": 0,
       "norm_label": "accept_memory_suggestion()"
     },
     {
@@ -2009,7 +2009,7 @@
       "source_file": "app/long_term_memory.py",
       "source_location": "L684",
       "id": "long_term_memory_dismiss_memory_suggestion",
-      "community": 1,
+      "community": 0,
       "norm_label": "dismiss_memory_suggestion()"
     },
     {
@@ -2333,7 +2333,7 @@
       "source_file": "app/tools/workspace_tools.py",
       "source_location": "L827",
       "id": "workspace_tools_reject_pending_action",
-      "community": 0,
+      "community": 1,
       "norm_label": "reject_pending_action()"
     },
     {
@@ -2468,7 +2468,7 @@
       "source_file": "app/api/services.py",
       "source_location": "L76",
       "id": "services_is_action_required",
-      "community": 0,
+      "community": 3,
       "norm_label": "_is_action_required()"
     },
     {
@@ -2486,7 +2486,7 @@
       "source_file": "app/api/services.py",
       "source_location": "L91",
       "id": "services_run_chat_turn",
-      "community": 0,
+      "community": 3,
       "norm_label": "run_chat_turn()"
     },
     {
@@ -2612,7 +2612,7 @@
       "source_file": "app/api/services.py",
       "source_location": "L269",
       "id": "services_approve_action_api",
-      "community": 0,
+      "community": 1,
       "norm_label": "approve_action_api()"
     },
     {
@@ -2621,7 +2621,7 @@
       "source_file": "app/api/services.py",
       "source_location": "L296",
       "id": "services_reject_action_api",
-      "community": 0,
+      "community": 1,
       "norm_label": "reject_action_api()"
     },
     {
@@ -2639,7 +2639,7 @@
       "source_file": "app/api/services.py",
       "source_location": "L339",
       "id": "services_get_session_workspace_state_api",
-      "community": 0,
+      "community": 1,
       "norm_label": "get_session_workspace_state_api()"
     },
     {
@@ -2756,7 +2756,7 @@
       "source_file": "app/api/main.py",
       "source_location": "L71",
       "id": "main_chat",
-      "community": 0,
+      "community": 3,
       "norm_label": "chat()"
     },
     {
@@ -2951,17 +2951,17 @@
     {
       "label": "App.tsx",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
       "source_location": "L1",
-      "id": "frontend_src_app_tsx",
+      "id": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "community": 2,
       "norm_label": "app.tsx"
     },
     {
       "label": "toggleSection()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L100",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L115",
       "id": "app_togglesection",
       "community": 2,
       "norm_label": "togglesection()"
@@ -2969,8 +2969,8 @@
     {
       "label": "handleSaveSuggestion()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L136",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L151",
       "id": "app_handlesavesuggestion",
       "community": 2,
       "norm_label": "handlesavesuggestion()"
@@ -2978,8 +2978,8 @@
     {
       "label": "handleDropSuggestion()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L146",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L161",
       "id": "app_handledropsuggestion",
       "community": 2,
       "norm_label": "handledropsuggestion()"
@@ -2987,8 +2987,8 @@
     {
       "label": "handleRenameCurrentSession()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L156",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L171",
       "id": "app_handlerenamecurrentsession",
       "community": 2,
       "norm_label": "handlerenamecurrentsession()"
@@ -2996,8 +2996,8 @@
     {
       "label": "handleDeleteCurrentSession()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L177",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L192",
       "id": "app_handledeletecurrentsession",
       "community": 2,
       "norm_label": "handledeletecurrentsession()"
@@ -3005,8 +3005,8 @@
     {
       "label": "handleCreateMemory()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L206",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L221",
       "id": "app_handlecreatememory",
       "community": 2,
       "norm_label": "handlecreatememory()"
@@ -3014,8 +3014,8 @@
     {
       "label": "handleUpdateMemory()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L240",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L255",
       "id": "app_handleupdatememory",
       "community": 2,
       "norm_label": "handleupdatememory()"
@@ -3023,8 +3023,8 @@
     {
       "label": "handleDeleteMemory()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L265",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L280",
       "id": "app_handledeletememory",
       "community": 2,
       "norm_label": "handledeletememory()"
@@ -3032,26 +3032,17 @@
     {
       "label": "refreshSessions()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L278",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L293",
       "id": "app_refreshsessions",
       "community": 2,
       "norm_label": "refreshsessions()"
     },
     {
-      "label": "refreshApprovals()",
-      "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L283",
-      "id": "app_refreshapprovals",
-      "community": 2,
-      "norm_label": "refreshapprovals()"
-    },
-    {
       "label": "refreshMemories()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L288",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L298",
       "id": "app_refreshmemories",
       "community": 2,
       "norm_label": "refreshmemories()"
@@ -3059,53 +3050,71 @@
     {
       "label": "refreshMemorySuggestions()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L293",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L303",
       "id": "app_refreshmemorysuggestions",
       "community": 2,
       "norm_label": "refreshmemorysuggestions()"
     },
     {
-      "label": "refreshWorkspaceState()",
+      "label": "loadSessionSnapshot()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L298",
-      "id": "app_refreshworkspacestate",
-      "community": 2,
-      "norm_label": "refreshworkspacestate()"
-    },
-    {
-      "label": "refreshToolLogs()",
-      "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
       "source_location": "L308",
-      "id": "app_refreshtoollogs",
+      "id": "app_loadsessionsnapshot",
       "community": 2,
-      "norm_label": "refreshtoollogs()"
+      "norm_label": "loadsessionsnapshot()"
     },
     {
-      "label": "refreshToolPanel()",
+      "label": "applySessionSnapshot()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L318",
-      "id": "app_refreshtoolpanel",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L327",
+      "id": "app_applysessionsnapshot",
       "community": 2,
-      "norm_label": "refreshtoolpanel()"
+      "norm_label": "applysessionsnapshot()"
     },
     {
-      "label": "refreshRightSidebar()",
+      "label": "clearSessionSnapshot()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L328",
-      "id": "app_refreshrightsidebar",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L341",
+      "id": "app_clearsessionsnapshot",
       "community": 2,
-      "norm_label": "refreshrightsidebar()"
+      "norm_label": "clearsessionsnapshot()"
+    },
+    {
+      "label": "applyExecutionState()",
+      "file_type": "code",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L348",
+      "id": "app_applyexecutionstate",
+      "community": 2,
+      "norm_label": "applyexecutionstate()"
+    },
+    {
+      "label": "refreshExecutionState()",
+      "file_type": "code",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L363",
+      "id": "app_refreshexecutionstate",
+      "community": 2,
+      "norm_label": "refreshexecutionstate()"
+    },
+    {
+      "label": "refreshGlobalSidebarState()",
+      "file_type": "code",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L395",
+      "id": "app_refreshglobalsidebarstate",
+      "community": 2,
+      "norm_label": "refreshglobalsidebarstate()"
     },
     {
       "label": "refreshSessionView()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L339",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L399",
       "id": "app_refreshsessionview",
       "community": 2,
       "norm_label": "refreshsessionview()"
@@ -3113,8 +3122,8 @@
     {
       "label": "handleManualSync()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L364",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L423",
       "id": "app_handlemanualsync",
       "community": 2,
       "norm_label": "handlemanualsync()"
@@ -3122,8 +3131,8 @@
     {
       "label": "bootstrap()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L376",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L435",
       "id": "app_bootstrap",
       "community": 2,
       "norm_label": "bootstrap()"
@@ -3131,8 +3140,8 @@
     {
       "label": "handleCreateSession()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L437",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L486",
       "id": "app_handlecreatesession",
       "community": 2,
       "norm_label": "handlecreatesession()"
@@ -3140,8 +3149,8 @@
     {
       "label": "handleSelectSession()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L448",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L497",
       "id": "app_handleselectsession",
       "community": 2,
       "norm_label": "handleselectsession()"
@@ -3149,8 +3158,8 @@
     {
       "label": "handleSend()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L458",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L507",
       "id": "app_handlesend",
       "community": 2,
       "norm_label": "handlesend()"
@@ -3158,8 +3167,8 @@
     {
       "label": "handleApprove()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L491",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L540",
       "id": "app_handleapprove",
       "community": 2,
       "norm_label": "handleapprove()"
@@ -3167,8 +3176,8 @@
     {
       "label": "handleReject()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L507",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L556",
       "id": "app_handlereject",
       "community": 2,
       "norm_label": "handlereject()"
@@ -3176,8 +3185,8 @@
     {
       "label": "handleComposerKeyDown()",
       "file_type": "code",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L523",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L572",
       "id": "app_handlecomposerkeydown",
       "community": 2,
       "norm_label": "handlecomposerkeydown()"
@@ -3791,7 +3800,7 @@
       "source_file": "tests/test_memory.py",
       "source_location": "L1",
       "id": "tests_test_memory_py",
-      "community": 1,
+      "community": 0,
       "norm_label": "test_memory.py"
     },
     {
@@ -3800,7 +3809,7 @@
       "source_file": "tests/test_memory.py",
       "source_location": "L6",
       "id": "test_memory_test_save_memory_note_tool",
-      "community": 1,
+      "community": 0,
       "norm_label": "test_save_memory_note_tool()"
     },
     {
@@ -3809,7 +3818,7 @@
       "source_file": "tests/test_memory.py",
       "source_location": "L15",
       "id": "test_memory_test_search_memory_notes_tool",
-      "community": 1,
+      "community": 0,
       "norm_label": "test_search_memory_notes_tool()"
     },
     {
@@ -4029,7 +4038,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 32,
+      "community": 33,
       "norm_label": "svg icon sprite",
       "id": "icons_icon_sprite"
     },
@@ -4068,7 +4077,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 33,
+      "community": 32,
       "norm_label": "documentation icon",
       "id": "icons_documentation_icon"
     },
@@ -4094,7 +4103,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 33,
+      "community": 32,
       "norm_label": "social icon",
       "id": "icons_social_icon"
     },
@@ -4133,7 +4142,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 33,
+      "community": 32,
       "norm_label": "purple outline style",
       "id": "icons_purple_outline_style"
     },
@@ -4146,7 +4155,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 32,
+      "community": 33,
       "norm_label": "svg symbol sprite pattern",
       "id": "icons_svg_symbol_sprite_pattern"
     },
@@ -4159,7 +4168,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 32,
+      "community": 33,
       "norm_label": "frontend icon reuse",
       "id": "icons_frontend_icon_reuse"
     },
@@ -13922,308 +13931,320 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L100",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L115",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_togglesection",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_togglesection",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L136",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L151",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handlesavesuggestion",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handlesavesuggestion",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L146",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L161",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handledropsuggestion",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handledropsuggestion",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L156",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L171",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handlerenamecurrentsession",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handlerenamecurrentsession",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L177",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L192",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handledeletecurrentsession",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handledeletecurrentsession",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L206",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L221",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handlecreatememory",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handlecreatememory",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L240",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L255",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handleupdatememory",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handleupdatememory",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L265",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L280",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handledeletememory",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handledeletememory",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L278",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L293",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_refreshsessions",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_refreshsessions",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L283",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L298",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
-      "_tgt": "app_refreshapprovals",
-      "source": "frontend_src_app_tsx",
-      "target": "app_refreshapprovals",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L288",
-      "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_refreshmemories",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_refreshmemories",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L293",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L303",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_refreshmemorysuggestions",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_refreshmemorysuggestions",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L298",
-      "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
-      "_tgt": "app_refreshworkspacestate",
-      "source": "frontend_src_app_tsx",
-      "target": "app_refreshworkspacestate",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
       "source_location": "L308",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
-      "_tgt": "app_refreshtoollogs",
-      "source": "frontend_src_app_tsx",
-      "target": "app_refreshtoollogs",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
+      "_tgt": "app_loadsessionsnapshot",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
+      "target": "app_loadsessionsnapshot",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L318",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L327",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
-      "_tgt": "app_refreshtoolpanel",
-      "source": "frontend_src_app_tsx",
-      "target": "app_refreshtoolpanel",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
+      "_tgt": "app_applysessionsnapshot",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
+      "target": "app_applysessionsnapshot",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L328",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L341",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
-      "_tgt": "app_refreshrightsidebar",
-      "source": "frontend_src_app_tsx",
-      "target": "app_refreshrightsidebar",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
+      "_tgt": "app_clearsessionsnapshot",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
+      "target": "app_clearsessionsnapshot",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L339",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L348",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
+      "_tgt": "app_applyexecutionstate",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
+      "target": "app_applyexecutionstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L363",
+      "weight": 1.0,
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
+      "_tgt": "app_refreshexecutionstate",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
+      "target": "app_refreshexecutionstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L395",
+      "weight": 1.0,
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
+      "_tgt": "app_refreshglobalsidebarstate",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
+      "target": "app_refreshglobalsidebarstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L399",
+      "weight": 1.0,
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_refreshsessionview",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_refreshsessionview",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L364",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L423",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handlemanualsync",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handlemanualsync",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L376",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L435",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_bootstrap",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_bootstrap",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L437",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L486",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handlecreatesession",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handlecreatesession",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L448",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L497",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handleselectsession",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handleselectsession",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L458",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L507",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handlesend",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handlesend",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L491",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L540",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handleapprove",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handleapprove",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L507",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L556",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handlereject",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handlereject",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L523",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L572",
       "weight": 1.0,
-      "_src": "frontend_src_app_tsx",
+      "_src": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "_tgt": "app_handlecomposerkeydown",
-      "source": "frontend_src_app_tsx",
+      "source": "users_kwj903_workspace_sandbox_free_model_test_frontend_src_app_tsx",
       "target": "app_handlecomposerkeydown",
       "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L140",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L155",
       "weight": 1.0,
       "_src": "app_handlesavesuggestion",
       "_tgt": "app_refreshmemories",
@@ -14234,8 +14255,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L140",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L155",
       "weight": 1.0,
       "_src": "app_handlesavesuggestion",
       "_tgt": "app_refreshmemorysuggestions",
@@ -14258,8 +14279,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L150",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L165",
       "weight": 1.0,
       "_src": "app_handledropsuggestion",
       "_tgt": "app_refreshmemorysuggestions",
@@ -14282,8 +14303,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L171",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L186",
       "weight": 1.0,
       "_src": "app_handlerenamecurrentsession",
       "_tgt": "app_refreshsessions",
@@ -14306,8 +14327,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L196",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L211",
       "weight": 1.0,
       "_src": "app_handledeletecurrentsession",
       "_tgt": "app_refreshsessionview",
@@ -14342,8 +14363,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L234",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L249",
       "weight": 1.0,
       "_src": "app_handlecreatememory",
       "_tgt": "app_refreshmemories",
@@ -14366,8 +14387,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L259",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L274",
       "weight": 1.0,
       "_src": "app_handleupdatememory",
       "_tgt": "app_refreshmemories",
@@ -14390,8 +14411,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L272",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L287",
       "weight": 1.0,
       "_src": "app_handledeletememory",
       "_tgt": "app_refreshmemories",
@@ -14414,8 +14435,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L347",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L406",
       "weight": 1.0,
       "_src": "app_refreshsessionview",
       "_tgt": "app_refreshsessions",
@@ -14438,61 +14459,13 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L330",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L396",
       "weight": 1.0,
-      "_src": "app_refreshrightsidebar",
-      "_tgt": "app_refreshapprovals",
-      "source": "app_refreshapprovals",
-      "target": "app_refreshrightsidebar",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L348",
-      "weight": 1.0,
-      "_src": "app_refreshsessionview",
-      "_tgt": "app_refreshapprovals",
-      "source": "app_refreshapprovals",
-      "target": "app_refreshsessionview",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L284",
-      "weight": 1.0,
-      "_src": "app_refreshapprovals",
-      "_tgt": "api_fetchapprovals",
-      "source": "app_refreshapprovals",
-      "target": "api_fetchapprovals"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L331",
-      "weight": 1.0,
-      "_src": "app_refreshrightsidebar",
+      "_src": "app_refreshglobalsidebarstate",
       "_tgt": "app_refreshmemories",
       "source": "app_refreshmemories",
-      "target": "app_refreshrightsidebar",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L349",
-      "weight": 1.0,
-      "_src": "app_refreshsessionview",
-      "_tgt": "app_refreshmemories",
-      "source": "app_refreshmemories",
-      "target": "app_refreshsessionview",
+      "target": "app_refreshglobalsidebarstate",
       "confidence_score": 1.0
     },
     {
@@ -14510,25 +14483,13 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L332",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L396",
       "weight": 1.0,
-      "_src": "app_refreshrightsidebar",
+      "_src": "app_refreshglobalsidebarstate",
       "_tgt": "app_refreshmemorysuggestions",
       "source": "app_refreshmemorysuggestions",
-      "target": "app_refreshrightsidebar",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L350",
-      "weight": 1.0,
-      "_src": "app_refreshsessionview",
-      "_tgt": "app_refreshmemorysuggestions",
-      "source": "app_refreshmemorysuggestions",
-      "target": "app_refreshsessionview",
+      "target": "app_refreshglobalsidebarstate",
       "confidence_score": 1.0
     },
     {
@@ -14546,116 +14507,236 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L333",
-      "weight": 1.0,
-      "_src": "app_refreshrightsidebar",
-      "_tgt": "app_refreshworkspacestate",
-      "source": "app_refreshworkspacestate",
-      "target": "app_refreshrightsidebar",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L304",
-      "weight": 1.0,
-      "_src": "app_refreshworkspacestate",
-      "_tgt": "api_fetchsessionworkspacestate",
-      "source": "app_refreshworkspacestate",
-      "target": "api_fetchsessionworkspacestate"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L334",
-      "weight": 1.0,
-      "_src": "app_refreshrightsidebar",
-      "_tgt": "app_refreshtoollogs",
-      "source": "app_refreshtoollogs",
-      "target": "app_refreshrightsidebar",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L314",
-      "weight": 1.0,
-      "_src": "app_refreshtoollogs",
-      "_tgt": "api_fetchsessiontoollogs",
-      "source": "app_refreshtoollogs",
-      "target": "api_fetchsessiontoollogs"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L335",
-      "weight": 1.0,
-      "_src": "app_refreshrightsidebar",
-      "_tgt": "app_refreshtoolpanel",
-      "source": "app_refreshtoolpanel",
-      "target": "app_refreshrightsidebar",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L324",
-      "weight": 1.0,
-      "_src": "app_refreshtoolpanel",
-      "_tgt": "api_fetchsessiontoolpanel",
-      "source": "app_refreshtoolpanel",
-      "target": "api_fetchsessiontoolpanel"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L358",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L414",
       "weight": 1.0,
       "_src": "app_refreshsessionview",
-      "_tgt": "app_refreshrightsidebar",
-      "source": "app_refreshrightsidebar",
+      "_tgt": "app_loadsessionsnapshot",
+      "source": "app_loadsessionsnapshot",
       "target": "app_refreshsessionview",
       "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L500",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L462",
+      "weight": 1.0,
+      "_src": "app_bootstrap",
+      "_tgt": "app_loadsessionsnapshot",
+      "source": "app_loadsessionsnapshot",
+      "target": "app_bootstrap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L313",
+      "weight": 1.0,
+      "_src": "app_loadsessionsnapshot",
+      "_tgt": "api_fetchsessionhistory",
+      "source": "app_loadsessionsnapshot",
+      "target": "api_fetchsessionhistory"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L314",
+      "weight": 1.0,
+      "_src": "app_loadsessionsnapshot",
+      "_tgt": "api_fetchsessionworkspacestate",
+      "source": "app_loadsessionsnapshot",
+      "target": "api_fetchsessionworkspacestate"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L315",
+      "weight": 1.0,
+      "_src": "app_loadsessionsnapshot",
+      "_tgt": "api_fetchsessiontoollogs",
+      "source": "app_loadsessionsnapshot",
+      "target": "api_fetchsessiontoollogs"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L316",
+      "weight": 1.0,
+      "_src": "app_loadsessionsnapshot",
+      "_tgt": "api_fetchsessiontoolpanel",
+      "source": "app_loadsessionsnapshot",
+      "target": "api_fetchsessiontoolpanel"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L419",
+      "weight": 1.0,
+      "_src": "app_refreshsessionview",
+      "_tgt": "app_applysessionsnapshot",
+      "source": "app_applysessionsnapshot",
+      "target": "app_refreshsessionview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L463",
+      "weight": 1.0,
+      "_src": "app_bootstrap",
+      "_tgt": "app_applysessionsnapshot",
+      "source": "app_applysessionsnapshot",
+      "target": "app_bootstrap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L403",
+      "weight": 1.0,
+      "_src": "app_refreshsessionview",
+      "_tgt": "app_clearsessionsnapshot",
+      "source": "app_clearsessionsnapshot",
+      "target": "app_refreshsessionview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L454",
+      "weight": 1.0,
+      "_src": "app_bootstrap",
+      "_tgt": "app_clearsessionsnapshot",
+      "source": "app_clearsessionsnapshot",
+      "target": "app_bootstrap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L387",
+      "weight": 1.0,
+      "_src": "app_refreshexecutionstate",
+      "_tgt": "app_applyexecutionstate",
+      "source": "app_applyexecutionstate",
+      "target": "app_refreshexecutionstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L407",
+      "weight": 1.0,
+      "_src": "app_refreshsessionview",
+      "_tgt": "app_refreshexecutionstate",
+      "source": "app_refreshexecutionstate",
+      "target": "app_refreshsessionview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L549",
       "weight": 1.0,
       "_src": "app_handleapprove",
-      "_tgt": "app_refreshrightsidebar",
-      "source": "app_refreshrightsidebar",
+      "_tgt": "app_refreshexecutionstate",
+      "source": "app_refreshexecutionstate",
       "target": "app_handleapprove",
       "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L516",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L565",
       "weight": 1.0,
       "_src": "app_handlereject",
-      "_tgt": "app_refreshrightsidebar",
-      "source": "app_refreshrightsidebar",
+      "_tgt": "app_refreshexecutionstate",
+      "source": "app_refreshexecutionstate",
       "target": "app_handlereject",
       "confidence_score": 1.0
     },
     {
       "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L369",
+      "weight": 1.0,
+      "_src": "app_refreshexecutionstate",
+      "_tgt": "api_fetchapprovals",
+      "source": "app_refreshexecutionstate",
+      "target": "api_fetchapprovals"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L373",
+      "weight": 1.0,
+      "_src": "app_refreshexecutionstate",
+      "_tgt": "api_fetchsessionworkspacestate",
+      "source": "app_refreshexecutionstate",
+      "target": "api_fetchsessionworkspacestate"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L378",
+      "weight": 1.0,
+      "_src": "app_refreshexecutionstate",
+      "_tgt": "api_fetchsessiontoollogs",
+      "source": "app_refreshexecutionstate",
+      "target": "api_fetchsessiontoollogs"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L383",
+      "weight": 1.0,
+      "_src": "app_refreshexecutionstate",
+      "_tgt": "api_fetchsessiontoolpanel",
+      "source": "app_refreshexecutionstate",
+      "target": "api_fetchsessiontoolpanel"
+    },
+    {
+      "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L368",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L408",
+      "weight": 1.0,
+      "_src": "app_refreshsessionview",
+      "_tgt": "app_refreshglobalsidebarstate",
+      "source": "app_refreshglobalsidebarstate",
+      "target": "app_refreshsessionview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L427",
       "weight": 1.0,
       "_src": "app_handlemanualsync",
       "_tgt": "app_refreshsessionview",
@@ -14666,8 +14747,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L442",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L491",
       "weight": 1.0,
       "_src": "app_handlecreatesession",
       "_tgt": "app_refreshsessionview",
@@ -14678,8 +14759,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L452",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L501",
       "weight": 1.0,
       "_src": "app_handleselectsession",
       "_tgt": "app_refreshsessionview",
@@ -14690,8 +14771,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L482",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L531",
       "weight": 1.0,
       "_src": "app_handlesend",
       "_tgt": "app_refreshsessionview",
@@ -14702,8 +14783,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L498",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L547",
       "weight": 1.0,
       "_src": "app_handleapprove",
       "_tgt": "app_refreshsessionview",
@@ -14714,8 +14795,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L514",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L563",
       "weight": 1.0,
       "_src": "app_handlereject",
       "_tgt": "app_refreshsessionview",
@@ -14846,8 +14927,8 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.tsx",
-      "source_location": "L526",
+      "source_file": "/Users/kwj903/workspace/sandbox/free-model-test/frontend/src/App.tsx",
+      "source_location": "L575",
       "weight": 1.0,
       "_src": "app_handlecomposerkeydown",
       "_tgt": "app_handlesend",

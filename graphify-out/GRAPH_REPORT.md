@@ -1,12 +1,12 @@
 # Graph Report - /Users/kwj903/workspace/sandbox/free-model-test  (2026-04-19)
 
 ## Corpus Check
-- 55 files · ~179,168 words
+- 55 files · ~179,780 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 531 nodes · 989 edges · 61 communities detected
-- Extraction: 76% EXTRACTED · 24% INFERRED · 0% AMBIGUOUS · INFERRED: 239 edges (avg confidence: 0.81)
+- 532 nodes · 995 edges · 61 communities detected
+- Extraction: 75% EXTRACTED · 24% INFERRED · 0% AMBIGUOUS · INFERRED: 243 edges (avg confidence: 0.81)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -80,8 +80,8 @@
 5. `utc_now_iso()` - 17 edges
 6. `main()` - 16 edges
 7. `run_chat_turn()` - 15 edges
-8. `generate_memory_suggestions()` - 14 edges
-9. `refreshSessionView()` - 14 edges
+8. `refreshSessionView()` - 15 edges
+9. `generate_memory_suggestions()` - 14 edges
 10. `execute_pending_action()` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
@@ -113,22 +113,22 @@
 
 ### Community 0 - "Community 0"
 Cohesion: 0.09
-Nodes (36): get_action(), create_new_session(), delete_session_by_id(), delete_session_choice(), format_session_list(), generate_session_id(), list_sessions(), _now_local_session_prefix() (+28 more)
+Nodes (52): accept_memory_suggestion(), add_memory_note(), _append_record(), clear_memory_store(), configure_memory_store(), delete_memory_note(), delete_memory_note_tool(), dismiss_memory_suggestion() (+44 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.09
-Nodes (52): accept_memory_suggestion(), add_memory_note(), _append_record(), clear_memory_store(), configure_memory_store(), delete_memory_note(), delete_memory_note_tool(), dismiss_memory_suggestion() (+44 more)
+Nodes (33): get_action(), create_new_session(), delete_session_by_id(), delete_session_choice(), format_session_list(), generate_session_id(), list_sessions(), _now_local_session_prefix() (+25 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.11
-Nodes (44): approveAction(), createMemory(), createSession(), deleteMemory(), deleteSession(), dropMemorySuggestion(), fetchApprovals(), fetchMemories() (+36 more)
+Nodes (45): approveAction(), createMemory(), createSession(), deleteMemory(), deleteSession(), dropMemorySuggestion(), fetchApprovals(), fetchMemories() (+37 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.06
-Nodes (37): approve_action(), create_memory(), create_session(), delete_memory(), delete_session(), drop_memory_suggestion(), get_session_history(), get_session_tool_logs() (+29 more)
+Nodes (40): approve_action(), chat(), create_memory(), create_session(), delete_memory(), delete_session(), drop_memory_suggestion(), get_session_history() (+32 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.13
+Cohesion: 0.12
 Nodes (39): create_pending_action(), _ensure_state_dir(), list_pending_actions(), _load_state(), mark_executed(), mark_failed(), mark_rejected(), _save_state() (+31 more)
 
 ### Community 5 - "Community 5"
@@ -144,12 +144,12 @@ Cohesion: 0.32
 Nodes (14): build_parser(), cmd_api(), cmd_doctor(), cmd_frontend_build(), cmd_tui(), cmd_web(), _frontend_dev_url(), _frontend_dir() (+6 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.33
-Nodes (12): _build_latest_execution(), _build_planner_log_entry(), build_tool_panel(), _classify_result_kind(), _extract_result_text(), _normalize_planner_tasks(), _parse_pending_approval(), _parse_plan_summary() (+4 more)
-
-### Community 9 - "Community 9"
 Cohesion: 0.27
 Nodes (11): check_contains(), check_forbidden(), check_tool_match(), extract_used_tools(), load_eval_cases(), main(), print_result(), run_single_eval() (+3 more)
+
+### Community 9 - "Community 9"
+Cohesion: 0.33
+Nodes (12): _build_latest_execution(), _build_planner_log_entry(), build_tool_panel(), _classify_result_kind(), _extract_result_text(), _normalize_planner_tasks(), _parse_pending_approval(), _parse_plan_summary() (+4 more)
 
 ### Community 10 - "Community 10"
 Cohesion: 0.2
@@ -241,11 +241,11 @@ Nodes (0):
 
 ### Community 32 - "Community 32"
 Cohesion: 0.67
-Nodes (3): Frontend Icon Reuse, SVG Icon Sprite, SVG Symbol Sprite Pattern
+Nodes (3): Documentation Icon, Purple Outline Style, Social Icon
 
 ### Community 33 - "Community 33"
 Cohesion: 0.67
-Nodes (3): Documentation Icon, Purple Outline Style, Social Icon
+Nodes (3): Frontend Icon Reuse, SVG Icon Sprite, SVG Symbol Sprite Pattern
 
 ### Community 34 - "Community 34"
 Cohesion: 0.67
@@ -416,11 +416,11 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **What is the exact relationship between `18-Tool Baseline` and `Four-Tool Exposure Description`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `run_agent()` connect `Community 5` to `Community 0`, `Community 9`?**
-  _High betweenness centrality (0.060) - this node is a cross-community bridge._
-- **Why does `_handle_local_command()` connect `Community 0` to `Community 1`, `Community 3`, `Community 4`?**
+- **Why does `run_agent()` connect `Community 5` to `Community 8`, `Community 1`, `Community 3`?**
+  _High betweenness centrality (0.059) - this node is a cross-community bridge._
+- **Why does `_handle_local_command()` connect `Community 1` to `Community 0`, `Community 3`, `Community 4`?**
   _High betweenness centrality (0.055) - this node is a cross-community bridge._
-- **Why does `utc_now_iso()` connect `Community 0` to `Community 1`, `Community 4`, `Community 5`, `Community 8`, `Community 9`?**
+- **Why does `utc_now_iso()` connect `Community 1` to `Community 0`, `Community 4`, `Community 5`, `Community 8`, `Community 9`?**
   _High betweenness centrality (0.050) - this node is a cross-community bridge._
 - **Are the 9 inferred relationships involving `SessionState` (e.g. with `_get_session_for_action()` and `_handle_local_command()`) actually correct?**
   _`SessionState` has 9 INFERRED edges - model-reasoned connections that need verification._
