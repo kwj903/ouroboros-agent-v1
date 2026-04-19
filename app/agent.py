@@ -9,6 +9,55 @@ from app.model import create_response
 from app.tool_registry import TOOLS, TOOL_SCHEMAS
 
 
+_EXPLICIT_PLANNING_PATTERNS = (
+    r"계획\s*(을|를)?\s*(세워|짜|만들|정리)",
+    r"단계별",
+    r"작업\s*(을|를)?\s*(나눠|분해|쪼개)",
+    r"태스크\s*(로|를)?\s*(나눠|분해|정리)",
+    r"\b(step by step|make a plan|create a plan|break down|task list)\b",
+)
+
+_SEQUENCE_MARKERS = (
+    "그 다음",
+    "다음으로",
+    "그리고 나서",
+    "한 뒤",
+    "한 다음",
+    "후에",
+    "이후",
+    "읽고",
+    "찾고",
+    "분석하고",
+    "분석해서",
+    "검토하고",
+    "검토해서",
+    "수정하고",
+    "수정해서",
+    "작성하고",
+    "작성해서",
+    "정리하고",
+    "정리해서",
+    "저장하고",
+    "저장해서",
+    "실행하고",
+    "테스트하고",
+    " and then ",
+    " then ",
+    " after ",
+    " before ",
+)
+
+_ACTION_CATEGORY_PATTERNS = (
+    ("read", (r"읽", r"확인", r"살펴", r"조회", r"\b(read|inspect|check|list)\b")),
+    ("search", (r"검색", r"찾", r"\b(search|find)\b")),
+    ("analyze", (r"분석", r"검토", r"평가", r"파악", r"\b(analy[sz]e|review|audit)\b")),
+    ("write", (r"작성", r"저장", r"생성", r"만들", r"추가", r"수정", r"변경", r"\b(write|save|create|update|edit|modify)\b")),
+    ("delete", (r"삭제", r"제거", r"\b(delete|remove)\b")),
+    ("test", (r"테스트", r"검증", r"빌드", r"실행", r"\b(test|verify|build|run)\b")),
+    ("summarize", (r"요약", r"정리", r"문서화", r"\b(summari[sz]e|document)\b")),
+)
+
+
 def _normalize_planner_tasks(tasks: list[str]) -> list[str]:
     normalized: list[str] = []
     seen: set[str] = set()
@@ -25,6 +74,57 @@ def _normalize_planner_tasks(tasks: list[str]) -> list[str]:
         seen.add(cleaned)
 
     return normalized
+
+
+def _matches_any(text: str, patterns: tuple[str, ...]) -> bool:
+    return any(re.search(pattern, text, flags=re.IGNORECASE) for pattern in patterns)
+
+
+def _count_action_categories(text: str) -> int:
+    return sum(
+        1
+        for _, patterns in _ACTION_CATEGORY_PATTERNS
+        if _matches_any(text, patterns)
+    )
+
+
+def _has_multiple_instruction_lines(user_input: str) -> bool:
+    meaningful_lines = [
+        line.strip(" \t-0123456789.)")
+        for line in user_input.splitlines()
+        if line.strip(" \t-0123456789.)")
+    ]
+    if len(meaningful_lines) < 2:
+        return False
+    return sum(1 for line in meaningful_lines if _count_action_categories(line) > 0) >= 2
+
+
+def should_plan_request(user_input: str) -> bool:
+    """복합/다단계 요청에서만 planner LLM 호출을 사용한다."""
+    text = " ".join(user_input.split())
+    if not text:
+        return False
+
+    if _matches_any(text, _EXPLICIT_PLANNING_PATTERNS):
+        return True
+
+    action_category_count = _count_action_categories(text)
+    if _has_multiple_instruction_lines(user_input) and action_category_count >= 2:
+        return True
+
+    lower_text = f" {text.lower()} "
+    sequence_marker_count = sum(1 for marker in _SEQUENCE_MARKERS if marker in lower_text)
+
+    if sequence_marker_count >= 1 and action_category_count >= 2:
+        return True
+    if sequence_marker_count >= 2 and action_category_count >= 1:
+        return True
+    if action_category_count >= 3:
+        return True
+    if len(text) >= 120 and action_category_count >= 2:
+        return True
+
+    return False
 
 
 def plan_tasks(
@@ -323,9 +423,15 @@ def run_agent(
 
     messages.append({"role": "user", "content": user_input})
 
-    # Planning 단계: 복잡한 요청을 task로 분해
-    tasks, planner_status = plan_tasks(user_input, memory_context)
+    # Planning 단계: 복잡한 요청만 task로 분해한다.
+    if should_plan_request(user_input):
+        tasks, planner_status = plan_tasks(user_input, memory_context)
+    else:
+        tasks, planner_status = [], "skipped"
+
     planner_used = planner_status == "planned" and len(tasks) > 1
+    if planner_status == "planned" and not planner_used:
+        planner_status = "planned_single"
 
     if planner_used:
         # 다단계 작업이면 task 리스트를 시스템 메시지에 추가

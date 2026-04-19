@@ -47,6 +47,10 @@ def _build_planner_log_entry(planner: dict[str, Any]) -> dict[str, Any]:
 
     if used and tasks:
         preview = f"계획 생성 완료 · {len(tasks)}단계"
+    elif status == "skipped":
+        preview = "계획 없이 직접 실행"
+    elif status == "planned_single":
+        preview = "단일 단계로 직접 실행"
     elif status == "fallback":
         preview = "계획 요약 없이 직접 실행"
     else:

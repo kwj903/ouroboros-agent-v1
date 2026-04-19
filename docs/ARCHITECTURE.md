@@ -22,7 +22,9 @@
 ### Agent Core
 - `app/agent.py`
   - system prompt 구성
+  - 조건부 planner 호출 판단 (`should_plan_request`)
   - planning helper (`plan_tasks`)
+  - planner 결과 정규화와 trace metadata 생성
   - model 호출 루프
   - tool dispatch
   - pending approval 감지
@@ -68,6 +70,14 @@
   - chat/session/memory/approval/tool panel orchestration
 - `app/api/schemas.py`
   - request/response schema
+- `frontend/src/App.tsx`
+  - Web client 의 상위 상태 container
+  - session snapshot 로딩과 적용
+  - execution state 와 global sidebar state 갱신 분리
+  - polling 범위 조정
+- `frontend/src/components/*`
+  - session, chat, operations sidebar 렌더링
+  - 현재 App orchestration slice 에서는 component props contract 를 변경하지 않았다.
 
 ### CLI Adapter
 - `app/cli.py`
@@ -82,6 +92,7 @@
 - `app/tool_trace_manager.py`
   - 세션별 tool log 저장
   - tool panel 용 데이터 파생
+  - planner / latest execution / pending approval 요약 파생
 - `app/eval_runner.py`
   - 일반 tool-calling eval
 - `app/memory_eval_runner.py`
@@ -119,12 +130,16 @@
 현재 흐름은 아래와 같다.
 1. `tool_registry.py` 가 툴 함수와 JSON schema 를 등록한다.
 2. `EXPOSED_TOOL_NAMES` 로 현재 모델에 보여줄 툴 집합을 제한한다.
-3. `agent.py` 가 `create_response(..., tools=TOOL_SCHEMAS)` 를 호출한다.
-4. model 이 tool call 을 반환하면 `agent.py` 가 registry 에서 Python 함수를 찾는다.
-5. 함수 실행 결과가 일반 문자열이면 다음 model step 에 tool result 로 전달된다.
-6. 결과가 `__PENDING_APPROVAL__` 형식이면 agent는 `awaiting_approval` 로 종료한다.
-7. 승인/거부는 `approvals.py` 와 `workspace_tools.py` 의 실행 함수가 처리한다.
-8. 결과는 history, workspace state, tool trace 에 반영된다.
+3. `agent.py` 가 `should_plan_request()` 로 planner 필요 여부를 판단한다.
+4. 복합/다단계 요청이면 `plan_tasks()` 를 호출하고, 단순 요청이나 단일 작업이면 `planner.status="skipped"` 로 직접 실행한다.
+5. planner 결과는 정규화되어 `trace_record["planner"]` 에 metadata 로 남는다.
+6. `agent.py` 가 `create_response(..., tools=TOOL_SCHEMAS)` 를 호출한다.
+7. model 이 tool call 을 반환하면 `agent.py` 가 registry 에서 Python 함수를 찾는다.
+8. 함수 실행 결과가 일반 문자열이면 다음 model step 에 tool result 로 전달된다.
+9. 결과가 `__PENDING_APPROVAL__` 형식이면 agent는 `awaiting_approval` 로 종료한다.
+10. 승인/거부는 `approvals.py` 와 `workspace_tools.py` 의 실행 함수가 처리한다.
+11. 결과는 history, workspace state, tool trace 에 반영된다.
+12. `tool_trace_manager.py` 는 planner metadata 를 `__planner__` synthetic log 로 남기고, tool panel 에 `plan_summary`, `latest_execution`, `pending_approval` 를 파생한다.
 
 현재 확인된 중요한 사실:
 - 전체 등록 툴은 18개다.
@@ -136,7 +151,12 @@
 
 ### 현재 존재하는 것
 - planning:
-  - `agent.py` 의 `plan_tasks()` 가 요청을 task list 로 분해
+  - `agent.py` 의 `should_plan_request()` 가 복합/다단계 요청만 planner 대상으로 분류
+  - planner 대상 요청은 `plan_tasks()` 가 task list 로 분해
+  - planner 생략 요청은 `planner.status="skipped"` 로 기록하고 직접 실행
+  - planner 가 1개 task 만 반환하면 `planner.status="planned_single"` 로 기록하고 직접 실행
+  - planner fallback / invalid 결과는 기존처럼 `used=false` 로 기록하고 직접 실행
+  - planner 결과는 정규화되어 `trace_record["planner"]` 로 남는다.
 - execution:
   - `run_agent()` 내부의 model 호출, tool dispatch, approval handling
 - review 보조:
@@ -150,9 +170,10 @@
 - 독립된 execution policy engine
 - 별도 planning service / planner model 분리
 - 승인 전후 품질 gate
+- 조건부 planner heuristic 의 장기 eval / tuning 체계
 
 ### 향후 분리 필요 영역
-- planner 호출 조건과 비용 통제
+- planner 호출 조건의 회귀 평가와 비용 통제
 - execution policy 와 exposed tools 정합성
 - review 결과를 TASKS / CURRENT_SCOPE 로 다시 연결하는 운영 루프
 
@@ -180,12 +201,28 @@
 6. trace / session history / workspace state / memory suggestion 반영
 7. Web 또는 CLI 에 결과 표시
 
+### Web client 상태 흐름
+현재 `frontend/src/App.tsx` 는 아직 상위 orchestration container 역할을 하지만, 최근 slice 에서 아래 경계가 추가됐다.
+- `loadSessionSnapshot(sessionId)`: session history, workspace state, tool logs, tool panel 을 한 번에 로드한다.
+- `applySessionSnapshot(sessionId, snapshot)`: 현재 활성 session 과 일치하는 snapshot 만 UI state 에 적용한다.
+- `clearSessionSnapshot()`: 선택된 session 이 없을 때 session-bound state 를 비운다.
+- `activeSessionRequestRef`: 늦게 도착한 이전 session snapshot 이 현재 session UI 에 섞이는 것을 막는다.
+- `refreshExecutionState(sessionId)`: approvals, workspace state, tool logs, tool panel 을 갱신한다.
+- `refreshGlobalSidebarState()`: memories 와 memory suggestions 를 갱신한다.
+
+`refreshSessionView()` 는 session snapshot 로딩과 execution/global refresh 경계를 함께 사용한다. polling 은 더 이상 memory/suggestions 를 포함한 넓은 sidebar refresh 를 돌지 않고, loading 중이거나 approvals 가 있을 때 `refreshExecutionState(currentSessionId)` 중심으로만 동작한다.
+
+이번 App orchestration slice 는 `frontend/src/api.ts`, `frontend/src/types.ts`, `ChatPanel`, `OperationsSidebar` 의 public contract 를 변경하지 않았다.
+
 ## 로깅 / 관찰성 / 평가 / 테스트 전략
 ### 로깅 / 관찰성
 - 전역 trace: `logger.py` 가 JSONL 로 저장
 - 세션별 tool logs: `tool_trace_manager.py`
+- planner summary: `tool_trace_manager.py` 가 `__planner__` synthetic log 로 저장
+- planner 상태: `planned`, `skipped`, `planned_single`, `fallback`, `invalid`
+- tool panel: `plan_summary`, `latest_execution`, `pending_approval`, note/file read 요약 제공
 - workspace state: 최근 읽기/쓰기/요청 상태 추적
-- Web UI 는 tool panel / workspace state / approvals 를 통해 일부 가시성을 제공
+- Web UI 는 tool panel / workspace state / approvals 를 통해 계획, 최근 실행, 승인 대기 상태 일부를 보여준다.
 
 ### 평가
 - `eval_runner.py` 가 tool usage, status, answer fragment 기준 eval 수행
@@ -197,7 +234,9 @@
 - 기본 `pytest` 수집 범위는 `pyproject.toml` 에서 `tests/` 로 제한되어 있다.
 - 실제 확인된 기본 검증:
   - `uv run pytest -q` 통과
-  - frontend production build 통과
+  - `uv run pytest -q tests/test_agent.py` 통과
+  - frontend production build 통과. 현재 실행 환경에서는 explicit Node PATH 로 확인했다.
+  - `.venv/bin/python test_implementation.py` 통과
 - `test_implementation.py` 는 기본 테스트 스위트가 아니라 수동 smoke check 스크립트로 유지된다.
 
 ## CLI와 Web 계층의 분리 방식
@@ -219,12 +258,12 @@ CLI와 Web은 같은 core 를 공유하고, 입출력 adapter 만 다르다.
 ### Web 계층
 - `app/api/main.py`, `app/api/services.py`: HTTP interface
 - `frontend/src/api.ts`: HTTP client
-- `frontend/src/App.tsx`: 전체 상태 orchestration container
+- `frontend/src/App.tsx`: 전체 상태 orchestration container. 현재 session snapshot helper 와 execution/global refresh helper 를 갖고 있으며, polling 은 execution state 중심으로 축소되어 있다.
 - `frontend/src/components/SessionSidebar.tsx`: 세션 관련 UI
-- `frontend/src/components/ChatPanel.tsx`: 채팅/툴 로그 UI
-- `frontend/src/components/OperationsSidebar.tsx`: 승인, 작업 상태, memory, tool panel UI
+- `frontend/src/components/ChatPanel.tsx`: 채팅, planner summary, pending approval banner, 툴 로그 UI
+- `frontend/src/components/OperationsSidebar.tsx`: 계획/실행 요약, 승인, 작업 상태, memory, tool panel UI
 
-이 구조 덕분에 기능 자체는 공통이고, 최근에는 build 와 capability 정합성 문제를 우선 복구했다. 다만 session/data orchestration 은 아직 `App.tsx` 와 우측 사이드바에 상대적으로 많이 남아 있다.
+이 구조 덕분에 기능 자체는 공통이고, 최근에는 build, capability 정합성, planner/execution summary 표시, Web session/execution refresh 경계를 우선 정리했다. 다만 `App.tsx` 는 여전히 상위 container 이며, planner metadata 는 아직 workspace state 에 직접 반영되지 않는다.
 
 ## 향후 subagent가 개입할 수 있는 지점
 현재 저장소에는 subagent orchestration 이 구현되어 있지 않다.

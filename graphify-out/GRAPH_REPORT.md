@@ -1,79 +1,83 @@
 # Graph Report - /Users/kwj903/workspace/sandbox/free-model-test  (2026-04-19)
 
 ## Corpus Check
-- 111 files · ~136,703 words
+- 55 files · ~179,168 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 537 nodes · 993 edges · 57 communities detected
-- Extraction: 76% EXTRACTED · 24% INFERRED · 0% AMBIGUOUS · INFERRED: 242 edges (avg confidence: 0.81)
+- 531 nodes · 989 edges · 61 communities detected
+- Extraction: 76% EXTRACTED · 24% INFERRED · 0% AMBIGUOUS · INFERRED: 239 edges (avg confidence: 0.81)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Session Lifecycle|Session Lifecycle]]
-- [[_COMMUNITY_Memory and Logging|Memory and Logging]]
-- [[_COMMUNITY_API Session Actions|API Session Actions]]
-- [[_COMMUNITY_Approval Workflow|Approval Workflow]]
-- [[_COMMUNITY_Session Service APIs|Session Service APIs]]
-- [[_COMMUNITY_Project Audit Docs|Project Audit Docs]]
-- [[_COMMUNITY_Prompt Normalization|Prompt Normalization]]
-- [[_COMMUNITY_Approval Workspace Flow|Approval Workspace Flow]]
-- [[_COMMUNITY_Frontend HTML Shell|Frontend HTML Shell]]
-- [[_COMMUNITY_CLI Command Surface|CLI Command Surface]]
-- [[_COMMUNITY_Tool Trace Assembly|Tool Trace Assembly]]
-- [[_COMMUNITY_Eval Assertions|Eval Assertions]]
-- [[_COMMUNITY_Calculator Logic|Calculator Logic]]
-- [[_COMMUNITY_API Schemas|API Schemas]]
-- [[_COMMUNITY_UI Utility Hooks|UI Utility Hooks]]
-- [[_COMMUNITY_Operations Sidebar|Operations Sidebar]]
-- [[_COMMUNITY_App Favicon Mark|App Favicon Mark]]
-- [[_COMMUNITY_Eval Run Comparison|Eval Run Comparison]]
-- [[_COMMUNITY_Memory Eval Comparison|Memory Eval Comparison]]
-- [[_COMMUNITY_Notes Search|Notes Search]]
-- [[_COMMUNITY_Remote Ollama Client|Remote Ollama Client]]
-- [[_COMMUNITY_Hero Illustration|Hero Illustration]]
-- [[_COMMUNITY_React Logo Asset|React Logo Asset]]
-- [[_COMMUNITY_Vite Logo Asset|Vite Logo Asset]]
-- [[_COMMUNITY_Coverage Keyboard Icon|Coverage Keyboard Icon]]
-- [[_COMMUNITY_Trace Analysis|Trace Analysis]]
-- [[_COMMUNITY_Filesystem Paths|Filesystem Paths]]
-- [[_COMMUNITY_Chat Panel Helpers|Chat Panel Helpers]]
-- [[_COMMUNITY_Brand Social Icons|Brand Social Icons]]
-- [[_COMMUNITY_Coverage Favicon|Coverage Favicon]]
-- [[_COMMUNITY_Read Note Access|Read Note Access]]
-- [[_COMMUNITY_Environment Settings|Environment Settings]]
-- [[_COMMUNITY_SVG Sprite Reuse|SVG Sprite Reuse]]
-- [[_COMMUNITY_Outlined Utility Icons|Outlined Utility Icons]]
-- [[_COMMUNITY_Django Notes|Django Notes]]
-- [[_COMMUNITY_React Compiler Guidance|React Compiler Guidance]]
-- [[_COMMUNITY_Session Sidebar|Session Sidebar]]
-- [[_COMMUNITY_Test Fixtures|Test Fixtures]]
-- [[_COMMUNITY_Python Collections|Python Collections]]
-- [[_COMMUNITY_Type Aware Linting|Type Aware Linting]]
-- [[_COMMUNITY_React X Lint|React X Lint]]
-- [[_COMMUNITY_React DOM Lint|React DOM Lint]]
-- [[_COMMUNITY_Tool Registry|Tool Registry]]
-- [[_COMMUNITY_ESLint Config|ESLint Config]]
-- [[_COMMUNITY_Vite Config|Vite Config]]
-- [[_COMMUNITY_React Entry Point|React Entry Point]]
-- [[_COMMUNITY_Frontend Types|Frontend Types]]
-- [[_COMMUNITY_Collapsible Section|Collapsible Section]]
-- [[_COMMUNITY_Kilo Test|Kilo Test]]
-- [[_COMMUNITY_Colab Test|Colab Test]]
-- [[_COMMUNITY_LMStudio Test|LMStudio Test]]
-- [[_COMMUNITY_OpenAI Test|OpenAI Test]]
-- [[_COMMUNITY_Groq Test|Groq Test]]
-- [[_COMMUNITY_Groq Test Two|Groq Test Two]]
-- [[_COMMUNITY_OpenRouter Test Two|OpenRouter Test Two]]
-- [[_COMMUNITY_Gemini Test|Gemini Test]]
-- [[_COMMUNITY_OpenRouter Test|OpenRouter Test]]
+- [[_COMMUNITY_Community 0|Community 0]]
+- [[_COMMUNITY_Community 1|Community 1]]
+- [[_COMMUNITY_Community 2|Community 2]]
+- [[_COMMUNITY_Community 3|Community 3]]
+- [[_COMMUNITY_Community 4|Community 4]]
+- [[_COMMUNITY_Community 5|Community 5]]
+- [[_COMMUNITY_Community 6|Community 6]]
+- [[_COMMUNITY_Community 7|Community 7]]
+- [[_COMMUNITY_Community 8|Community 8]]
+- [[_COMMUNITY_Community 9|Community 9]]
+- [[_COMMUNITY_Community 10|Community 10]]
+- [[_COMMUNITY_Community 11|Community 11]]
+- [[_COMMUNITY_Community 12|Community 12]]
+- [[_COMMUNITY_Community 13|Community 13]]
+- [[_COMMUNITY_Community 14|Community 14]]
+- [[_COMMUNITY_Community 15|Community 15]]
+- [[_COMMUNITY_Community 16|Community 16]]
+- [[_COMMUNITY_Community 17|Community 17]]
+- [[_COMMUNITY_Community 18|Community 18]]
+- [[_COMMUNITY_Community 19|Community 19]]
+- [[_COMMUNITY_Community 20|Community 20]]
+- [[_COMMUNITY_Community 21|Community 21]]
+- [[_COMMUNITY_Community 22|Community 22]]
+- [[_COMMUNITY_Community 23|Community 23]]
+- [[_COMMUNITY_Community 24|Community 24]]
+- [[_COMMUNITY_Community 25|Community 25]]
+- [[_COMMUNITY_Community 26|Community 26]]
+- [[_COMMUNITY_Community 27|Community 27]]
+- [[_COMMUNITY_Community 28|Community 28]]
+- [[_COMMUNITY_Community 29|Community 29]]
+- [[_COMMUNITY_Community 30|Community 30]]
+- [[_COMMUNITY_Community 31|Community 31]]
+- [[_COMMUNITY_Community 32|Community 32]]
+- [[_COMMUNITY_Community 33|Community 33]]
+- [[_COMMUNITY_Community 34|Community 34]]
+- [[_COMMUNITY_Community 35|Community 35]]
+- [[_COMMUNITY_Community 36|Community 36]]
+- [[_COMMUNITY_Community 37|Community 37]]
+- [[_COMMUNITY_Community 38|Community 38]]
+- [[_COMMUNITY_Community 39|Community 39]]
+- [[_COMMUNITY_Community 40|Community 40]]
+- [[_COMMUNITY_Community 41|Community 41]]
+- [[_COMMUNITY_Community 42|Community 42]]
+- [[_COMMUNITY_Community 43|Community 43]]
+- [[_COMMUNITY_Community 44|Community 44]]
+- [[_COMMUNITY_Community 45|Community 45]]
+- [[_COMMUNITY_Community 46|Community 46]]
+- [[_COMMUNITY_Community 47|Community 47]]
+- [[_COMMUNITY_Community 48|Community 48]]
+- [[_COMMUNITY_Community 49|Community 49]]
+- [[_COMMUNITY_Community 50|Community 50]]
+- [[_COMMUNITY_Community 51|Community 51]]
+- [[_COMMUNITY_Community 52|Community 52]]
+- [[_COMMUNITY_Community 53|Community 53]]
+- [[_COMMUNITY_Community 54|Community 54]]
+- [[_COMMUNITY_Community 55|Community 55]]
+- [[_COMMUNITY_Community 56|Community 56]]
+- [[_COMMUNITY_Community 57|Community 57]]
+- [[_COMMUNITY_Community 58|Community 58]]
+- [[_COMMUNITY_Community 59|Community 59]]
+- [[_COMMUNITY_Community 60|Community 60]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `SessionState` - 29 edges
 2. `_handle_local_command()` - 28 edges
-3. `request()` - 20 edges
-4. `utc_now_iso()` - 17 edges
-5. `run_agent()` - 17 edges
+3. `run_agent()` - 21 edges
+4. `request()` - 20 edges
+5. `utc_now_iso()` - 17 edges
 6. `main()` - 16 edges
 7. `run_chat_turn()` - 15 edges
 8. `generate_memory_suggestions()` - 14 edges
@@ -81,16 +85,16 @@
 10. `execute_pending_action()` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Document Retrieval Step` --semantically_similar_to--> `Note File Discovery`  [INFERRED] [semantically similar]
-  notes/rag_intro.md → htmlcov/z_9fc17fdde3804d40_search_notes_py.html
-- `test_create_response_with_tools()` --calls--> `create_response()`  [INFERRED]
-  tests/test_model.py → app/model.py
-- `test_run_agent_basic()` --calls--> `run_agent()`  [INFERRED]
-  tests/test_agent.py → app/agent.py
-- `test_run_agent_with_tools()` --calls--> `run_agent()`  [INFERRED]
-  tests/test_agent.py → app/agent.py
-- `test_calculate_simple()` --calls--> `calculate()`  [INFERRED]
-  tests/test_tools.py → app/tools/calculator.py
+- `main()` --calls--> `run_agent()`  [INFERRED]
+  app/main.py → /Users/kwj903/workspace/sandbox/free-model-test/app/agent.py
+- `main()` --calls--> `run_agent()`  [INFERRED]
+  app/preview_markdown.py → /Users/kwj903/workspace/sandbox/free-model-test/app/agent.py
+- `_build_planner_log_entry()` --calls--> `utc_now_iso()`  [INFERRED]
+  /Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py → app/logger.py
+- `persist_tool_trace()` --calls--> `utc_now_iso()`  [INFERRED]
+  /Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py → app/logger.py
+- `persist_tool_trace()` --calls--> `run_chat_turn()`  [INFERRED]
+  /Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py → app/api/services.py
 
 ## Hyperedges (group relationships)
 - **Favicon Mark Composition** — favicon_favicon_asset, favicon_angular_bolt_mark, favicon_internal_glow_layers [INFERRED 0.88]
@@ -107,282 +111,304 @@
 
 ## Communities
 
-### Community 0 - "Session Lifecycle"
-Cohesion: 0.08
-Nodes (39): get_action(), create_new_session(), delete_session_by_id(), delete_session_choice(), format_session_list(), generate_session_id(), list_sessions(), _now_local_session_prefix() (+31 more)
+### Community 0 - "Community 0"
+Cohesion: 0.09
+Nodes (36): get_action(), create_new_session(), delete_session_by_id(), delete_session_choice(), format_session_list(), generate_session_id(), list_sessions(), _now_local_session_prefix() (+28 more)
 
-### Community 1 - "Memory and Logging"
-Cohesion: 0.08
-Nodes (54): append_trace(), ensure_log_dir(), accept_memory_suggestion(), add_memory_note(), _append_record(), clear_memory_store(), configure_memory_store(), delete_memory_note() (+46 more)
+### Community 1 - "Community 1"
+Cohesion: 0.09
+Nodes (52): accept_memory_suggestion(), add_memory_note(), _append_record(), clear_memory_store(), configure_memory_store(), delete_memory_note(), delete_memory_note_tool(), dismiss_memory_suggestion() (+44 more)
 
-### Community 2 - "API Session Actions"
+### Community 2 - "Community 2"
 Cohesion: 0.11
 Nodes (44): approveAction(), createMemory(), createSession(), deleteMemory(), deleteSession(), dropMemorySuggestion(), fetchApprovals(), fetchMemories() (+36 more)
 
-### Community 3 - "Approval Workflow"
-Cohesion: 0.12
-Nodes (38): create_pending_action(), _ensure_state_dir(), list_pending_actions(), _load_state(), mark_executed(), mark_failed(), mark_rejected(), _save_state() (+30 more)
+### Community 3 - "Community 3"
+Cohesion: 0.06
+Nodes (37): approve_action(), create_memory(), create_session(), delete_memory(), delete_session(), drop_memory_suggestion(), get_session_history(), get_session_tool_logs() (+29 more)
 
-### Community 4 - "Session Service APIs"
-Cohesion: 0.07
-Nodes (35): approve_action(), create_memory(), create_session(), delete_memory(), drop_memory_suggestion(), get_session_history(), get_session_tool_logs(), get_session_tool_panel() (+27 more)
-
-### Community 5 - "Project Audit Docs"
-Cohesion: 0.11
-Nodes (27): Repository Operating Policy, Capability Mismatch Finding, Detailed Implementation Audit, Partial Implementation Audit, Detailed Project Handoff, Four-Tool Exposure Description, Handoff Next Work Items, Operational Source-of-Truth Guidance (+19 more)
-
-### Community 6 - "Prompt Normalization"
-Cohesion: 0.12
-Nodes (20): build_system_prompt(), _debug_print(), _extract_pending_approval(), _format_pending_approval_message(), _normalize_cli_text(), _normalize_markdown_text(), _normalize_planner_tasks(), plan_tasks() (+12 more)
-
-### Community 7 - "Approval Workspace Flow"
-Cohesion: 0.1
-Nodes (25): Human Approval Requirement, Approval-Mediated Tool Flow, File-Based Session State Store, Workspace Tools Layer, coverage.py v7.13.5, Answer Generation Step, Document Retrieval Step, Prompt Injection Step (+17 more)
-
-### Community 8 - "Frontend HTML Shell"
+### Community 4 - "Community 4"
 Cohesion: 0.13
-Nodes (16): favicon.svg, frontend Title, Frontend HTML Shell, src/main.tsx Entry Module, Responsive Viewport Meta Tag, Root Mount Container, ESLint Rules, HMR (+8 more)
+Nodes (39): create_pending_action(), _ensure_state_dir(), list_pending_actions(), _load_state(), mark_executed(), mark_failed(), mark_rejected(), _save_state() (+31 more)
 
-### Community 9 - "CLI Command Surface"
+### Community 5 - "Community 5"
+Cohesion: 0.1
+Nodes (30): build_system_prompt(), _count_action_categories(), _debug_print(), _extract_pending_approval(), _format_pending_approval_message(), _has_multiple_instruction_lines(), _matches_any(), _normalize_cli_text() (+22 more)
+
+### Community 6 - "Community 6"
+Cohesion: 0.09
+Nodes (31): Human Approval Requirement, Repository Operating Policy, Capability Mismatch Finding, Detailed Implementation Audit, Partial Implementation Audit, Detailed Project Handoff, Four-Tool Exposure Description, Handoff Next Work Items (+23 more)
+
+### Community 7 - "Community 7"
 Cohesion: 0.32
 Nodes (14): build_parser(), cmd_api(), cmd_doctor(), cmd_frontend_build(), cmd_tui(), cmd_web(), _frontend_dev_url(), _frontend_dir() (+6 more)
 
-### Community 10 - "Tool Trace Assembly"
+### Community 8 - "Community 8"
 Cohesion: 0.33
 Nodes (12): _build_latest_execution(), _build_planner_log_entry(), build_tool_panel(), _classify_result_kind(), _extract_result_text(), _normalize_planner_tasks(), _parse_pending_approval(), _parse_plan_summary() (+4 more)
 
-### Community 11 - "Eval Assertions"
-Cohesion: 0.38
-Nodes (9): check_contains(), check_forbidden(), check_tool_match(), extract_used_tools(), load_eval_cases(), main(), print_result(), run_single_eval() (+1 more)
+### Community 9 - "Community 9"
+Cohesion: 0.27
+Nodes (11): check_contains(), check_forbidden(), check_tool_match(), extract_used_tools(), load_eval_cases(), main(), print_result(), run_single_eval() (+3 more)
 
-### Community 12 - "Calculator Logic"
+### Community 10 - "Community 10"
+Cohesion: 0.2
+Nodes (10): ESLint Rules, HMR, Oxc, React, React + TypeScript + Vite Template, SWC, TypeScript, Vite (+2 more)
+
+### Community 11 - "Community 11"
 Cohesion: 0.36
 Nodes (6): calculate(), _eval_node(), 안전한 사칙연산/거듭제곱 계산기.     예: '2 + 3 * (4 - 1)', test_calculate_complex(), test_calculate_error(), test_calculate_simple()
 
-### Community 13 - "API Schemas"
+### Community 12 - "Community 12"
 Cohesion: 0.43
 Nodes (7): BaseModel, ChatRequest, ChatResponse, CreateSessionResponse, MemoryCreateRequest, MemoryUpdateRequest, RenameSessionRequest
 
-### Community 14 - "UI Utility Hooks"
+### Community 13 - "Community 13"
 Cohesion: 0.29
 Nodes (2): getCellValue(), rowComparator()
 
-### Community 15 - "Operations Sidebar"
+### Community 14 - "Community 14"
 Cohesion: 0.29
 Nodes (0): 
 
-### Community 16 - "App Favicon Mark"
+### Community 15 - "Community 15"
 Cohesion: 0.38
 Nodes (7): Angular Bolt Mark, Browser Tab Branding, Lavender, Violet, and Cyan Accent Palette, Favicon Asset, Internal Glow Layers, Purple Primary Fill, Small-Size Recognition
 
-### Community 17 - "Eval Run Comparison"
+### Community 16 - "Community 16"
 Cohesion: 0.6
 Nodes (5): build_result_map(), compare_two_runs(), load_eval_runs(), main(), summarize_run()
 
-### Community 18 - "Memory Eval Comparison"
+### Community 17 - "Community 17"
 Cohesion: 0.6
 Nodes (5): build_result_map(), compare_two_runs(), load_memory_eval_runs(), main(), summarize_run()
 
-### Community 19 - "Notes Search"
+### Community 18 - "Community 18"
 Cohesion: 0.53
 Nodes (5): _iter_note_files(), _make_excerpt(), NOTES_DIR 아래의 .md, .txt 파일에서     query 키워드를 단순 검색해 관련도가 높은 파일을 반환한다., search_notes(), _tokenize()
 
-### Community 20 - "Remote Ollama Client"
+### Community 19 - "Community 19"
 Cohesion: 0.33
 Nodes (1): RemoteOllamaClient
 
-### Community 21 - "Hero Illustration"
+### Community 20 - "Community 20"
 Cohesion: 0.33
 Nodes (6): Hero PNG Asset, Centered White Tile, Landing Hero Visual, Layered Isometric Platform, Purple Glow Edge Lighting, Floating Top Panel
 
-### Community 22 - "React Logo Asset"
+### Community 21 - "Community 21"
 Cohesion: 0.4
 Nodes (6): Atom Orbit Motif, Central Nucleus, React Cyan Fill, Iconify Logos Collection, Non-text Brand Decoration, React Logo
 
-### Community 23 - "Vite Logo Asset"
+### Community 22 - "Community 22"
 Cohesion: 0.33
 Nodes (6): Central Lightning-Like Mark, Dark Mode Fill Swap, Purple-Cyan Glow Palette, Parenthesis Side Frame, Vite, Vite SVG Logo Asset
 
-### Community 24 - "Coverage Keyboard Icon"
+### Community 23 - "Community 23"
 Cohesion: 0.47
 Nodes (6): Closed Keyboard Icon Asset, Collapsed Panel State, HTML Coverage Report, Keyboard Icon, Keyboard Key Grid, Transparent Background
 
-### Community 25 - "Trace Analysis"
+### Community 24 - "Community 24"
 Cohesion: 0.7
 Nodes (4): load_traces(), main(), print_recent_runs(), summarize_traces()
 
-### Community 26 - "Filesystem Paths"
+### Community 25 - "Community 25"
 Cohesion: 0.5
 Nodes (2): _default_home_dir(), _expand()
 
-### Community 27 - "Chat Panel Helpers"
+### Community 26 - "Community 26"
 Cohesion: 0.6
 Nodes (3): getExecutionStatus(), getExecutionStatusLabel(), parsePendingApproval()
 
-### Community 28 - "Brand Social Icons"
+### Community 27 - "Community 27"
 Cohesion: 0.4
 Nodes (5): Bluesky Icon, Dark Brand Fill Style, Discord Icon, GitHub Icon, X Icon
 
-### Community 29 - "Coverage Favicon"
+### Community 28 - "Community 28"
 Cohesion: 0.6
 Nodes (5): 32px Coverage Favicon Asset, 32px Browser Favicon, HTML Coverage Report, Four-Segment Circular Swirl, Transparent Background
 
-### Community 30 - "Read Note Access"
+### Community 29 - "Community 29"
 Cohesion: 0.67
 Nodes (3): _is_within_notes_dir(), NOTES_DIR 아래의 특정 노트 파일 내용을 읽는다.     path는 반드시 NOTES_DIR 하위 파일이어야 한다., read_note()
 
-### Community 31 - "Environment Settings"
+### Community 30 - "Community 30"
+Cohesion: 0.5
+Nodes (4): Answer Generation Step, Document Retrieval Step, Prompt Injection Step, Retrieval-Augmented Generation
+
+### Community 31 - "Community 31"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 32 - "SVG Sprite Reuse"
+### Community 32 - "Community 32"
 Cohesion: 0.67
 Nodes (3): Frontend Icon Reuse, SVG Icon Sprite, SVG Symbol Sprite Pattern
 
-### Community 33 - "Outlined Utility Icons"
+### Community 33 - "Community 33"
 Cohesion: 0.67
 Nodes (3): Documentation Icon, Purple Outline Style, Social Icon
 
-### Community 34 - "Django Notes"
+### Community 34 - "Community 34"
 Cohesion: 0.67
 Nodes (3): Django, MTV Pattern, ORM
 
-### Community 35 - "React Compiler Guidance"
+### Community 35 - "Community 35"
+Cohesion: 0.67
+Nodes (3): coverage.py v7.13.5, search_notes Coverage Report, workspace_tools Coverage Report
+
+### Community 36 - "Community 36"
 Cohesion: 0.67
 Nodes (3): React Compiler, React Compiler Installation Documentation, React Compiler disabled due to dev and build performance impact
 
-### Community 36 - "Session Sidebar"
+### Community 37 - "Community 37"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 37 - "Test Fixtures"
+### Community 38 - "Community 38"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 38 - "Python Collections"
+### Community 39 - "Community 39"
 Cohesion: 1.0
 Nodes (2): Python List, Python Tuple
 
-### Community 39 - "Type Aware Linting"
+### Community 40 - "Community 40"
+Cohesion: 1.0
+Nodes (2): read_note vs workspace_tools Boundary, Tool Overlap Review Request
+
+### Community 41 - "Community 41"
 Cohesion: 1.0
 Nodes (2): Production applications should enable type-aware lint rules, Type-aware Lint Rules
 
-### Community 40 - "React X Lint"
+### Community 42 - "Community 42"
 Cohesion: 1.0
 Nodes (2): eslint-plugin-react-x, React-specific Lint Rules
 
-### Community 41 - "React DOM Lint"
+### Community 43 - "Community 43"
 Cohesion: 1.0
 Nodes (2): eslint-plugin-react-dom, React DOM Lint Rules
 
-### Community 42 - "Tool Registry"
+### Community 44 - "Community 44"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 43 - "ESLint Config"
+### Community 45 - "Community 45"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 44 - "Vite Config"
+### Community 46 - "Community 46"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 45 - "React Entry Point"
+### Community 47 - "Community 47"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 46 - "Frontend Types"
+### Community 48 - "Community 48"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 47 - "Collapsible Section"
+### Community 49 - "Community 49"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 48 - "Kilo Test"
+### Community 50 - "Community 50"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 49 - "Colab Test"
+### Community 51 - "Community 51"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 50 - "LMStudio Test"
+### Community 52 - "Community 52"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 51 - "OpenAI Test"
+### Community 53 - "Community 53"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 52 - "Groq Test"
+### Community 54 - "Community 54"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 53 - "Groq Test Two"
+### Community 55 - "Community 55"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 54 - "OpenRouter Test Two"
+### Community 56 - "Community 56"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 55 - "Gemini Test"
+### Community 57 - "Community 57"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 56 - "OpenRouter Test"
+### Community 58 - "Community 58"
 Cohesion: 1.0
 Nodes (0): 
+
+### Community 59 - "Community 59"
+Cohesion: 1.0
+Nodes (1): 사용자의 요청을 분석해서 task list를 생성한다.
+
+### Community 60 - "Community 60"
+Cohesion: 1.0
+Nodes (1): Batch File Creation Request
 
 ## Ambiguous Edges - Review These
 - `18-Tool Baseline` → `Four-Tool Exposure Description`  [AMBIGUOUS]
   PROJECT_HANDOFF_detailed.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **65 isolated node(s):** `ALL의 OpenAI-compatible chat completion 호출`, `사용자의 요청을 분석해서 task list를 생성한다.`, `NOTES_DIR 아래의 .md, .txt 파일에서     query 키워드를 단순 검색해 관련도가 높은 파일을 반환한다.`, `안전한 사칙연산/거듭제곱 계산기.     예: '2 + 3 * (4 - 1)'`, `NOTES_DIR 아래의 특정 노트 파일 내용을 읽는다.     path는 반드시 NOTES_DIR 하위 파일이어야 한다.` (+60 more)
+- **68 isolated node(s):** `ALL의 OpenAI-compatible chat completion 호출`, `복합/다단계 요청에서만 planner LLM 호출을 사용한다.`, `사용자의 요청을 분석해서 task list를 생성한다.`, `NOTES_DIR 아래의 .md, .txt 파일에서     query 키워드를 단순 검색해 관련도가 높은 파일을 반환한다.`, `안전한 사칙연산/거듭제곱 계산기.     예: '2 + 3 * (4 - 1)'` (+63 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `Session Sidebar`** (2 nodes): `SessionSidebar.tsx`, `SessionSidebar()`
+- **Thin community `Community 37`** (2 nodes): `SessionSidebar.tsx`, `SessionSidebar()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Test Fixtures`** (2 nodes): `test_data_dir()`, `conftest.py`
+- **Thin community `Community 38`** (2 nodes): `test_data_dir()`, `conftest.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Python Collections`** (2 nodes): `Python List`, `Python Tuple`
+- **Thin community `Community 39`** (2 nodes): `Python List`, `Python Tuple`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Type Aware Linting`** (2 nodes): `Production applications should enable type-aware lint rules`, `Type-aware Lint Rules`
+- **Thin community `Community 40`** (2 nodes): `read_note vs workspace_tools Boundary`, `Tool Overlap Review Request`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `React X Lint`** (2 nodes): `eslint-plugin-react-x`, `React-specific Lint Rules`
+- **Thin community `Community 41`** (2 nodes): `Production applications should enable type-aware lint rules`, `Type-aware Lint Rules`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `React DOM Lint`** (2 nodes): `eslint-plugin-react-dom`, `React DOM Lint Rules`
+- **Thin community `Community 42`** (2 nodes): `eslint-plugin-react-x`, `React-specific Lint Rules`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Tool Registry`** (1 nodes): `tool_registry.py`
+- **Thin community `Community 43`** (2 nodes): `eslint-plugin-react-dom`, `React DOM Lint Rules`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `ESLint Config`** (1 nodes): `eslint.config.js`
+- **Thin community `Community 44`** (1 nodes): `tool_registry.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Vite Config`** (1 nodes): `vite.config.ts`
+- **Thin community `Community 45`** (1 nodes): `eslint.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `React Entry Point`** (1 nodes): `main.tsx`
+- **Thin community `Community 46`** (1 nodes): `vite.config.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Frontend Types`** (1 nodes): `types.ts`
+- **Thin community `Community 47`** (1 nodes): `main.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Collapsible Section`** (1 nodes): `CollapsibleSection.tsx`
+- **Thin community `Community 48`** (1 nodes): `types.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Kilo Test`** (1 nodes): `kilo_test.py`
+- **Thin community `Community 49`** (1 nodes): `CollapsibleSection.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Colab Test`** (1 nodes): `colab_test.py`
+- **Thin community `Community 50`** (1 nodes): `kilo_test.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `LMStudio Test`** (1 nodes): `lmstudio_server_test.py`
+- **Thin community `Community 51`** (1 nodes): `colab_test.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `OpenAI Test`** (1 nodes): `openai_test.py`
+- **Thin community `Community 52`** (1 nodes): `lmstudio_server_test.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Groq Test`** (1 nodes): `groq_test.py`
+- **Thin community `Community 53`** (1 nodes): `openai_test.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Groq Test Two`** (1 nodes): `groq_test2.py`
+- **Thin community `Community 54`** (1 nodes): `groq_test.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `OpenRouter Test Two`** (1 nodes): `openrouter_test2.py`
+- **Thin community `Community 55`** (1 nodes): `groq_test2.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Gemini Test`** (1 nodes): `gemini_test.py`
+- **Thin community `Community 56`** (1 nodes): `openrouter_test2.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `OpenRouter Test`** (1 nodes): `openrouter_test.py`
+- **Thin community `Community 57`** (1 nodes): `gemini_test.py`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 58`** (1 nodes): `openrouter_test.py`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 59`** (1 nodes): `사용자의 요청을 분석해서 task list를 생성한다.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 60`** (1 nodes): `Batch File Creation Request`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
@@ -390,15 +416,15 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **What is the exact relationship between `18-Tool Baseline` and `Four-Tool Exposure Description`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `_handle_local_command()` connect `Session Lifecycle` to `Memory and Logging`, `Approval Workflow`, `Session Service APIs`?**
-  _High betweenness centrality (0.053) - this node is a cross-community bridge._
-- **Why does `utc_now_iso()` connect `Session Lifecycle` to `Memory and Logging`, `Approval Workflow`, `Prompt Normalization`, `Tool Trace Assembly`, `Eval Assertions`?**
-  _High betweenness centrality (0.043) - this node is a cross-community bridge._
-- **Why does `run_agent()` connect `Prompt Normalization` to `Session Lifecycle`, `Memory and Logging`, `Eval Assertions`?**
-  _High betweenness centrality (0.041) - this node is a cross-community bridge._
+- **Why does `run_agent()` connect `Community 5` to `Community 0`, `Community 9`?**
+  _High betweenness centrality (0.060) - this node is a cross-community bridge._
+- **Why does `_handle_local_command()` connect `Community 0` to `Community 1`, `Community 3`, `Community 4`?**
+  _High betweenness centrality (0.055) - this node is a cross-community bridge._
+- **Why does `utc_now_iso()` connect `Community 0` to `Community 1`, `Community 4`, `Community 5`, `Community 8`, `Community 9`?**
+  _High betweenness centrality (0.050) - this node is a cross-community bridge._
 - **Are the 9 inferred relationships involving `SessionState` (e.g. with `_get_session_for_action()` and `_handle_local_command()`) actually correct?**
   _`SessionState` has 9 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 24 inferred relationships involving `_handle_local_command()` (e.g. with `format_pending_actions()` and `list_recent_memory_notes()`) actually correct?**
   _`_handle_local_command()` has 24 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 16 inferred relationships involving `utc_now_iso()` (e.g. with `main()` and `create_pending_action()`) actually correct?**
-  _`utc_now_iso()` has 16 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 12 inferred relationships involving `run_agent()` (e.g. with `main()` and `utc_now_iso()`) actually correct?**
+  _`run_agent()` has 12 INFERRED edges - model-reasoned connections that need verification._

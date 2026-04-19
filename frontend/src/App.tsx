@@ -52,6 +52,20 @@ type SectionState = {
   toolLogs: boolean
 }
 
+type SessionSnapshot = {
+  messages: ChatMessage[]
+  workspaceState: WorkspaceState
+  toolLogs: ToolLogItem[]
+  toolPanel: ToolPanelData
+}
+
+type ExecutionStateSnapshot = {
+  approvals: ApprovalItem[]
+  workspaceState: WorkspaceState | null
+  toolLogs: ToolLogItem[]
+  toolPanel: ToolPanelData | null
+}
+
 const INITIAL_SECTION_STATE: SectionState = {
   currentSession: true,
   sessionList: true,
@@ -96,6 +110,7 @@ export default function App() {
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
   const previousMessageCountRef = useRef(0)
+  const activeSessionRequestRef = useRef<string | null>(null)
 
   function toggleSection(key: keyof SectionState) {
     setSectionOpen((prev) => ({
@@ -280,11 +295,6 @@ export default function App() {
     setSessions(data)
   }
 
-  async function refreshApprovals() {
-    const data = await fetchApprovals()
-    setApprovals(data)
-  }
-
   async function refreshMemories() {
     const data = await fetchMemories(10)
     setMemories(data)
@@ -295,70 +305,119 @@ export default function App() {
     setMemorySuggestions(data)
   }
 
-  async function refreshWorkspaceState(sessionId: string | null) {
-    if (!sessionId) {
-      setWorkspaceState(null)
+  async function loadSessionSnapshot(
+    sessionId: string,
+  ): Promise<SessionSnapshot> {
+    const [nextMessages, nextWorkspaceState, nextToolLogs, nextToolPanel] =
+      await Promise.all([
+        fetchSessionHistory(sessionId),
+        fetchSessionWorkspaceState(sessionId),
+        fetchSessionToolLogs(sessionId, 50),
+        fetchSessionToolPanel(sessionId),
+      ])
+
+    return {
+      messages: nextMessages,
+      workspaceState: nextWorkspaceState,
+      toolLogs: nextToolLogs,
+      toolPanel: nextToolPanel,
+    }
+  }
+
+  function applySessionSnapshot(
+    sessionId: string,
+    snapshot: SessionSnapshot,
+  ) {
+    if (activeSessionRequestRef.current !== sessionId) {
       return
     }
 
-    const data = await fetchSessionWorkspaceState(sessionId)
-    setWorkspaceState(data)
+    setMessages(snapshot.messages)
+    setWorkspaceState(snapshot.workspaceState)
+    setToolLogs(snapshot.toolLogs)
+    setToolPanel(snapshot.toolPanel)
   }
 
-  async function refreshToolLogs(sessionId: string | null) {
-    if (!sessionId) {
-      setToolLogs([])
+  function clearSessionSnapshot() {
+    setMessages([])
+    setWorkspaceState(null)
+    setToolLogs([])
+    setToolPanel(null)
+  }
+
+  function applyExecutionState(
+    sessionId: string | null,
+    snapshot: ExecutionStateSnapshot,
+  ) {
+    setApprovals(snapshot.approvals)
+
+    if (activeSessionRequestRef.current !== sessionId) {
       return
     }
 
-    const data = await fetchSessionToolLogs(sessionId, 50)
-    setToolLogs(data)
+    setWorkspaceState(snapshot.workspaceState)
+    setToolLogs(snapshot.toolLogs)
+    setToolPanel(snapshot.toolPanel)
   }
 
-  async function refreshToolPanel(sessionId: string | null) {
-    if (!sessionId) {
-      setToolPanel(null)
-      return
-    }
+  async function refreshExecutionState(
+    sessionId: string | null,
+    snapshot?: SessionSnapshot,
+  ) {
+    const [nextApprovals, nextWorkspaceState, nextToolLogs, nextToolPanel] =
+      await Promise.all([
+        fetchApprovals(),
+        snapshot
+          ? Promise.resolve(snapshot.workspaceState)
+          : sessionId
+            ? fetchSessionWorkspaceState(sessionId)
+            : Promise.resolve(null),
+        snapshot
+          ? Promise.resolve(snapshot.toolLogs)
+          : sessionId
+            ? fetchSessionToolLogs(sessionId, 50)
+            : Promise.resolve([]),
+        snapshot
+          ? Promise.resolve(snapshot.toolPanel)
+          : sessionId
+            ? fetchSessionToolPanel(sessionId)
+            : Promise.resolve(null),
+      ])
 
-    const data = await fetchSessionToolPanel(sessionId)
-    setToolPanel(data)
+    applyExecutionState(sessionId, {
+      approvals: nextApprovals,
+      workspaceState: nextWorkspaceState,
+      toolLogs: nextToolLogs,
+      toolPanel: nextToolPanel,
+    })
   }
 
-  async function refreshRightSidebar(sessionId: string | null) {
-    await Promise.all([
-      refreshApprovals(),
-      refreshMemories(),
-      refreshMemorySuggestions(),
-      refreshWorkspaceState(sessionId),
-      refreshToolLogs(sessionId),
-      refreshToolPanel(sessionId),
-    ])
+  async function refreshGlobalSidebarState() {
+    await Promise.all([refreshMemories(), refreshMemorySuggestions()])
   }
 
   async function refreshSessionView(sessionId: string | null) {
+    activeSessionRequestRef.current = sessionId
+
     if (!sessionId) {
-      setMessages([])
-      setWorkspaceState(null)
-      setToolLogs([])
-      setToolPanel(null)
+      clearSessionSnapshot()
 
       await Promise.all([
         refreshSessions(),
-        refreshApprovals(),
-        refreshMemories(),
-        refreshMemorySuggestions(),
+        refreshExecutionState(null),
+        refreshGlobalSidebarState(),
       ])
       return
     }
 
-    const [history] = await Promise.all([
-      fetchSessionHistory(sessionId),
+    const [snapshot] = await Promise.all([
+      loadSessionSnapshot(sessionId),
       refreshSessions(),
-      refreshRightSidebar(sessionId),
+      refreshGlobalSidebarState(),
     ])
 
-    setMessages(history)
+    applySessionSnapshot(sessionId, snapshot)
+    await refreshExecutionState(sessionId, snapshot)
   }
 
   async function handleManualSync() {
@@ -390,28 +449,18 @@ export default function App() {
       setMemorySuggestions(suggestionData)
 
       if (sessionData.length === 0) {
+        activeSessionRequestRef.current = null
         setCurrentSessionId(null)
-        setMessages([])
-        setWorkspaceState(null)
-        setToolLogs([])
-        setToolPanel(null)
+        clearSessionSnapshot()
         return
       }
 
       const nextSessionId = sessionData[0].session_id
+      activeSessionRequestRef.current = nextSessionId
       setCurrentSessionId(nextSessionId)
 
-      const [history, nextWorkspaceState, nextToolLogs, nextToolPanel] = await Promise.all([
-        fetchSessionHistory(nextSessionId),
-        fetchSessionWorkspaceState(nextSessionId),
-        fetchSessionToolLogs(nextSessionId, 50),
-        fetchSessionToolPanel(nextSessionId),
-      ])
-
-      setMessages(history)
-      setWorkspaceState(nextWorkspaceState)
-      setToolLogs(nextToolLogs)
-      setToolPanel(nextToolPanel)
+      const snapshot = await loadSessionSnapshot(nextSessionId)
+      applySessionSnapshot(nextSessionId, snapshot)
     } catch (err) {
       setError(err instanceof Error ? err.message : "초기 로딩 실패")
     }
@@ -426,7 +475,7 @@ export default function App() {
     if (!loading && approvals.length === 0) return
 
     const timer = window.setInterval(() => {
-      refreshRightSidebar(currentSessionId).catch(() => {
+      refreshExecutionState(currentSessionId).catch(() => {
         // polling 실패는 조용히 무시
       })
     }, 4000)
@@ -497,7 +546,7 @@ export default function App() {
         setCurrentSessionId(result.session_id)
         await refreshSessionView(result.session_id)
       } else {
-        await refreshRightSidebar(currentSessionId)
+        await refreshExecutionState(currentSessionId)
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "승인 처리 실패")
@@ -513,7 +562,7 @@ export default function App() {
         setCurrentSessionId(result.session_id)
         await refreshSessionView(result.session_id)
       } else {
-        await refreshRightSidebar(currentSessionId)
+        await refreshExecutionState(currentSessionId)
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "거부 처리 실패")
