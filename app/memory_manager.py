@@ -10,6 +10,92 @@ from app.long_term_memory import format_memory_records, search_memory_records
 
 RECENT_HISTORY_LIMIT = 8
 COMPACT_THRESHOLD = 12
+HISTORY_MESSAGE_CHAR_LIMIT = 2000
+HISTORY_TOTAL_CHAR_LIMIT = 10000
+SUMMARY_CONTEXT_CHAR_LIMIT = 3000
+WORKSPACE_STATE_CONTEXT_CHAR_LIMIT = 3000
+MEMORY_RECORD_CONTENT_CHAR_LIMIT = 1000
+MEMORY_CONTEXT_CHAR_LIMIT = 8000
+TRIM_MARKER = "\n...(model request view trimmed; original data preserved)"
+
+
+def _trim_text_for_model(text: str, max_chars: int) -> str:
+    if len(text) <= max_chars:
+        return text
+
+    if max_chars <= 0:
+        return ""
+
+    marker = TRIM_MARKER
+    if max_chars <= len(marker):
+        return text[:max_chars]
+
+    return text[: max_chars - len(marker)] + marker
+
+
+def _trim_memory_records_for_context(
+    records: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    trimmed_records: list[dict[str, Any]] = []
+
+    for record in records:
+        trimmed = dict(record)
+        content = str(trimmed.get("content", ""))
+        trimmed["content"] = _trim_text_for_model(
+            content,
+            MEMORY_RECORD_CONTENT_CHAR_LIMIT,
+        )
+        trimmed_records.append(trimmed)
+
+    return trimmed_records
+
+
+def build_recent_history_view(
+    session_state: SessionState,
+    limit_messages: int = RECENT_HISTORY_LIMIT,
+    per_message_char_limit: int = HISTORY_MESSAGE_CHAR_LIMIT,
+    total_char_limit: int = HISTORY_TOTAL_CHAR_LIMIT,
+) -> list[dict[str, str]]:
+    """Return a bounded model-request view without rewriting stored history."""
+    raw_messages = session_state.get_recent_history(limit_messages=limit_messages)
+    trimmed_messages = [
+        {
+            "role": message["role"],
+            "content": _trim_text_for_model(
+                message["content"],
+                per_message_char_limit,
+            ),
+        }
+        for message in raw_messages
+        if message.get("role") in {"user", "assistant"}
+    ]
+
+    if total_char_limit <= 0:
+        return []
+
+    selected_reversed: list[dict[str, str]] = []
+    used_chars = 0
+
+    for message in reversed(trimmed_messages):
+        content = message["content"]
+        remaining = total_char_limit - used_chars
+        if remaining <= 0:
+            break
+
+        if len(content) > remaining:
+            if remaining < 200:
+                break
+            content = _trim_text_for_model(content, remaining)
+
+        selected_reversed.append(
+            {
+                "role": message["role"],
+                "content": content,
+            }
+        )
+        used_chars += len(content)
+
+    return list(reversed(selected_reversed))
 
 
 def _parse_pending_approval(text: str) -> dict[str, str] | None:
@@ -67,21 +153,36 @@ def build_memory_context(
     parts: list[str] = []
 
     if summary:
-        parts.append(f"[세션 요약]\n{summary}")
+        parts.append(
+            "[세션 요약]\n"
+            + _trim_text_for_model(summary, SUMMARY_CONTEXT_CHAR_LIMIT)
+        )
 
     if compact_state:
+        workspace_state_json = json.dumps(
+            compact_state,
+            ensure_ascii=False,
+            indent=2,
+        )
         parts.append(
             "[현재 작업 상태]\n"
-            + json.dumps(compact_state, ensure_ascii=False, indent=2)
+            + _trim_text_for_model(
+                workspace_state_json,
+                WORKSPACE_STATE_CONTEXT_CHAR_LIMIT,
+            )
         )
 
     if relevant_memories:
+        trimmed_memories = _trim_memory_records_for_context(relevant_memories)
         parts.append(
             "[관련 장기 기억]\n"
-            + format_memory_records(relevant_memories)
+            + format_memory_records(trimmed_memories)
         )
 
-    return "\n\n".join(parts).strip()
+    return _trim_text_for_model(
+        "\n\n".join(parts).strip(),
+        MEMORY_CONTEXT_CHAR_LIMIT,
+    )
 
 
 def compact_history_if_needed(session_state: SessionState) -> None:
@@ -124,7 +225,11 @@ def compact_history_if_needed(session_state: SessionState) -> None:
         },
     ]
 
-    response = create_response(messages=messages)
+    try:
+        response = create_response(messages=messages)
+    except Exception:
+        return
+
     summary = (response.choices[0].message.content or "").strip()
 
     if summary:

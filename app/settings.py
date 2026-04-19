@@ -24,6 +24,23 @@ def _get_env(name: str, default: str | None = None) -> str:
     return value.strip()
 
 
+def _get_bool_env(name: str, default: bool = False) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+
+    normalized = value.strip().lower()
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+
+    raise RuntimeError(
+        f"{name} 값이 boolean으로 해석되지 않습니다: {value!r}. "
+        "허용값: true/false, 1/0, yes/no, on/off"
+    )
+
+
 def _validate_choice(name: str, value: str, allowed: set[str]) -> str:
     if value not in allowed:
         allowed_text = ", ".join(sorted(allowed))
@@ -52,6 +69,11 @@ DEFAULT_RESPONSE_LANGUAGE = _validate_choice(
     "DEFAULT_RESPONSE_LANGUAGE",
     _get_env("DEFAULT_RESPONSE_LANGUAGE", "ko"),
     {"ko", "en"},
+)
+
+AUTO_MEMORY_SUGGESTIONS = _get_bool_env(
+    "AUTO_MEMORY_SUGGESTIONS",
+    default=False,
 )
 
 if not WORKSPACE_ROOT.exists():

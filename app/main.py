@@ -11,14 +11,18 @@ from app.conversation_state import (
     resolve_session_choice,
 )
 from app.memory_manager import (
-    RECENT_HISTORY_LIMIT,
+    build_recent_history_view,
     build_memory_context,
     compact_history_if_needed,
     update_workspace_state_from_approval,
     update_workspace_state_from_trace,
 )
 from app.runtime_context import set_current_session_id
-from app.settings import DEFAULT_OUTPUT_MODE, DEFAULT_RESPONSE_LANGUAGE
+from app.settings import (
+    AUTO_MEMORY_SUGGESTIONS,
+    DEFAULT_OUTPUT_MODE,
+    DEFAULT_RESPONSE_LANGUAGE,
+)
 from app.tools.workspace_tools import (
     execute_pending_action,
     format_pending_actions,
@@ -385,9 +389,7 @@ def main() -> None:
             print(f"\n응답 > {local_command_result}")
             continue
 
-        recent_history = session_state.get_recent_history(
-            limit_messages=RECENT_HISTORY_LIMIT
-        )
+        recent_history = build_recent_history_view(session_state)
         memory_context = build_memory_context(
             session_state,
             user_input=user_input,
@@ -408,23 +410,24 @@ def main() -> None:
         session_state.append_history("assistant", answer)
         update_workspace_state_from_trace(session_state, trace_record)
 
-        new_suggestions = generate_memory_suggestions(
-            user_input=user_input,
-            answer=answer,
-            trace_record=trace_record,
-            session_id=session_state.session_id,
-        )
+        if AUTO_MEMORY_SUGGESTIONS:
+            new_suggestions = generate_memory_suggestions(
+                user_input=user_input,
+                answer=answer,
+                trace_record=trace_record,
+                session_id=session_state.session_id,
+            )
 
-        if new_suggestions:
-            print(
-                f"\n[기억 후보 알림] 저장 후보 {len(new_suggestions)}건이 생겼습니다. "
-                f"`memory_suggestions`로 확인하세요."
-            )
-        else:
-            print(
-                "\n[기억 후보 알림 없음] 새 후보가 생성되지 않았습니다. "
-                "이미 저장된 기억과 중복되었거나 저장 가치가 낮을 수 있습니다."
-            )
+            if new_suggestions:
+                print(
+                    f"\n[기억 후보 알림] 저장 후보 {len(new_suggestions)}건이 생겼습니다. "
+                    f"`memory_suggestions`로 확인하세요."
+                )
+            else:
+                print(
+                    "\n[기억 후보 알림 없음] 새 후보가 생성되지 않았습니다. "
+                    "이미 저장된 기억과 중복되었거나 저장 가치가 낮을 수 있습니다."
+                )
 
         action_id = _extract_action_id_from_answer(answer)
         if action_id:

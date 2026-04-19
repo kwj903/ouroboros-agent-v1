@@ -1,12 +1,12 @@
-# Graph Report - /Users/kwj903/workspace/sandbox/free-model-test  (2026-04-19)
+# Graph Report - /Users/kwj903/workspace/sandbox/free-model-test  (2026-04-20)
 
 ## Corpus Check
-- 55 files · ~179,780 words
+- 55 files · ~182,779 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 532 nodes · 995 edges · 61 communities detected
-- Extraction: 75% EXTRACTED · 24% INFERRED · 0% AMBIGUOUS · INFERRED: 243 edges (avg confidence: 0.81)
+- 564 nodes · 1068 edges · 64 communities detected
+- Extraction: 75% EXTRACTED · 25% INFERRED · 0% AMBIGUOUS · INFERRED: 267 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -71,30 +71,33 @@
 - [[_COMMUNITY_Community 58|Community 58]]
 - [[_COMMUNITY_Community 59|Community 59]]
 - [[_COMMUNITY_Community 60|Community 60]]
+- [[_COMMUNITY_Community 61|Community 61]]
+- [[_COMMUNITY_Community 62|Community 62]]
+- [[_COMMUNITY_Community 63|Community 63]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `SessionState` - 29 edges
+1. `SessionState` - 30 edges
 2. `_handle_local_command()` - 28 edges
-3. `run_agent()` - 21 edges
-4. `request()` - 20 edges
-5. `utc_now_iso()` - 17 edges
-6. `main()` - 16 edges
-7. `run_chat_turn()` - 15 edges
-8. `refreshSessionView()` - 15 edges
-9. `generate_memory_suggestions()` - 14 edges
-10. `execute_pending_action()` - 13 edges
+3. `run_agent()` - 26 edges
+4. `request()` - 21 edges
+5. `main()` - 17 edges
+6. `utc_now_iso()` - 17 edges
+7. `run_chat_turn()` - 17 edges
+8. `generate_memory_suggestions()` - 15 edges
+9. `refreshSessionView()` - 15 edges
+10. `compact_history_if_needed()` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `main()` --calls--> `run_agent()`  [INFERRED]
-  app/main.py → /Users/kwj903/workspace/sandbox/free-model-test/app/agent.py
-- `main()` --calls--> `run_agent()`  [INFERRED]
-  app/preview_markdown.py → /Users/kwj903/workspace/sandbox/free-model-test/app/agent.py
-- `_build_planner_log_entry()` --calls--> `utc_now_iso()`  [INFERRED]
-  /Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py → app/logger.py
-- `persist_tool_trace()` --calls--> `utc_now_iso()`  [INFERRED]
-  /Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py → app/logger.py
-- `persist_tool_trace()` --calls--> `run_chat_turn()`  [INFERRED]
-  /Users/kwj903/workspace/sandbox/free-model-test/app/tool_trace_manager.py → app/api/services.py
+- `run_chat_turn()` --calls--> `chat()`  [INFERRED]
+  /Users/kwj903/workspace/sandbox/free-model-test/app/api/services.py → app/api/main.py
+- `approve_action_api()` --calls--> `approve_action()`  [INFERRED]
+  /Users/kwj903/workspace/sandbox/free-model-test/app/api/services.py → app/api/main.py
+- `reject_action_api()` --calls--> `reject_action()`  [INFERRED]
+  /Users/kwj903/workspace/sandbox/free-model-test/app/api/services.py → app/api/main.py
+- `main()` --calls--> `generate_memory_suggestions()`  [INFERRED]
+  /Users/kwj903/workspace/sandbox/free-model-test/app/main.py → app/long_term_memory.py
+- `build_memory_context()` --calls--> `search_memory_records()`  [INFERRED]
+  /Users/kwj903/workspace/sandbox/free-model-test/app/memory_manager.py → app/long_term_memory.py
 
 ## Hyperedges (group relationships)
 - **Favicon Mark Composition** — favicon_favicon_asset, favicon_angular_bolt_mark, favicon_internal_glow_layers [INFERRED 0.88]
@@ -112,28 +115,28 @@
 ## Communities
 
 ### Community 0 - "Community 0"
-Cohesion: 0.09
-Nodes (52): accept_memory_suggestion(), add_memory_note(), _append_record(), clear_memory_store(), configure_memory_store(), delete_memory_note(), delete_memory_note_tool(), dismiss_memory_suggestion() (+44 more)
+Cohesion: 0.07
+Nodes (45): get_action(), create_new_session(), delete_session_by_id(), delete_session_choice(), format_session_list(), generate_session_id(), list_sessions(), _now_local_session_prefix() (+37 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.09
-Nodes (33): get_action(), create_new_session(), delete_session_by_id(), delete_session_choice(), format_session_list(), generate_session_id(), list_sessions(), _now_local_session_prefix() (+25 more)
+Cohesion: 0.07
+Nodes (48): build_system_prompt(), _count_action_categories(), _debug_print(), _extract_pending_approval(), _format_model_request_error(), _format_pending_approval_message(), _has_multiple_instruction_lines(), _matches_any() (+40 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.11
-Nodes (45): approveAction(), createMemory(), createSession(), deleteMemory(), deleteSession(), dropMemorySuggestion(), fetchApprovals(), fetchMemories() (+37 more)
+Cohesion: 0.1
+Nodes (50): accept_memory_suggestion(), add_memory_note(), _append_record(), clear_memory_store(), configure_memory_store(), delete_memory_note(), delete_memory_note_tool(), dismiss_memory_suggestion() (+42 more)
 
 ### Community 3 - "Community 3"
+Cohesion: 0.11
+Nodes (46): approveAction(), createMemory(), createSession(), deleteMemory(), deleteSession(), dropMemorySuggestion(), fetchApprovals(), fetchMemories() (+38 more)
+
+### Community 4 - "Community 4"
 Cohesion: 0.06
 Nodes (40): approve_action(), chat(), create_memory(), create_session(), delete_memory(), delete_session(), drop_memory_suggestion(), get_session_history() (+32 more)
 
-### Community 4 - "Community 4"
+### Community 5 - "Community 5"
 Cohesion: 0.12
 Nodes (39): create_pending_action(), _ensure_state_dir(), list_pending_actions(), _load_state(), mark_executed(), mark_failed(), mark_rejected(), _save_state() (+31 more)
-
-### Community 5 - "Community 5"
-Cohesion: 0.1
-Nodes (30): build_system_prompt(), _count_action_categories(), _debug_print(), _extract_pending_approval(), _format_pending_approval_message(), _has_multiple_instruction_lines(), _matches_any(), _normalize_cli_text() (+22 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.09
@@ -144,24 +147,24 @@ Cohesion: 0.32
 Nodes (14): build_parser(), cmd_api(), cmd_doctor(), cmd_frontend_build(), cmd_tui(), cmd_web(), _frontend_dev_url(), _frontend_dir() (+6 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.27
-Nodes (11): check_contains(), check_forbidden(), check_tool_match(), extract_used_tools(), load_eval_cases(), main(), print_result(), run_single_eval() (+3 more)
-
-### Community 9 - "Community 9"
 Cohesion: 0.33
 Nodes (12): _build_latest_execution(), _build_planner_log_entry(), build_tool_panel(), _classify_result_kind(), _extract_result_text(), _normalize_planner_tasks(), _parse_pending_approval(), _parse_plan_summary() (+4 more)
+
+### Community 9 - "Community 9"
+Cohesion: 0.27
+Nodes (11): check_contains(), check_forbidden(), check_tool_match(), extract_used_tools(), load_eval_cases(), main(), print_result(), run_single_eval() (+3 more)
 
 ### Community 10 - "Community 10"
 Cohesion: 0.2
 Nodes (10): ESLint Rules, HMR, Oxc, React, React + TypeScript + Vite Template, SWC, TypeScript, Vite (+2 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.36
-Nodes (6): calculate(), _eval_node(), 안전한 사칙연산/거듭제곱 계산기.     예: '2 + 3 * (4 - 1)', test_calculate_complex(), test_calculate_error(), test_calculate_simple()
-
-### Community 12 - "Community 12"
 Cohesion: 0.43
 Nodes (7): BaseModel, ChatRequest, ChatResponse, CreateSessionResponse, MemoryCreateRequest, MemoryUpdateRequest, RenameSessionRequest
+
+### Community 12 - "Community 12"
+Cohesion: 0.36
+Nodes (6): calculate(), _eval_node(), 안전한 사칙연산/거듭제곱 계산기.     예: '2 + 3 * (4 - 1)', test_calculate_complex(), test_calculate_error(), test_calculate_simple()
 
 ### Community 13 - "Community 13"
 Cohesion: 0.29
@@ -237,7 +240,7 @@ Nodes (4): Answer Generation Step, Document Retrieval Step, Prompt Injection Ste
 
 ### Community 31 - "Community 31"
 Cohesion: 0.67
-Nodes (0): 
+Nodes (3): Frontend Icon Reuse, SVG Icon Sprite, SVG Symbol Sprite Pattern
 
 ### Community 32 - "Community 32"
 Cohesion: 0.67
@@ -245,19 +248,19 @@ Nodes (3): Documentation Icon, Purple Outline Style, Social Icon
 
 ### Community 33 - "Community 33"
 Cohesion: 0.67
-Nodes (3): Frontend Icon Reuse, SVG Icon Sprite, SVG Symbol Sprite Pattern
+Nodes (3): Django, MTV Pattern, ORM
 
 ### Community 34 - "Community 34"
 Cohesion: 0.67
-Nodes (3): Django, MTV Pattern, ORM
+Nodes (3): coverage.py v7.13.5, search_notes Coverage Report, workspace_tools Coverage Report
 
 ### Community 35 - "Community 35"
 Cohesion: 0.67
-Nodes (3): coverage.py v7.13.5, search_notes Coverage Report, workspace_tools Coverage Report
+Nodes (3): React Compiler, React Compiler Installation Documentation, React Compiler disabled due to dev and build performance impact
 
 ### Community 36 - "Community 36"
-Cohesion: 0.67
-Nodes (3): React Compiler, React Compiler Installation Documentation, React Compiler disabled due to dev and build performance impact
+Cohesion: 1.0
+Nodes (0): 
 
 ### Community 37 - "Community 37"
 Cohesion: 1.0
@@ -265,27 +268,27 @@ Nodes (0):
 
 ### Community 38 - "Community 38"
 Cohesion: 1.0
-Nodes (0): 
+Nodes (2): Python List, Python Tuple
 
 ### Community 39 - "Community 39"
 Cohesion: 1.0
-Nodes (2): Python List, Python Tuple
+Nodes (2): read_note vs workspace_tools Boundary, Tool Overlap Review Request
 
 ### Community 40 - "Community 40"
 Cohesion: 1.0
-Nodes (2): read_note vs workspace_tools Boundary, Tool Overlap Review Request
+Nodes (2): Production applications should enable type-aware lint rules, Type-aware Lint Rules
 
 ### Community 41 - "Community 41"
 Cohesion: 1.0
-Nodes (2): Production applications should enable type-aware lint rules, Type-aware Lint Rules
+Nodes (2): eslint-plugin-react-x, React-specific Lint Rules
 
 ### Community 42 - "Community 42"
 Cohesion: 1.0
-Nodes (2): eslint-plugin-react-x, React-specific Lint Rules
+Nodes (2): eslint-plugin-react-dom, React DOM Lint Rules
 
 ### Community 43 - "Community 43"
 Cohesion: 1.0
-Nodes (2): eslint-plugin-react-dom, React DOM Lint Rules
+Nodes (0): 
 
 ### Community 44 - "Community 44"
 Cohesion: 1.0
@@ -345,13 +348,25 @@ Nodes (0):
 
 ### Community 58 - "Community 58"
 Cohesion: 1.0
-Nodes (0): 
+Nodes (1): ALL의 OpenAI-compatible chat completion 호출
 
 ### Community 59 - "Community 59"
 Cohesion: 1.0
-Nodes (1): 사용자의 요청을 분석해서 task list를 생성한다.
+Nodes (1): 복합/다단계 요청에서만 planner LLM 호출을 사용한다.
 
 ### Community 60 - "Community 60"
+Cohesion: 1.0
+Nodes (1): 사용자의 요청을 분석해서 task list를 생성한다.
+
+### Community 61 - "Community 61"
+Cohesion: 1.0
+Nodes (1): create_response 기본 동작 테스트
+
+### Community 62 - "Community 62"
+Cohesion: 1.0
+Nodes (1): 사용자의 요청을 분석해서 task list를 생성한다.
+
+### Community 63 - "Community 63"
 Cohesion: 1.0
 Nodes (1): Batch File Creation Request
 
@@ -360,55 +375,63 @@ Nodes (1): Batch File Creation Request
   PROJECT_HANDOFF_detailed.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **68 isolated node(s):** `ALL의 OpenAI-compatible chat completion 호출`, `복합/다단계 요청에서만 planner LLM 호출을 사용한다.`, `사용자의 요청을 분석해서 task list를 생성한다.`, `NOTES_DIR 아래의 .md, .txt 파일에서     query 키워드를 단순 검색해 관련도가 높은 파일을 반환한다.`, `안전한 사칙연산/거듭제곱 계산기.     예: '2 + 3 * (4 - 1)'` (+63 more)
+- **70 isolated node(s):** `Safe wrapper for provider request errors that should not leak raw details.`, `ALL의 OpenAI-compatible chat completion 호출`, `NOTES_DIR 아래의 .md, .txt 파일에서     query 키워드를 단순 검색해 관련도가 높은 파일을 반환한다.`, `안전한 사칙연산/거듭제곱 계산기.     예: '2 + 3 * (4 - 1)'`, `NOTES_DIR 아래의 특정 노트 파일 내용을 읽는다.     path는 반드시 NOTES_DIR 하위 파일이어야 한다.` (+65 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `Community 37`** (2 nodes): `SessionSidebar.tsx`, `SessionSidebar()`
+- **Thin community `Community 36`** (2 nodes): `SessionSidebar.tsx`, `SessionSidebar()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 38`** (2 nodes): `test_data_dir()`, `conftest.py`
+- **Thin community `Community 37`** (2 nodes): `test_data_dir()`, `conftest.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 39`** (2 nodes): `Python List`, `Python Tuple`
+- **Thin community `Community 38`** (2 nodes): `Python List`, `Python Tuple`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 40`** (2 nodes): `read_note vs workspace_tools Boundary`, `Tool Overlap Review Request`
+- **Thin community `Community 39`** (2 nodes): `read_note vs workspace_tools Boundary`, `Tool Overlap Review Request`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 41`** (2 nodes): `Production applications should enable type-aware lint rules`, `Type-aware Lint Rules`
+- **Thin community `Community 40`** (2 nodes): `Production applications should enable type-aware lint rules`, `Type-aware Lint Rules`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 42`** (2 nodes): `eslint-plugin-react-x`, `React-specific Lint Rules`
+- **Thin community `Community 41`** (2 nodes): `eslint-plugin-react-x`, `React-specific Lint Rules`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 43`** (2 nodes): `eslint-plugin-react-dom`, `React DOM Lint Rules`
+- **Thin community `Community 42`** (2 nodes): `eslint-plugin-react-dom`, `React DOM Lint Rules`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 44`** (1 nodes): `tool_registry.py`
+- **Thin community `Community 43`** (1 nodes): `tool_registry.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 45`** (1 nodes): `eslint.config.js`
+- **Thin community `Community 44`** (1 nodes): `eslint.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 46`** (1 nodes): `vite.config.ts`
+- **Thin community `Community 45`** (1 nodes): `vite.config.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 47`** (1 nodes): `main.tsx`
+- **Thin community `Community 46`** (1 nodes): `main.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 48`** (1 nodes): `types.ts`
+- **Thin community `Community 47`** (1 nodes): `types.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 49`** (1 nodes): `CollapsibleSection.tsx`
+- **Thin community `Community 48`** (1 nodes): `CollapsibleSection.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 50`** (1 nodes): `kilo_test.py`
+- **Thin community `Community 49`** (1 nodes): `kilo_test.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 51`** (1 nodes): `colab_test.py`
+- **Thin community `Community 50`** (1 nodes): `colab_test.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 52`** (1 nodes): `lmstudio_server_test.py`
+- **Thin community `Community 51`** (1 nodes): `lmstudio_server_test.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 53`** (1 nodes): `openai_test.py`
+- **Thin community `Community 52`** (1 nodes): `openai_test.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 54`** (1 nodes): `groq_test.py`
+- **Thin community `Community 53`** (1 nodes): `groq_test.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 55`** (1 nodes): `groq_test2.py`
+- **Thin community `Community 54`** (1 nodes): `groq_test2.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 56`** (1 nodes): `openrouter_test2.py`
+- **Thin community `Community 55`** (1 nodes): `openrouter_test2.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 57`** (1 nodes): `gemini_test.py`
+- **Thin community `Community 56`** (1 nodes): `gemini_test.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 58`** (1 nodes): `openrouter_test.py`
+- **Thin community `Community 57`** (1 nodes): `openrouter_test.py`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 59`** (1 nodes): `사용자의 요청을 분석해서 task list를 생성한다.`
+- **Thin community `Community 58`** (1 nodes): `ALL의 OpenAI-compatible chat completion 호출`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 60`** (1 nodes): `Batch File Creation Request`
+- **Thin community `Community 59`** (1 nodes): `복합/다단계 요청에서만 planner LLM 호출을 사용한다.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 60`** (1 nodes): `사용자의 요청을 분석해서 task list를 생성한다.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 61`** (1 nodes): `create_response 기본 동작 테스트`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 62`** (1 nodes): `사용자의 요청을 분석해서 task list를 생성한다.`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 63`** (1 nodes): `Batch File Creation Request`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
@@ -416,15 +439,15 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **What is the exact relationship between `18-Tool Baseline` and `Four-Tool Exposure Description`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `run_agent()` connect `Community 5` to `Community 8`, `Community 1`, `Community 3`?**
-  _High betweenness centrality (0.059) - this node is a cross-community bridge._
-- **Why does `_handle_local_command()` connect `Community 1` to `Community 0`, `Community 3`, `Community 4`?**
-  _High betweenness centrality (0.055) - this node is a cross-community bridge._
-- **Why does `utc_now_iso()` connect `Community 1` to `Community 0`, `Community 4`, `Community 5`, `Community 8`, `Community 9`?**
-  _High betweenness centrality (0.050) - this node is a cross-community bridge._
-- **Are the 9 inferred relationships involving `SessionState` (e.g. with `_get_session_for_action()` and `_handle_local_command()`) actually correct?**
-  _`SessionState` has 9 INFERRED edges - model-reasoned connections that need verification._
+- **Why does `create_response()` connect `Community 1` to `Community 0`?**
+  _High betweenness centrality (0.113) - this node is a cross-community bridge._
+- **Why does `run_agent()` connect `Community 1` to `Community 0`, `Community 9`?**
+  _High betweenness centrality (0.112) - this node is a cross-community bridge._
+- **Why does `_bad_request_error()` connect `Community 1` to `Community 3`?**
+  _High betweenness centrality (0.090) - this node is a cross-community bridge._
+- **Are the 10 inferred relationships involving `SessionState` (e.g. with `Return a bounded model-request view without rewriting stored history.` and `_get_session_for_action()`) actually correct?**
+  _`SessionState` has 10 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 24 inferred relationships involving `_handle_local_command()` (e.g. with `format_pending_actions()` and `list_recent_memory_notes()`) actually correct?**
   _`_handle_local_command()` has 24 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 12 inferred relationships involving `run_agent()` (e.g. with `main()` and `utc_now_iso()`) actually correct?**
-  _`run_agent()` has 12 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 15 inferred relationships involving `run_agent()` (e.g. with `main()` and `utc_now_iso()`) actually correct?**
+  _`run_agent()` has 15 INFERRED edges - model-reasoned connections that need verification._

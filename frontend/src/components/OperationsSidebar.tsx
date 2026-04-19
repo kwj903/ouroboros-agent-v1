@@ -494,15 +494,13 @@ export function OperationsSidebar({
           )}
         </CollapsibleSection>
 
-        <CollapsibleSection
-          title="기억 후보"
-          isOpen={sectionOpen.suggestions}
-          onToggle={() => onToggleSection("suggestions")}
-        >
-          {memorySuggestions.length === 0 ? (
-            <div className="empty-box">저장 제안된 장기 기억이 없습니다.</div>
-          ) : (
-            memorySuggestions.map((item) => (
+        {memorySuggestions.length > 0 ? (
+          <CollapsibleSection
+            title="기억 후보"
+            isOpen={sectionOpen.suggestions}
+            onToggle={() => onToggleSection("suggestions")}
+          >
+            {memorySuggestions.map((item) => (
               <div key={item.suggestion_id} className="suggestion-card">
                 <div className="suggestion-top">
                   <span>{item.suggestion_id}</span>
@@ -528,9 +526,9 @@ export function OperationsSidebar({
                   </button>
                 </div>
               </div>
-            ))
-          )}
-        </CollapsibleSection>
+            ))}
+          </CollapsibleSection>
+        ) : null}
 
         <CollapsibleSection
           title="장기 기억"

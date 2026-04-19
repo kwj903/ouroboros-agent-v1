@@ -66,6 +66,14 @@ type ExecutionStateSnapshot = {
   toolPanel: ToolPanelData | null
 }
 
+function isStaleSuggestionError(err: unknown): boolean {
+  return (
+    err instanceof Error &&
+    err.message.includes("API 404") &&
+    err.message.includes("suggestion not found")
+  )
+}
+
 const INITIAL_SECTION_STATE: SectionState = {
   currentSession: true,
   sessionList: true,
@@ -154,6 +162,12 @@ export default function App() {
       await saveMemorySuggestion(suggestionId)
       await Promise.all([refreshMemories(), refreshMemorySuggestions()])
     } catch (err) {
+      if (isStaleSuggestionError(err)) {
+        await refreshMemorySuggestions().catch(() => undefined)
+        setError("이미 처리되었거나 비활성화된 후보입니다.")
+        return
+      }
+
       setError(err instanceof Error ? err.message : "기억 후보 저장 실패")
     }
   }
@@ -164,6 +178,12 @@ export default function App() {
       await dropMemorySuggestion(suggestionId)
       await refreshMemorySuggestions()
     } catch (err) {
+      if (isStaleSuggestionError(err)) {
+        await refreshMemorySuggestions().catch(() => undefined)
+        setError("이미 처리되었거나 비활성화된 후보입니다.")
+        return
+      }
+
       setError(err instanceof Error ? err.message : "기억 후보 폐기 실패")
     }
   }

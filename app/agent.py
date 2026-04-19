@@ -5,7 +5,7 @@ import re
 from typing import Any
 
 from app.logger import append_trace, utc_now_iso
-from app.model import create_response
+from app.model import ModelRequestError, create_response
 from app.tool_registry import TOOLS, TOOL_SCHEMAS
 
 
@@ -56,6 +56,24 @@ _ACTION_CATEGORY_PATTERNS = (
     ("test", (r"테스트", r"검증", r"빌드", r"실행", r"\b(test|verify|build|run)\b")),
     ("summarize", (r"요약", r"정리", r"문서화", r"\b(summari[sz]e|document)\b")),
 )
+
+TOOL_RESULT_MODEL_CHAR_LIMIT = 6000
+TOOL_RESULT_TRIM_MARKER = (
+    "\n...(tool result trimmed for model request; raw result preserved in trace/tool log)"
+)
+
+
+def _trim_tool_result_for_model(text: str) -> str:
+    if len(text) <= TOOL_RESULT_MODEL_CHAR_LIMIT:
+        return text
+
+    if TOOL_RESULT_MODEL_CHAR_LIMIT <= len(TOOL_RESULT_TRIM_MARKER):
+        return text[:TOOL_RESULT_MODEL_CHAR_LIMIT]
+
+    return (
+        text[: TOOL_RESULT_MODEL_CHAR_LIMIT - len(TOOL_RESULT_TRIM_MARKER)]
+        + TOOL_RESULT_TRIM_MARKER
+    )
 
 
 def _normalize_planner_tasks(tasks: list[str]) -> list[str]:
@@ -166,7 +184,11 @@ task 리스트:
 
     messages.append({"role": "user", "content": user_input})
 
-    response = create_response(messages=messages, tools=[])
+    try:
+        response = create_response(messages=messages, tools=[])
+    except ModelRequestError:
+        return [f"사용자 요청 처리: {user_input}"], "fallback"
+
     content = response.choices[0].message.content or ""
 
     try:
@@ -322,6 +344,12 @@ def _postprocess_output(text: str, output_mode: str) -> str:
     if output_mode == "markdown":
         return _normalize_markdown_text(text)
     return text.strip()
+
+
+def _format_model_request_error(error: ModelRequestError, output_mode: str) -> str:
+    if output_mode == "markdown":
+        return f"## 모델 호출 실패\n\n{error.public_message}"
+    return error.public_message
 
 
 def _extract_pending_approval(text: str) -> dict[str, str] | None:
@@ -583,7 +611,7 @@ def run_agent(
                     {
                         "role": "tool",
                         "tool_call_id": tool_call.id,
-                        "content": tool_result,
+                        "content": _trim_tool_result_for_model(tool_result),
                     }
                 )
 
@@ -599,6 +627,21 @@ def run_agent(
         if return_trace:
             return timeout_message, trace_record
         return timeout_message
+
+    except ModelRequestError as e:
+        error_message = _format_model_request_error(e, output_mode)
+        trace_record["status"] = "failed"
+        trace_record["final_answer"] = error_message
+        trace_record["error"] = e.kind
+
+        if e.status_code is not None:
+            trace_record["error_status_code"] = e.status_code
+
+        _debug_print(debug, "MODEL REQUEST ERROR", f"{e.kind} status={e.status_code}")
+        append_trace(trace_record)
+        if return_trace:
+            return error_message, trace_record
+        return error_message
 
     except Exception as e:
         error_message = f"에이전트 실행 중 예외 발생: {e}"

@@ -25,13 +25,14 @@ from app.long_term_memory import (
     update_memory_note,
 )
 from app.memory_manager import (
-    RECENT_HISTORY_LIMIT,
+    build_recent_history_view,
     build_memory_context,
     compact_history_if_needed,
     update_workspace_state_from_approval,
     update_workspace_state_from_trace,
 )
 from app.runtime_context import set_current_session_id
+from app.settings import AUTO_MEMORY_SUGGESTIONS
 from app.tools.workspace_tools import execute_pending_action, reject_pending_action
 from app.tool_trace_manager import build_tool_panel, persist_tool_trace
 
@@ -88,6 +89,27 @@ def _extract_action_summary(answer: str) -> str | None:
 def _is_action_required(status: str, action_id: str | None) -> bool:
     return status == "awaiting_approval" and action_id is not None
 
+
+def _maybe_generate_memory_suggestions(
+    *,
+    user_input: str,
+    answer: str,
+    trace_record: dict[str, Any],
+    session_id: str,
+) -> list[dict[str, Any]]:
+    if not AUTO_MEMORY_SUGGESTIONS:
+        return []
+
+    from app.long_term_memory import generate_memory_suggestions
+
+    return generate_memory_suggestions(
+        user_input=user_input,
+        answer=answer,
+        trace_record=trace_record,
+        session_id=session_id,
+    )
+
+
 def run_chat_turn(
     *,
     message: str,
@@ -98,9 +120,7 @@ def run_chat_turn(
     session_state = SessionState(session_id=session_id) if session_id else create_new_session()
     set_current_session_id(session_state.session_id)
 
-    recent_history = session_state.get_recent_history(
-        limit_messages=RECENT_HISTORY_LIMIT
-    )
+    recent_history = build_recent_history_view(session_state)
     memory_context = build_memory_context(
         session_state,
         user_input=message,
@@ -122,9 +142,7 @@ def run_chat_turn(
     update_workspace_state_from_trace(session_state, trace_record)
     persist_tool_trace(session_state, trace_record)
 
-    from app.long_term_memory import generate_memory_suggestions
-
-    new_suggestions = generate_memory_suggestions(
+    new_suggestions = _maybe_generate_memory_suggestions(
         user_input=message,
         answer=answer,
         trace_record=trace_record,
@@ -241,6 +259,9 @@ def delete_memory_api(memory_id: str) -> dict[str, Any]:
 
 
 def list_memory_suggestions_api() -> list[dict[str, Any]]:
+    if not AUTO_MEMORY_SUGGESTIONS:
+        return []
+
     return list_memory_suggestions()
 
 

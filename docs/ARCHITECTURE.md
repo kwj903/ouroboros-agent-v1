@@ -16,7 +16,7 @@
 3. model abstraction 이 LLM 호출을 수행한다.
 4. model 이 tool call 을 반환하면 registry 기반으로 Python 함수가 실행된다.
 5. 승인 필요 작업이면 pending approval 상태로 중단한다.
-6. 결과는 history, workspace state, tool trace, memory suggestion 으로 반영된다.
+6. 결과는 history, workspace state, tool trace 로 반영된다. 자동 memory suggestion 은 현재 기본 비활성화 상태다.
 
 ## 주요 모듈과 책임
 ### Agent Core
@@ -34,6 +34,7 @@
 - `app/model.py`
   - `create_response()` 로 OpenAI-compatible API 호출을 래핑
   - provider 교체는 주로 환경 변수 (`ALL_API_KEY`, `ALL_BASE_URL`, `ALL_MODEL`) 수준에서 수행
+  - provider 400 / context / token / request-too-large 계열 오류를 `ModelRequestError` 로 감싸 사용자 응답에 raw provider error 가 그대로 노출되지 않도록 처리
 
 ### Tool Layer
 - `app/tool_registry.py`
@@ -48,13 +49,19 @@
   - 보조 툴 구현
 - `app/long_term_memory.py`
   - 장기 기억 CRUD, 검색, suggestion 생성용 helper/tool
+  - 자동 suggestion 생성 helper 는 남아 있지만 기본 실행 경로에서는 `AUTO_MEMORY_SUGGESTIONS=false` 로 비활성화되어 있다.
 
 ### State / Memory / Approval
+- `app/settings.py`
+  - provider/model 환경 변수
+  - 기본 출력/언어 설정
+  - 자동 memory suggestion 설정 (`AUTO_MEMORY_SUGGESTIONS`, 기본값 `false`)
 - `app/conversation_state.py`
   - 세션 디렉터리 구조
   - history / rolling summary / workspace state / meta / tool log 저장
 - `app/memory_manager.py`
   - memory context 조립
+  - model request view 용 memory/history trimming
   - history compaction
   - workspace state 반영
 - `app/approvals.py`
@@ -135,7 +142,7 @@
 5. planner 결과는 정규화되어 `trace_record["planner"]` 에 metadata 로 남는다.
 6. `agent.py` 가 `create_response(..., tools=TOOL_SCHEMAS)` 를 호출한다.
 7. model 이 tool call 을 반환하면 `agent.py` 가 registry 에서 Python 함수를 찾는다.
-8. 함수 실행 결과가 일반 문자열이면 다음 model step 에 tool result 로 전달된다.
+8. 함수 실행 결과가 일반 문자열이면 다음 model step 에 tool result 로 전달된다. 이때 trace/tool log 원본은 유지하고, model request 의 `role="tool"` content 만 6000 chars 로 trim 된다.
 9. 결과가 `__PENDING_APPROVAL__` 형식이면 agent는 `awaiting_approval` 로 종료한다.
 10. 승인/거부는 `approvals.py` 와 `workspace_tools.py` 의 실행 함수가 처리한다.
 11. 결과는 history, workspace state, tool trace 에 반영된다.
@@ -156,6 +163,7 @@
   - planner 생략 요청은 `planner.status="skipped"` 로 기록하고 직접 실행
   - planner 가 1개 task 만 반환하면 `planner.status="planned_single"` 로 기록하고 직접 실행
   - planner fallback / invalid 결과는 기존처럼 `used=false` 로 기록하고 직접 실행
+  - planner model call 실패도 새 상태값 없이 기존 `fallback` 으로 direct execution 을 유지
   - planner 결과는 정규화되어 `trace_record["planner"]` 로 남는다.
 - execution:
   - `run_agent()` 내부의 model 호출, tool dispatch, approval handling
@@ -195,11 +203,37 @@
 ### 데이터 흐름
 1. 요청 수신
 2. 세션 생성/로드
-3. 최근 history + summary + relevant memories 조합
+3. 최근 history request view + summary/workspace state/relevant memories 기반 memory context 조합
 4. model/tool execution
 5. pending approval 또는 final answer 반환
-6. trace / session history / workspace state / memory suggestion 반영
+6. trace / session history / workspace state 반영
 7. Web 또는 CLI 에 결과 표시
+
+### request budget 1차 방어
+현재 request budget 방어는 원본 저장 데이터를 줄이지 않고 model request 에 들어가는 view 만 줄이는 방식이다.
+- `build_memory_context()` 는 summary 3000 chars, workspace state JSON 3000 chars, individual memory content 1000 chars, total memory context 8000 chars 기준으로 trim 한다.
+- `build_recent_history_view()` 는 Web/CLI 모두에서 사용되며, per message 2000 chars, recent history total 10000 chars 기준으로 trim 한다.
+- `conversation_state.py` 의 원본 `history.jsonl`, `rolling_summary.md`, `workspace_state.json`, 장기 기억 원본은 이 trimming 때문에 변경되지 않는다.
+- `run_agent()` 는 tool result 를 trace/tool log 에 raw 로 남기고, 다음 model request 의 `role="tool"` content 만 6000 chars 로 trim 한다.
+- approval pending 감지는 raw tool result 를 기준으로 기존 흐름을 유지한다.
+- `compact_history_if_needed()` 는 summary model call 실패 시 compaction 만 skip 하고 chat 흐름은 유지한다.
+
+### provider / planner graceful handling
+현재 provider graceful handling 은 router 없이 `app/model.py` 의 얇은 wrapper 안에서 처리한다.
+- `ModelRequestError` 는 provider 400류, context-too-large, token-too-large, request-too-large 계열 오류를 사용자 안전 메시지로 감싼다.
+- `plan_tasks()` 의 planner model call 이 `ModelRequestError` 로 실패하면 새 planner status 를 만들지 않고 기존 `fallback` 으로 direct execution 을 유지한다.
+- `run_agent()` 의 main model call 이 `ModelRequestError` 로 실패하면 raw provider error 대신 복구 가능한 한국어 메시지를 반환한다.
+- trace 에는 `status="failed"`, `error=<kind>`, 필요 시 `error_status_code` 를 남기며 provider 원문 payload 는 사용자 응답에 노출하지 않는다.
+
+### 장기 기억과 memory suggestion
+현재 장기 기억은 수동 저장과 명시적 tool 호출을 중심으로 유지된다.
+- Web UI 의 장기 기억 직접 추가 API/UI 는 유지된다.
+- 사용자가 "기억해", "장기기억에 저장해"처럼 명시적으로 요청하면 `save_memory_note` tool 을 사용할 수 있다.
+- CLI 의 `remember` 명령은 유지된다.
+- 자동 memory suggestion 생성은 `AUTO_MEMORY_SUGGESTIONS=false` 기본값으로 Web/CLI 모두에서 비활성화되어 있다.
+- `list_memory_suggestions_api()` 는 default-off 상태에서 기존 suggestion 파일을 삭제하지 않고 빈 목록 (`[]`) 을 반환한다.
+- Web UI 의 "기억 후보" 섹션은 `memorySuggestions.length > 0` 일 때만 렌더링된다.
+- stale suggestion save/drop 으로 `404 suggestion not found` 가 발생하면 Web UI 는 목록 refresh 후 "이미 처리되었거나 비활성화된 후보입니다." 수준으로 안내한다.
 
 ### Web client 상태 흐름
 현재 `frontend/src/App.tsx` 는 아직 상위 orchestration container 역할을 하지만, 최근 slice 에서 아래 경계가 추가됐다.
@@ -212,6 +246,8 @@
 
 `refreshSessionView()` 는 session snapshot 로딩과 execution/global refresh 경계를 함께 사용한다. polling 은 더 이상 memory/suggestions 를 포함한 넓은 sidebar refresh 를 돌지 않고, loading 중이거나 approvals 가 있을 때 `refreshExecutionState(currentSessionId)` 중심으로만 동작한다.
 
+memory suggestions 는 global sidebar refresh 경로에 남아 있지만, 기본 설정에서는 API 가 빈 목록을 반환하므로 "기억 후보" 섹션은 보통 렌더링되지 않는다.
+
 이번 App orchestration slice 는 `frontend/src/api.ts`, `frontend/src/types.ts`, `ChatPanel`, `OperationsSidebar` 의 public contract 를 변경하지 않았다.
 
 ## 로깅 / 관찰성 / 평가 / 테스트 전략
@@ -222,6 +258,9 @@
 - planner 상태: `planned`, `skipped`, `planned_single`, `fallback`, `invalid`
 - tool panel: `plan_summary`, `latest_execution`, `pending_approval`, note/file read 요약 제공
 - workspace state: 최근 읽기/쓰기/요청 상태 추적
+- request budget: model request view trim marker 를 사용하되 원본 trace/tool log 와 저장 데이터는 유지
+- provider error: `ModelRequestError` 로 사용자 응답과 내부 trace error kind 를 분리
+- 자동 memory suggestion 생성은 default-off 이며, 현재 관찰성/검증은 수동 장기 기억과 명시적 memory tool 호출을 우선한다.
 - Web UI 는 tool panel / workspace state / approvals 를 통해 계획, 최근 실행, 승인 대기 상태 일부를 보여준다.
 
 ### 평가
@@ -235,6 +274,9 @@
 - 실제 확인된 기본 검증:
   - `uv run pytest -q` 통과
   - `uv run pytest -q tests/test_agent.py` 통과
+  - `uv run pytest -q tests/test_model.py` 통과
+  - memory suggestion default-off 관련 `tests/test_memory.py` 테스트 포함
+  - request budget trim / provider graceful handling 관련 `tests/test_agent.py`, `tests/test_model.py`, `tests/test_memory.py` 테스트 포함
   - frontend production build 통과. 현재 실행 환경에서는 explicit Node PATH 로 확인했다.
   - `.venv/bin/python test_implementation.py` 통과
 - `test_implementation.py` 는 기본 테스트 스위트가 아니라 수동 smoke check 스크립트로 유지된다.

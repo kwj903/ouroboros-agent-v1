@@ -54,3 +54,36 @@
   - Verified frontend build with explicit Node PATH
   - Verified with `uv run pytest -q`
   - Did not modify `api.ts`, `types.ts`, `ChatPanel`, `OperationsSidebar`, `memory_manager.py`, provider routing, Graphify outputs, or UI structure in these slices
+- Memory suggestion default-off slice
+  - Added `AUTO_MEMORY_SUGGESTIONS=false` default setting
+  - Disabled automatic memory suggestion generation by default in Web `run_chat_turn()` and CLI main loop
+  - Kept `suggestions_created=0` when automatic suggestions are disabled
+  - Made `list_memory_suggestions_api()` return `[]` while preserving existing suggestion data files
+  - Hid the Web "기억 후보" section unless `memorySuggestions.length > 0`
+  - Added stale suggestion `404 suggestion not found` handling in save/drop UI flow
+  - Preserved manual long-term memory create UI/API and explicit `save_memory_note` request flow
+  - Added tests for default-off suggestion generation and list API behavior
+  - Verified frontend build with explicit Node PATH
+  - Verified with `uv run pytest -q`
+  - Verified with `.venv/bin/python test_implementation.py`
+  - Implementation slice did not modify docs or Graphify outputs; docs were synchronized in a follow-up documentation-only turn
+  - Did not implement request budget guard, context trimming, provider error handling, routing, or Graphify regeneration in this slice
+- Request budget and provider graceful handling slices
+  - Added model request view trimming while preserving original stored data
+  - Added `build_memory_context()` caps: summary 3000 chars, workspace state JSON 3000 chars, individual memory content 1000 chars, total memory context 8000 chars
+  - Added `build_recent_history_view()` with per-message 2000 chars and recent-history total 10000 chars
+  - Updated Web and CLI chat paths to use the trimmed recent history request view
+  - Kept raw tool results in trace/tool logs while trimming only model request `role="tool"` content to 6000 chars
+  - Preserved approval pending flow
+  - Added `ModelRequestError` for provider 400 / context / token / request-too-large style errors
+  - Kept planner call failure on existing `fallback` direct execution without adding a new planner status
+  - Returned recoverable Korean user messages for main model request failures instead of raw provider errors
+  - Made `compact_history_if_needed()` skip compaction when summary model calls fail, without breaking chat flow
+  - Added tests for request view trimming, raw tool result preservation, provider error wrapping, planner fallback, safe user error messages, and compaction failure skip
+  - Verified with `uv run pytest -q tests/test_agent.py`
+  - Verified with `uv run pytest -q tests/test_model.py`
+  - Verified with `uv run pytest -q tests/test_memory.py`
+  - Verified with `uv run pytest -q`
+  - Verified with `.venv/bin/python test_implementation.py`
+  - Verified frontend build with explicit Node PATH
+  - Did not implement routing, provider-router, UI structure changes, Graphify regeneration, or code changes in the follow-up documentation sync

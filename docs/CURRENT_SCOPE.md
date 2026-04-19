@@ -23,6 +23,18 @@
 - `frontend/src/App.tsx` 내부에 session snapshot 로딩 경로가 존재하는 상태 (`loadSessionSnapshot`, `applySessionSnapshot`, `clearSessionSnapshot`)
 - `activeSessionRequestRef` 로 늦게 도착한 이전 session snapshot 이 현재 session state 에 적용되지 않도록 guard 하는 상태
 - `frontend/src/App.tsx` 내부에서 execution state refresh 와 global sidebar refresh 가 분리된 상태 (`refreshExecutionState`, `refreshGlobalSidebarState`)
+- `AUTO_MEMORY_SUGGESTIONS=false` 기본값으로 Web/CLI 자동 memory suggestion 생성이 비활성화된 상태
+- 수동 장기기억 추가 UI/API와 명시적 `save_memory_note` tool 흐름은 유지되는 상태
+- default-off 상태에서 `list_memory_suggestions_api()` 는 기존 suggestion 파일을 삭제하지 않고 `[]` 를 반환하는 상태
+- Web UI 는 `memorySuggestions.length > 0` 일 때만 "기억 후보" 섹션을 렌더링하는 상태
+- model request view 에 대한 request budget 1차 방어가 들어간 상태
+- `build_memory_context()` 가 summary 3000, workspace state JSON 3000, individual memory content 1000, total memory context 8000 chars 기준으로 trim 하는 상태
+- `build_recent_history_view()` 가 Web/CLI 공통으로 per message 2000, recent history total 10000 chars 기준 request history view 를 만드는 상태
+- tool result 는 trace/tool log 에 raw 로 남고, 다음 model request 의 `role="tool"` content 만 6000 chars 로 trim 되는 상태
+- `ModelRequestError` 로 provider 400/context/token/request-too-large 계열 오류를 safe wrapper 로 변환하는 상태
+- planner 호출 실패는 새 planner status 없이 기존 `fallback` 으로 direct execution 을 유지하는 상태
+- main model call 실패는 raw provider error 대신 복구 가능한 한국어 메시지를 반환하는 상태
+- `compact_history_if_needed()` 실패는 compaction 만 skip 하고 chat 흐름은 유지하는 상태
 
 ## 현재 실제로 만들고 있는 것
 현재 코드와 문서 상태를 함께 보면, 이 저장소가 실제로 만들고 있는 것은 아래에 가깝다.
@@ -33,12 +45,16 @@
 - 향후 free-first / local fallback / paid escalation 방향의 model/provider 운영 기반
 - 사용자가 요청한 작업의 plan / execution / approval 상태를 Web UI 에서 더 읽기 쉽게 보여주는 운영 화면
 - Web client 에서 session snapshot, approval/execution state, memory/suggestion state 의 갱신 경계를 점진적으로 정리하는 상태
+- 자동 suggestion 보다는 수동 장기기억과 명시적 기억 저장 요청을 우선하는 memory 운영 방식
+- 복합 요청의 model request 크기와 provider 오류 노출을 줄이는 안정화 작업
 
 다만 아래는 아직 정리되지 않은 상태로 보인다.
 - 공통 baseline 위에 모델별 capability policy 를 어떤 기준으로 추가할지
 - free endpoint 한도와 실패를 어떤 신호로 감지하고 자동 전환할지
 - 조건부 planner heuristic 을 어떤 eval 기준으로 튜닝할지
 - `App.tsx` 에 남은 상위 orchestration 책임을 어디까지 더 분리할지
+- 자동 memory suggestion 을 언제 어떤 기준으로 다시 켤지
+- char-based request budget cap 을 실제 provider/model별 token budget 에 맞게 어떻게 조정할지
 
 ## 지금 인스코프인 것으로 보이는 것
 현재 저장소 상태와 최근 감사 결과 기준으로 지금 인스코프 초안은 아래다.
@@ -53,6 +69,7 @@
 - planner/execution summary 를 trace/tool panel/Web UI 에서 읽기 쉽게 만드는 작업
 - 조건부 planner 호출 정책의 검증과 튜닝
 - Web session snapshot 과 execution/global sidebar refresh 경계 안정화
+- request budget cap 과 provider graceful handling 의 검증과 튜닝
 
 ## 지금은 아웃오브스코프인 것으로 보이는 것
 현재 단계에서 아래는 아웃오브스코프로 보는 것이 안전하다.
@@ -81,6 +98,10 @@
 - 조건부 planner heuristic 은 구현됐지만, 아직 실제 사용 로그 기반 false positive / false negative 튜닝은 부족하다.
 - 이번 planner 조건부 호출 slice 는 `routing`, `App.tsx` 정리, `memory_manager.py` workspace state 반영, UI 구조 재작업을 포함하지 않았다.
 - 최근 App orchestration slice 는 `routing`, provider/router, `memory_manager.py` workspace state 반영, Graphify 재생성, UI 구조 재작업을 포함하지 않았다.
+- 자동 memory suggestion 생성은 default-off 이지만 generator/helper/eval 경로는 남아 있어 향후 optional 재활성화 기준이 필요하다.
+- request budget guard / context trimming / provider error graceful handling 은 1차 구현됐지만, char-based cap 이라 provider/model별 token budget 과 정확히 일치하지는 않는다.
+- 최근 memory suggestion default-off slice 는 Graphify 재생성을 포함하지 않았다.
+- 최근 request budget / provider graceful handling slices 는 문서 동기화 전 구현됐고, Graphify 재생성은 포함하지 않았다.
 
 ## 사람 확인이 필요한 열려 있는 결정사항
 아래는 현재 저장소만으로 확정할 수 없고 사람 확인이 필요한 항목이다.
@@ -88,6 +109,8 @@
 - free provider 들의 기본 우선순위와 자동 전환 조건을 어떻게 둘지
 - 사용자가 provider/model/router 정책을 UI/CLI 에서 어디까지 직접 override 할지
 - `should_plan_request()` 의 trigger 기준을 실제 사용 로그와 eval 로 어떻게 조정할지
+- `AUTO_MEMORY_SUGGESTIONS` 를 언제 어떤 기준으로 다시 켤지
+- request budget cap 값을 실제 로그와 provider 실패 패턴 기준으로 어떻게 튜닝할지
 - 루트의 기존 handoff / implementation 문서를 어느 수준까지 계속 유지할지
 
 ## 상태 판단 메모
