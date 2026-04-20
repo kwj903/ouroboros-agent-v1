@@ -94,11 +94,31 @@ function getExecutionStatusLabel(resultKind: string): string {
   switch (resultKind) {
     case "pending_approval":
       return "승인 필요"
+    case "processed_approval":
+      return "처리됨"
+    case "executed":
+      return "승인 완료"
+    case "rejected":
+      return "거부됨"
+    case "failed":
+      return "실패"
     case "error":
       return "실행 오류"
     default:
       return "실행 완료"
   }
+}
+
+function isActivePendingApproval(
+  actionId: string | null | undefined,
+  approvals: ApprovalItem[],
+): boolean {
+  if (!actionId) {
+    return false
+  }
+  return approvals.some(
+    (item) => item.action_id === actionId && item.status === "pending",
+  )
 }
 
 export function OperationsSidebar({
@@ -128,6 +148,20 @@ export function OperationsSidebar({
   onUpdateMemory,
   onDeleteMemory,
 }: OperationsSidebarProps) {
+  const activePendingApproval =
+    toolPanel?.pending_approval &&
+    isActivePendingApproval(toolPanel.pending_approval.action_id, approvals)
+      ? toolPanel.pending_approval
+      : null
+  const latestExecution =
+    toolPanel?.latest_execution?.result_kind === "pending_approval" &&
+    !activePendingApproval
+      ? {
+          ...toolPanel.latest_execution,
+          result_kind: "processed_approval",
+        }
+      : toolPanel?.latest_execution
+
   return (
     <aside className="panel side-panel right-panel">
       <div className="inline-actions" style={{ marginBottom: 10 }}>
@@ -165,47 +199,47 @@ export function OperationsSidebar({
                 </div>
               ) : null}
 
-              {toolPanel.latest_execution ? (
+              {latestExecution ? (
                 <div className="summary-card">
                   <div className="summary-title-row">
                     <span className="summary-title">최근 실행</span>
                     <span
-                      className={`status-badge ${toolPanel.latest_execution.result_kind}`}
+                      className={`status-badge ${latestExecution.result_kind}`}
                     >
-                      {getExecutionStatusLabel(toolPanel.latest_execution.result_kind)}
+                      {getExecutionStatusLabel(latestExecution.result_kind)}
                     </span>
                   </div>
                   <div className="summary-meta-line">
-                    tool: {toolPanel.latest_execution.tool_name}
+                    tool: {latestExecution.tool_name}
                   </div>
                   <div className="summary-meta-line">
-                    step: {toolPanel.latest_execution.step_index}
+                    step: {latestExecution.step_index}
                   </div>
                   <div className="summary-preview">
-                    {toolPanel.latest_execution.result_preview}
+                    {latestExecution.result_preview}
                   </div>
                 </div>
               ) : null}
 
-              {toolPanel.pending_approval ? (
+              {activePendingApproval ? (
                 <div className="pending-banner sidebar-pending-banner">
                   <div className="summary-title-row">
                     <span className="summary-title">보류 중인 실행</span>
                     <span className="status-badge pending">승인 필요</span>
                   </div>
-                  {toolPanel.pending_approval.summary ? (
+                  {activePendingApproval.summary ? (
                     <div className="pending-banner-summary">
-                      {toolPanel.pending_approval.summary}
+                      {activePendingApproval.summary}
                     </div>
                   ) : null}
-                  {toolPanel.pending_approval.action_id ? (
+                  {activePendingApproval.action_id ? (
                     <div className="pending-banner-meta">
-                      action_id: {toolPanel.pending_approval.action_id}
+                      action_id: {activePendingApproval.action_id}
                     </div>
                   ) : null}
-                  {toolPanel.pending_approval.message ? (
+                  {activePendingApproval.message ? (
                     <div className="pending-banner-meta">
-                      {toolPanel.pending_approval.message}
+                      {activePendingApproval.message}
                     </div>
                   ) : null}
                 </div>
@@ -283,8 +317,8 @@ export function OperationsSidebar({
               ) : null}
 
               {!toolPanel.plan_summary?.used &&
-                !toolPanel.latest_execution &&
-                !toolPanel.pending_approval &&
+                !latestExecution &&
+                !activePendingApproval &&
                 !toolPanel.last_note_search &&
                 !toolPanel.last_note_read &&
                 !toolPanel.last_file_read && (

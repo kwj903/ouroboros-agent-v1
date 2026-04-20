@@ -23,6 +23,7 @@
 - `app/agent.py`
   - system prompt 구성
   - 조건부 planner 호출 판단 (`should_plan_request`)
+  - 구체적인 복수 파일 변경 요청에 대한 첫 턴 batch approval hint 판단 (`should_hint_immediate_batch_approval`)
   - planning helper (`plan_tasks`)
   - planner 결과 정규화와 trace metadata 생성
   - model 호출 루프
@@ -40,10 +41,13 @@
 - `app/tool_registry.py`
   - 전체 툴 등록
   - tool schema 정의
+  - `request_batch_operations` schema 에 구체적 복수 변경 요청의 첫 턴 approval pending 생성 정책 반영
+  - `request_batch_operations` schema 에 `create_directory` batch operation 포함
   - 현재 노출 툴 필터링
 - `app/tools/workspace_tools.py`
   - workspace 읽기/쓰기 요청
   - approval payload 생성
+  - batch operation 실행 (`create_directory`, `create_file`, `write_file`, `replace_text_in_file`, `delete_path`)
   - 승인 후 실제 파일 작업 실행
 - `app/tools/search_notes.py`, `read_note.py`, `calculator.py`
   - 보조 툴 구현
@@ -139,19 +143,23 @@
 2. `EXPOSED_TOOL_NAMES` 로 현재 모델에 보여줄 툴 집합을 제한한다.
 3. `agent.py` 가 `should_plan_request()` 로 planner 필요 여부를 판단한다.
 4. 복합/다단계 요청이면 `plan_tasks()` 를 호출하고, 단순 요청이나 단일 작업이면 `planner.status="skipped"` 로 직접 실행한다.
-5. planner 결과는 정규화되어 `trace_record["planner"]` 에 metadata 로 남는다.
-6. `agent.py` 가 `create_response(..., tools=TOOL_SCHEMAS)` 를 호출한다.
-7. model 이 tool call 을 반환하면 `agent.py` 가 registry 에서 Python 함수를 찾는다.
-8. 함수 실행 결과가 일반 문자열이면 다음 model step 에 tool result 로 전달된다. 이때 trace/tool log 원본은 유지하고, model request 의 `role="tool"` content 만 6000 chars 로 trim 된다.
-9. 결과가 `__PENDING_APPROVAL__` 형식이면 agent는 `awaiting_approval` 로 종료한다.
-10. 승인/거부는 `approvals.py` 와 `workspace_tools.py` 의 실행 함수가 처리한다.
-11. 결과는 history, workspace state, tool trace 에 반영된다.
-12. `tool_trace_manager.py` 는 planner metadata 를 `__planner__` synthetic log 로 남기고, tool panel 에 `plan_summary`, `latest_execution`, `pending_approval` 를 파생한다.
+5. `agent.py` 가 `should_hint_immediate_batch_approval()` 로 구체적 복수 파일 변경 요청을 감지하면, 첫 tool-calling 턴에 `request_batch_operations` approval pending 을 만들도록 system hint 를 추가한다.
+6. planner 결과는 정규화되어 `trace_record["planner"]` 에 metadata 로 남는다.
+7. `agent.py` 가 `create_response(..., tools=TOOL_SCHEMAS)` 를 호출한다.
+8. model 이 tool call 을 반환하면 `agent.py` 가 registry 에서 Python 함수를 찾는다.
+9. 함수 실행 결과가 일반 문자열이면 다음 model step 에 tool result 로 전달된다. 이때 trace/tool log 원본은 유지하고, model request 의 `role="tool"` content 만 6000 chars 로 trim 된다.
+10. 결과가 `__PENDING_APPROVAL__` 형식이면 agent는 `awaiting_approval` 로 종료한다.
+11. 승인/거부는 `approvals.py` 와 `workspace_tools.py` 의 실행 함수가 처리한다.
+12. 결과는 history, workspace state, tool trace 에 반영된다.
+13. `tool_trace_manager.py` 는 planner metadata 를 `__planner__` synthetic log 로 남기고, tool panel 에 `plan_summary`, `latest_execution`, `pending_approval` 를 파생한다.
 
 현재 확인된 중요한 사실:
 - 전체 등록 툴은 18개다.
 - 현재 노출 툴은 18개다.
 - 현재는 등록된 툴 전체가 노출되어 있고, 이후에는 모델별 capability policy 로 다시 분리될 가능성이 있다.
+- `request_batch_operations` 는 `create_directory`, `create_file`, `write_file`, `replace_text_in_file`, `delete_path` operation 을 지원한다.
+- 빈 폴더 생성은 새 top-level tool 이 아니라 `request_batch_operations` 안의 `create_directory` operation 으로 처리한다.
+- `create_directory` 는 `exist_ok=False` 기본값에서 기존 디렉터리 또는 기존 파일 path 를 실패로 처리하고, `create_parents=True` 이면 nested directory 생성을 허용한다.
 
 ## planning / execution / review 경계
 현재 코드는 planning / execution / review 가 완전히 분리된 구조는 아니다.
@@ -160,6 +168,7 @@
 - planning:
   - `agent.py` 의 `should_plan_request()` 가 복합/다단계 요청만 planner 대상으로 분류
   - planner 대상 요청은 `plan_tasks()` 가 task list 로 분해
+  - planner prompt 와 execution message 는 구체적 복수 파일/폴더 변경을 가능한 경우 하나의 `request_batch_operations` approval pending 으로 묶도록 힌트를 준다.
   - planner 생략 요청은 `planner.status="skipped"` 로 기록하고 직접 실행
   - planner 가 1개 task 만 반환하면 `planner.status="planned_single"` 로 기록하고 직접 실행
   - planner fallback / invalid 결과는 기존처럼 `used=false` 로 기록하고 직접 실행
@@ -167,6 +176,8 @@
   - planner 결과는 정규화되어 `trace_record["planner"]` 로 남는다.
 - execution:
   - `run_agent()` 내부의 model 호출, tool dispatch, approval handling
+  - 구체적 batch 변경 요청은 Python payload builder 없이 모델의 tool call 을 유도하는 방식으로만 첫 턴 approval pending 생성을 강화한다.
+  - 단일 빈 폴더 생성도 단일 `create_directory` operation 을 담은 `request_batch_operations` approval pending 으로 처리할 수 있다.
 - review 보조:
   - `eval_runner.py`
   - `memory_eval_runner.py`
@@ -277,6 +288,8 @@ memory suggestions 는 global sidebar refresh 경로에 남아 있지만, 기본
   - `uv run pytest -q tests/test_model.py` 통과
   - memory suggestion default-off 관련 `tests/test_memory.py` 테스트 포함
   - request budget trim / provider graceful handling 관련 `tests/test_agent.py`, `tests/test_model.py`, `tests/test_memory.py` 테스트 포함
+  - batch approval first-turn policy 관련 `tests/test_agent.py` 테스트 포함
+  - `create_directory` batch operation 관련 `tests/test_workspace_tools.py` 테스트 포함
   - frontend production build 통과. 현재 실행 환경에서는 explicit Node PATH 로 확인했다.
   - `.venv/bin/python test_implementation.py` 통과
 - `test_implementation.py` 는 기본 테스트 스위트가 아니라 수동 smoke check 스크립트로 유지된다.

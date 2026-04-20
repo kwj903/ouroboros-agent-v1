@@ -373,6 +373,9 @@ TOOL_SCHEMAS = [
             "description": (
                 "여러 개의 파일/폴더 변경 작업을 하나의 승인 요청으로 묶는다. "
                 "사용자가 복수 단계의 파일 생성/수정/삭제를 한 번에 지시했을 때 사용한다. "
+                "빈 폴더 생성은 create_directory operation으로 표현한다. "
+                "충분히 구체적인 복수 파일/폴더 변경 요청에서는 첫 턴에 approval pending을 생성하기 위해 사용한다. "
+                "path, content, old_text, new_text 등 필수 payload가 모호할 때만 확인 질문을 한다. "
                 "즉시 실행되지 않고 사용자 승인 후 순서대로 실행된다."
             ),
             "parameters": {
@@ -380,9 +383,35 @@ TOOL_SCHEMAS = [
                 "properties": {
                     "operations": {
                         "type": "array",
+                        "description": "승인 요청에 포함할 순서 있는 작업 목록. 구체적인 복수 변경 요청이면 첫 응답에서 구성한다.",
                         "minItems": 1,
                         "items": {
                             "oneOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": ["create_directory"]
+                                        },
+                                        "path": {
+                                            "type": "string",
+                                            "description": "생성할 디렉터리 경로"
+                                        },
+                                        "create_parents": {
+                                            "type": "boolean",
+                                            "description": "상위 폴더가 없으면 함께 생성할지 여부",
+                                            "default": True
+                                        },
+                                        "exist_ok": {
+                                            "type": "boolean",
+                                            "description": "같은 디렉터리가 이미 있을 때 성공으로 처리할지 여부. 기본값은 False",
+                                            "default": False
+                                        }
+                                    },
+                                    "required": ["type", "path"],
+                                    "additionalProperties": False
+                                },
                                 {
                                     "type": "object",
                                     "properties": {

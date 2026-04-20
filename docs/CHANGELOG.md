@@ -87,3 +87,28 @@
   - Verified with `.venv/bin/python test_implementation.py`
   - Verified frontend build with explicit Node PATH
   - Did not implement routing, provider-router, UI structure changes, Graphify regeneration, or code changes in the follow-up documentation sync
+- Batch approval first-turn policy slice
+  - Updated `build_system_prompt()` so concrete change requests do not wait for a separate user "approval" utterance before creating `request_` tool approval pending
+  - Added `should_hint_immediate_batch_approval()` to attach a dynamic batch approval hint only for requests with multiple concrete paths and mutation intent
+  - Kept read/analyze/summarize-dependent requests and "plan only / do not implement" requests out of the dynamic batch approval hint path
+  - Reinforced planner prompt and execution message so concrete multi-file changes can be grouped into one `request_batch_operations` approval pending
+  - Updated `request_batch_operations` schema description for first-turn approval pending on sufficiently concrete multi-file changes and clarification only when required payload is ambiguous
+  - Added `tests/test_agent.py` regression coverage for single `request_write_file`, concrete `request_batch_operations`, and ambiguous batch requests
+  - Verified with `uv run pytest -q tests/test_agent.py`
+  - Verified with `uv run pytest -q`
+  - Verified with `.venv/bin/python test_implementation.py`
+  - Did not add a Python natural-language batch payload builder, new batch operation types, docs changes in the implementation turn, Graphify regeneration, routing, provider-router, or UI changes
+- Batch `create_directory` operation slice
+  - Added `create_directory` as a `request_batch_operations` operation type
+  - Added `_execute_create_directory(path, create_parents=True, exist_ok=False)`
+  - Kept `exist_ok=False` as the default so existing directories and existing file paths fail clearly
+  - Allowed nested directory creation when `create_parents=True`
+  - Included `create_directory(path)` in batch approval summaries
+  - Updated system prompt and batch hint so empty folder creation is routed through `request_batch_operations` with `create_directory`
+  - Kept single empty folder creation as a single-operation batch approval
+  - Added tests for batch approval creation, approved directory creation, nested directory creation, existing directory failure, existing file path failure, and `create_directory` + `write_file` mixed batch execution
+  - Verified with `uv run pytest -q tests/test_agent.py`
+  - Verified with `uv run pytest -q tests/test_workspace_tools.py`
+  - Verified with `uv run pytest -q`
+  - Verified with `.venv/bin/python test_implementation.py`
+  - Did not add a top-level `request_create_directory` tool, Graphify regeneration, UI changes, batch payload builder, routing, provider-router, or `.gitkeep` auto-generation policy

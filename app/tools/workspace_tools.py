@@ -327,6 +327,8 @@ def _summarize_single_operation(operation: dict[str, Any]) -> str:
     if op_type == "write_file":
         content = operation.get("content", "")
         return f"{op_type}({path}, content_length={len(content)})"
+    if op_type == "create_directory":
+        return f"{op_type}({path})"
 
     return f"{op_type}({path})"
 
@@ -404,6 +406,7 @@ def _validate_batch_operation(operation: dict[str, Any], index: int) -> None:
         raise ValueError(f"{index}번째 operation에 type이 없습니다.")
 
     if op_type not in {
+        "create_directory",
         "create_file",
         "write_file",
         "replace_text_in_file",
@@ -417,7 +420,29 @@ def _validate_batch_operation(operation: dict[str, Any], index: int) -> None:
     if not isinstance(path, str) or not path.strip():
         raise ValueError(f"{index}번째 operation에 유효한 path가 없습니다.")
 
-    if op_type == "create_file":
+    if op_type == "create_directory":
+        forbidden_fields = {
+            "content",
+            "mode",
+            "old_text",
+            "new_text",
+            "replace_all",
+            "recursive",
+            "overwrite",
+        }
+        invalid = [field for field in forbidden_fields if field in operation]
+        if invalid:
+            raise ValueError(
+                f"{index}번째 create_directory operation에 허용되지 않는 필드가 있습니다: {', '.join(invalid)}"
+            )
+
+        for field in ("create_parents", "exist_ok"):
+            if field in operation and not isinstance(operation[field], bool):
+                raise ValueError(
+                    f"{index}번째 create_directory operation의 {field}는 boolean이어야 합니다."
+                )
+
+    elif op_type == "create_file":
         forbidden_fields = {
             "content",
             "mode",
@@ -504,6 +529,13 @@ def request_batch_operations(
 
 def _execute_single_operation(operation: dict[str, Any]) -> str:
     op_type = operation["type"]
+
+    if op_type == "create_directory":
+        return _execute_create_directory(
+            path=operation["path"],
+            create_parents=operation.get("create_parents", True),
+            exist_ok=operation.get("exist_ok", False),
+        )
 
     if op_type == "create_file":
         return _execute_create_file(
@@ -706,6 +738,29 @@ def _write_file(
         target.write_text(content, encoding="utf-8")
 
     return f"파일 쓰기 완료: {_format_rel(target)}"
+
+
+def _execute_create_directory(
+    path: str,
+    create_parents: bool = True,
+    exist_ok: bool = False,
+) -> str:
+    target = _resolve_workspace_path(path)
+
+    if target.exists():
+        if target.is_dir():
+            if exist_ok:
+                return f"디렉터리 이미 존재함: {_format_rel(target)}"
+            return f"ERROR: 디렉터리가 이미 존재합니다: {_format_rel(target)}"
+        return f"ERROR: 파일이 이미 존재합니다: {_format_rel(target)}"
+
+    try:
+        target.mkdir(parents=create_parents, exist_ok=exist_ok)
+    except FileNotFoundError:
+        return f"ERROR: 상위 디렉터리가 존재하지 않습니다: {_format_rel(target.parent)}"
+
+    return f"디렉터리 생성 완료: {_format_rel(target)}"
+
 
 def _execute_create_file(
     path: str,

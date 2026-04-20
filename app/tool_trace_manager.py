@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from app.approvals import get_action
 from app.conversation_state import SessionState
 from app.logger import utc_now_iso
 
@@ -100,9 +101,28 @@ def _parse_pending_approval(raw_text: str) -> dict[str, Any] | None:
     }
 
 
-def _classify_result_kind(raw_text: str) -> str:
-    if _parse_pending_approval(raw_text) is not None:
+def _pending_approval_status(raw_text: str) -> str | None:
+    pending = _parse_pending_approval(raw_text)
+    if pending is None:
+        return None
+
+    action_id = pending.get("action_id")
+    if not action_id:
+        return "processed_approval"
+
+    action = get_action(str(action_id))
+    status = action.get("status") if action else None
+    if status == "pending":
         return "pending_approval"
+    if status in {"executed", "rejected", "failed"}:
+        return str(status)
+    return "processed_approval"
+
+
+def _classify_result_kind(raw_text: str) -> str:
+    approval_status = _pending_approval_status(raw_text)
+    if approval_status is not None:
+        return approval_status
     if raw_text.strip().startswith("ERROR:"):
         return "error"
     return "ok"
@@ -266,7 +286,7 @@ def build_tool_panel(session_state: SessionState) -> dict[str, Any]:
         if tool_name != PLANNER_TOOL_NAME and panel["latest_execution"] is None:
             panel["latest_execution"] = _build_latest_execution(entry)
             pending = _parse_pending_approval(raw)
-            if pending is not None:
+            if pending is not None and _pending_approval_status(raw) == "pending_approval":
                 panel["pending_approval"] = pending
 
         if tool_name == "search_notes" and panel["last_note_search"] is None:

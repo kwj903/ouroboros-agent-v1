@@ -652,6 +652,7 @@ export default function App() {
           error={error}
           messages={messages}
           toolLogs={toolLogs}
+          approvals={approvals}
           toolLogsOpen={sectionOpen.toolLogs}
           onToggleToolLogs={() => toggleSection("toolLogs")}
           messagesEndRef={messagesEndRef}

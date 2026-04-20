@@ -35,6 +35,15 @@
 - planner 호출 실패는 새 planner status 없이 기존 `fallback` 으로 direct execution 을 유지하는 상태
 - main model call 실패는 raw provider error 대신 복구 가능한 한국어 메시지를 반환하는 상태
 - `compact_history_if_needed()` 실패는 compaction 만 skip 하고 chat 흐름은 유지하는 상태
+- `build_system_prompt()` 가 구체적인 변경 요청에서 별도 "승인" 발화를 기다리지 않고 `request_` tool 로 approval pending 을 만들도록 유도하는 상태
+- `should_hint_immediate_batch_approval()` 가 여러 concrete path 와 변경 의도가 있는 요청에만 동적 batch approval hint 를 붙이는 상태
+- 읽기/분석/요약 결과에 의존하는 요청이나 "계획만/구현하지 마" 요청에는 batch approval hint 를 붙이지 않는 상태
+- planner prompt / execution message 와 `request_batch_operations` schema description 에 구체적 복수 변경 요청은 첫 턴 approval pending 생성에 사용하고, 모호할 때만 질문한다는 정책이 반영된 상태
+- `request_batch_operations` 가 `create_directory` operation type 을 지원하는 상태
+- `_execute_create_directory(path, create_parents=True, exist_ok=False)` 가 추가되어 승인 후 실제 디렉터리를 생성하는 상태
+- `create_directory` 는 `exist_ok=False` 기본값에서 existing directory 와 existing file path 를 실패 처리하는 상태
+- `create_parents=True` 일 때 nested directory 생성을 허용하는 상태
+- 단일 빈 폴더 생성도 단일 `create_directory` operation batch 로 approval pending 을 만들 수 있는 상태
 
 ## 현재 실제로 만들고 있는 것
 현재 코드와 문서 상태를 함께 보면, 이 저장소가 실제로 만들고 있는 것은 아래에 가깝다.
@@ -47,6 +56,8 @@
 - Web client 에서 session snapshot, approval/execution state, memory/suggestion state 의 갱신 경계를 점진적으로 정리하는 상태
 - 자동 suggestion 보다는 수동 장기기억과 명시적 기억 저장 요청을 우선하는 memory 운영 방식
 - 복합 요청의 model request 크기와 provider 오류 노출을 줄이는 안정화 작업
+- 구체적인 복수 파일 변경 요청에서 첫 턴에 batch approval pending 을 생성하도록 tool-calling 정책을 조정하는 작업
+- approval workflow 안에서 빈 폴더 생성을 batch operation 으로 지원하는 작업
 
 다만 아래는 아직 정리되지 않은 상태로 보인다.
 - 공통 baseline 위에 모델별 capability policy 를 어떤 기준으로 추가할지
@@ -55,6 +66,8 @@
 - `App.tsx` 에 남은 상위 orchestration 책임을 어디까지 더 분리할지
 - 자동 memory suggestion 을 언제 어떤 기준으로 다시 켤지
 - char-based request budget cap 을 실제 provider/model별 token budget 에 맞게 어떻게 조정할지
+- batch approval first-turn 정책을 실제 모델별 tool-calling 로그로 얼마나 튜닝해야 할지
+- 빈 폴더 생성 요청에서 모델이 `create_directory` operation 을 얼마나 안정적으로 선택하는지
 
 ## 지금 인스코프인 것으로 보이는 것
 현재 저장소 상태와 최근 감사 결과 기준으로 지금 인스코프 초안은 아래다.
@@ -70,6 +83,8 @@
 - 조건부 planner 호출 정책의 검증과 튜닝
 - Web session snapshot 과 execution/global sidebar refresh 경계 안정화
 - request budget cap 과 provider graceful handling 의 검증과 튜닝
+- 구체적인 batch 변경 요청의 첫 턴 approval pending 생성 정책 검증과 튜닝
+- batch operation 기반 빈 폴더 생성 지원과 검증
 
 ## 지금은 아웃오브스코프인 것으로 보이는 것
 현재 단계에서 아래는 아웃오브스코프로 보는 것이 안전하다.
@@ -81,6 +96,9 @@
 - DB 도입이나 persistence 계층 전면 교체
 - 프로덕션 배포/운영 체계 완성
 - 문서 승인 없이 새 tool 대량 추가
+- 자연어 요청에서 batch operation payload 를 Python 코드가 직접 생성하는 우회 로직
+- top-level `request_create_directory` tool 추가
+- 빈 폴더 추적을 위한 `.gitkeep` 자동 생성 정책
 - `memory_manager.py` 에 planner/execution summary 를 직접 반영하는 변경
 - App orchestration 과 무관한 UI 구조 재작업
 
@@ -100,6 +118,9 @@
 - 최근 App orchestration slice 는 `routing`, provider/router, `memory_manager.py` workspace state 반영, Graphify 재생성, UI 구조 재작업을 포함하지 않았다.
 - 자동 memory suggestion 생성은 default-off 이지만 generator/helper/eval 경로는 남아 있어 향후 optional 재활성화 기준이 필요하다.
 - request budget guard / context trimming / provider error graceful handling 은 1차 구현됐지만, char-based cap 이라 provider/model별 token budget 과 정확히 일치하지는 않는다.
+- 구체적 batch 요청의 첫 턴 approval 정책은 prompt/schema/hint 기반 유도이며, Python 이 payload 를 직접 생성하지 않으므로 실제 모델별 준수율 확인이 필요하다.
+- 빈 폴더 생성은 `create_directory` batch operation 으로 가능하지만, Git 에서 빈 폴더는 추적되지 않으므로 `.gitkeep` 자동 생성 여부는 별도 정책 결정이 필요하다.
+- 새 top-level `request_create_directory` tool 은 추가하지 않았고, 단일 빈 폴더 생성도 `request_batch_operations` 의 단일 operation 으로 처리하는 방향이다.
 - 최근 memory suggestion default-off slice 는 Graphify 재생성을 포함하지 않았다.
 - 최근 request budget / provider graceful handling slices 는 문서 동기화 전 구현됐고, Graphify 재생성은 포함하지 않았다.
 
@@ -111,6 +132,8 @@
 - `should_plan_request()` 의 trigger 기준을 실제 사용 로그와 eval 로 어떻게 조정할지
 - `AUTO_MEMORY_SUGGESTIONS` 를 언제 어떤 기준으로 다시 켤지
 - request budget cap 값을 실제 로그와 provider 실패 패턴 기준으로 어떻게 튜닝할지
+- 구체적 batch approval first-turn 정책이 모델별로 충분히 작동하는지, 필요하면 deterministic policy 계층을 도입할지
+- 빈 폴더를 Git 추적 대상으로 만들기 위한 `.gitkeep` 생성 정책을 둘지
 - 루트의 기존 handoff / implementation 문서를 어느 수준까지 계속 유지할지
 
 ## 상태 판단 메모

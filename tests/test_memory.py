@@ -170,3 +170,4 @@ def test_list_memory_suggestions_api_default_off_returns_empty(monkeypatch):
     )
 
     assert services.list_memory_suggestions_api() == []
+

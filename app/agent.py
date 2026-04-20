@@ -57,6 +57,62 @@ _ACTION_CATEGORY_PATTERNS = (
     ("summarize", (r"요약", r"정리", r"문서화", r"\b(summari[sz]e|document)\b")),
 )
 
+_PATH_LIKE_PATTERN = re.compile(
+    r"(?:[A-Za-z0-9가-힣_.-]+/)+(?:[A-Za-z0-9가-힣_.-]+(?:\.[A-Za-z0-9]{1,12})?)?"
+    r"|[A-Za-z0-9가-힣_.-]+\.[A-Za-z0-9]{1,12}"
+)
+
+_DIRECTORY_TARGET_PATTERN = re.compile(
+    r"([A-Za-z0-9가-힣_.-]+)\s*(?:폴더|디렉터리|directory|dir)",
+    flags=re.IGNORECASE,
+)
+
+_BATCH_MUTATION_PATTERNS = (
+    r"쓰",
+    r"작성",
+    r"저장",
+    r"생성",
+    r"만들",
+    r"추가",
+    r"수정",
+    r"변경",
+    r"삭제",
+    r"제거",
+    r"덮어쓰",
+    r"\b(write|save|create|update|edit|modify|delete|remove)\b",
+)
+
+_BATCH_DEPENDS_ON_INTERMEDIATE_RESULT_PATTERNS = (
+    r"읽",
+    r"검색",
+    r"찾",
+    r"분석",
+    r"검토",
+    r"요약",
+    r"추출",
+    r"\b(read|search|find|analy[sz]e|review|summari[sz]e|extract)\b",
+)
+
+_NON_EXECUTION_REQUEST_PATTERNS = (
+    r"계획만",
+    r"분석만",
+    r"검토만",
+    r"구현하지\s*마",
+    r"수정하지\s*마",
+    r"작성하지\s*마",
+    r"만들지\s*마",
+    r"\b(plan only|do not implement|do not change|do not write|do not create)\b",
+)
+
+_IMMEDIATE_BATCH_APPROVAL_HINT = """
+배치 승인 힌트:
+1. 이번 요청은 여러 개의 구체적인 파일 경로가 포함된 변경 요청이다.
+2. 필요한 operations payload를 만들 수 있으면 첫 번째 응답에서 request_batch_operations 툴을 호출해 approval pending을 생성한다.
+3. request_batch_operations 호출은 실제 실행이 아니라 승인 대기 생성이다. 사용자의 별도 "승인" 발화를 기다리지 않는다.
+4. 빈 폴더 생성은 request_batch_operations의 create_directory operation으로 표현한다.
+5. path, content, old_text, new_text 등 필수 payload가 부족하면 툴을 호출하지 말고 필요한 정보만 짧게 질문한다.
+""".strip()
+
 TOOL_RESULT_MODEL_CHAR_LIMIT = 6000
 TOOL_RESULT_TRIM_MARKER = (
     "\n...(tool result trimmed for model request; raw result preserved in trace/tool log)"
@@ -117,6 +173,55 @@ def _has_multiple_instruction_lines(user_input: str) -> bool:
     return sum(1 for line in meaningful_lines if _count_action_categories(line) > 0) >= 2
 
 
+def _extract_path_like_targets(text: str) -> list[str]:
+    targets: list[str] = []
+    seen: set[str] = set()
+
+    for match in _PATH_LIKE_PATTERN.finditer(text):
+        target = match.group(0).strip(".,;:()[]{}'\"`")
+        if not target or target in seen:
+            continue
+        targets.append(target)
+        seen.add(target)
+
+    return targets
+
+
+def _extract_directory_targets(text: str) -> list[str]:
+    targets: list[str] = []
+    seen: set[str] = set()
+
+    for match in _DIRECTORY_TARGET_PATTERN.finditer(text):
+        target = match.group(1).strip(".,;:()[]{}'\"`")
+        if not target or target in {"빈", "새", "새로운", "여러"} or target in seen:
+            continue
+        targets.append(target)
+        seen.add(target)
+
+    return targets
+
+
+def should_hint_immediate_batch_approval(user_input: str) -> bool:
+    """구체적인 복수 파일 변경 또는 빈 폴더 생성 요청에 batch approval 힌트를 붙인다."""
+    text = " ".join(user_input.split())
+    if not text:
+        return False
+
+    if _matches_any(text, _NON_EXECUTION_REQUEST_PATTERNS):
+        return False
+    if _matches_any(text, _BATCH_DEPENDS_ON_INTERMEDIATE_RESULT_PATTERNS):
+        return False
+    if not _matches_any(text, _BATCH_MUTATION_PATTERNS):
+        return False
+
+    path_targets = _extract_path_like_targets(text)
+    directory_targets = _extract_directory_targets(text)
+    if directory_targets:
+        return True
+
+    return len(path_targets) >= 2
+
+
 def should_plan_request(user_input: str) -> bool:
     """복합/다단계 요청에서만 planner LLM 호출을 사용한다."""
     text = " ".join(user_input.split())
@@ -160,6 +265,8 @@ def plan_tasks(
 4. 각 task는 "파일 읽기", "계산 수행", "메모리 검색" 등 구체적인 행동으로 시작한다.
 5. 불필요한 task는 만들지 않는다.
 6. 최종 출력은 JSON 배열로 task 리스트를 반환한다.
+7. 사용자가 여러 파일/폴더 변경을 충분히 구체적으로 요청했다면 실행 단계에서 하나의 request_batch_operations 승인 요청으로 묶을 수 있게 표현한다.
+8. 빈 폴더 생성은 request_batch_operations의 create_directory operation으로 표현한다.
 
 예시:
 사용자: "프로젝트의 main.py 파일을 분석해서 함수 목록을 추출하고, 이를 문서로 저장해줘"
@@ -224,24 +331,28 @@ def build_system_prompt(
 7. WORKSPACE_ROOT 안의 디렉터리 구조를 볼 때는 list_dir 또는 tree_view를 사용한다.
 8. WORKSPACE_ROOT 안의 파일 내용을 읽을 때는 read_file을 사용한다.
 9. WORKSPACE_ROOT 안에서 파일 내용을 검색해야 할 때는 request_search_files를 사용한다.
-10. request_ 로 시작하는 툴은 실제 실행이 아니라 승인 요청만 만든다.
-11. 여러 파일/폴더 변경을 한 번에 처리하거나 하나의 승인으로 묶는 것이 자연스러우면 request_batch_operations를 우선 사용한다.
-12. 단일 파일 생성이고 내용이 없으면 request_create_file을 사용한다.
-13. 단일 파일 생성/덮어쓰기/append 처리가 필요하면 request_write_file을 사용한다.
-14. 단일 파일의 특정 텍스트를 바꾸려면 request_replace_text_in_file을 사용한다.
-15. 단일 파일 또는 폴더 삭제 요청은 request_delete_path를 사용한다.
-16. 사용자가 파일이나 폴더를 만들어달라고만 했고 파일 내용은 명시하지 않았다면 내용을 추측해 쓰지 않는다.
-17. README.md 같은 특별한 파일도 사용자가 초안이나 템플릿을 원한다고 명시하지 않으면 내용을 자동으로 넣지 않는다.
-18. 세션을 넘어 유지해야 할 중요한 사실, 프로젝트 규칙, 반복적으로 유용한 결정사항, 사용자가 명시적으로 기억해달라고 한 내용은 save_memory_note를 사용할 수 있다.
-19. 이전 세션의 선호, 과거 결정, 자주 쓰는 파일/규칙 등이 현재 질문에 중요하면 search_memory_notes를 사용할 수 있다.
-20. 사용자가 장기 기억을 보여달라고 하면 list_recent_memory_notes 또는 search_memory_notes를 사용할 수 있다.
-21. 사용자가 특정 장기 기억을 수정하거나 삭제해달라고 하면 update_memory_note, delete_memory_note를 사용할 수 있다.
-22. 사소하거나 일시적인 정보는 장기 기억에 저장하지 않는다.
-23. 장기 기억은 tool 결과로 확인된 내용 또는 사용자가 직접 말한 안정적인 정보만 저장한다.
-24. 장기 기억 후보는 자동 저장하지 말고, 사용자가 확인 후 저장하는 흐름을 우선한다.
-25. 복잡한 다단계 작업은 먼저 전체 계획을 세우고 단계별로 실행한다.
-26. 각 단계가 끝나면 결과를 확인하고 다음 단계로 진행한다.
-27. 추론이 필요한 경우에는 추론이라고 짧게 밝힌다.
+10. request_ 로 시작하는 툴은 실제 실행이 아니라 승인 대기 요청만 만든다.
+11. 사용자가 이미 구체적인 변경 작업을 요청했다면 별도의 "승인" 발화를 기다리지 말고 request_ 툴로 approval pending을 생성한다.
+12. 여러 파일/폴더 변경을 한 번에 처리하거나 하나의 승인으로 묶는 것이 자연스러우면 request_batch_operations를 우선 사용한다.
+13. 구체적인 여러 파일/폴더 변경 요청에서는 첫 응답에서 자연어 계획만 보여주지 말고 request_batch_operations로 승인 대기를 생성한다.
+14. 빈 폴더 생성은 request_batch_operations의 create_directory operation을 사용한다. 단일 빈 폴더 생성도 단일 operation batch로 승인 요청을 만든다.
+15. batch 작업의 path, content, old_text, new_text 등 필수 payload가 부족하거나 모호하면 툴을 호출하지 말고 필요한 정보만 짧게 질문한다.
+16. 단일 파일 생성이고 내용이 없으면 request_create_file을 사용한다.
+17. 단일 파일 생성/덮어쓰기/append 처리가 필요하면 request_write_file을 사용한다.
+18. 단일 파일의 특정 텍스트를 바꾸려면 request_replace_text_in_file을 사용한다.
+19. 단일 파일 또는 폴더 삭제 요청은 request_delete_path를 사용한다.
+20. 사용자가 파일이나 폴더를 만들어달라고만 했고 파일 내용은 명시하지 않았다면 내용을 추측해 쓰지 않는다.
+21. README.md 같은 특별한 파일도 사용자가 초안이나 템플릿을 원한다고 명시하지 않으면 내용을 자동으로 넣지 않는다.
+22. 세션을 넘어 유지해야 할 중요한 사실, 프로젝트 규칙, 반복적으로 유용한 결정사항, 사용자가 명시적으로 기억해달라고 한 내용은 save_memory_note를 사용할 수 있다.
+23. 이전 세션의 선호, 과거 결정, 자주 쓰는 파일/규칙 등이 현재 질문에 중요하면 search_memory_notes를 사용할 수 있다.
+24. 사용자가 장기 기억을 보여달라고 하면 list_recent_memory_notes 또는 search_memory_notes를 사용할 수 있다.
+25. 사용자가 특정 장기 기억을 수정하거나 삭제해달라고 하면 update_memory_note, delete_memory_note를 사용할 수 있다.
+26. 사소하거나 일시적인 정보는 장기 기억에 저장하지 않는다.
+27. 장기 기억은 tool 결과로 확인된 내용 또는 사용자가 직접 말한 안정적인 정보만 저장한다.
+28. 장기 기억 후보는 자동 저장하지 말고, 사용자가 확인 후 저장하는 흐름을 우선한다.
+29. 복잡한 다단계 작업은 먼저 전체 계획을 세우고 단계별로 실행한다. 단, 구체적인 여러 파일/폴더 변경 요청은 계획만 말하지 말고 request_batch_operations 승인 요청으로 묶는다.
+30. 각 단계가 끝나면 결과를 확인하고 다음 단계로 진행한다.
+31. 추론이 필요한 경우에는 추론이라고 짧게 밝힌다.
     """.strip()
 
     if interaction_mode == "cli":
@@ -451,6 +562,9 @@ def run_agent(
 
     messages.append({"role": "user", "content": user_input})
 
+    if should_hint_immediate_batch_approval(user_input):
+        messages.append({"role": "system", "content": _IMMEDIATE_BATCH_APPROVAL_HINT})
+
     # Planning 단계: 복잡한 요청만 task로 분해한다.
     if should_plan_request(user_input):
         tasks, planner_status = plan_tasks(user_input, memory_context)
@@ -466,7 +580,12 @@ def run_agent(
         task_list_text = "\n".join(f"{i+1}. {task}" for i, task in enumerate(tasks))
         messages.append({
             "role": "system",
-            "content": f"이 요청을 다음과 같은 단계로 분해했습니다:\n{task_list_text}\n\n단계별로 순차적으로 실행하세요.",
+            "content": (
+                f"이 요청을 다음과 같은 단계로 분해했습니다:\n{task_list_text}\n\n"
+                "단계별로 순차적으로 실행하세요. "
+                "단, 구체적인 여러 파일/폴더 변경은 자연어 계획만 보여주지 말고 "
+                "가능하면 하나의 request_batch_operations approval pending으로 묶으세요."
+            ),
         })
 
     trace_record: dict[str, Any] = {

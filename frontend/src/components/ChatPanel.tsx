@@ -1,7 +1,7 @@
 import type { KeyboardEvent, RefObject } from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-import type { ChatMessage, ToolLogItem } from "../types"
+import type { ApprovalItem, ChatMessage, ToolLogItem } from "../types"
 import { CollapsibleSection } from "./CollapsibleSection"
 
 const PLANNER_TOOL_NAME = "__planner__"
@@ -56,20 +56,42 @@ function parsePendingApproval(rawText: string): PendingApprovalSummary | null {
   }
 }
 
-function getExecutionStatus(rawText: string): "ok" | "error" | "pending_approval" {
-  if (parsePendingApproval(rawText)) {
-    return "pending_approval"
+function isActivePendingApproval(
+  pending: PendingApprovalSummary | null,
+  approvals: ApprovalItem[],
+): boolean {
+  if (!pending?.actionId) {
+    return false
   }
+  return approvals.some(
+    (item) => item.action_id === pending.actionId && item.status === "pending",
+  )
+}
+
+function getExecutionStatus(
+  rawText: string,
+  approvals: ApprovalItem[],
+): "ok" | "error" | "pending_approval" | "processed_approval" {
+  const pending = parsePendingApproval(rawText)
+  if (pending) {
+    return isActivePendingApproval(pending, approvals)
+      ? "pending_approval"
+      : "processed_approval"
+  }
+
   if (rawText.trim().startsWith("ERROR:")) {
     return "error"
   }
   return "ok"
 }
 
-function getExecutionStatusLabel(rawText: string): string {
-  const status = getExecutionStatus(rawText)
+function getExecutionStatusLabel(rawText: string, approvals: ApprovalItem[]): string {
+  const status = getExecutionStatus(rawText, approvals)
   if (status === "pending_approval") {
     return "승인 대기"
+  }
+  if (status === "processed_approval") {
+    return "처리됨"
   }
   if (status === "error") {
     return "실행 오류"
@@ -81,6 +103,7 @@ type ChatPanelProps = {
   error: string | null
   messages: ChatMessage[]
   toolLogs: ToolLogItem[]
+  approvals: ApprovalItem[]
   toolLogsOpen: boolean
   onToggleToolLogs: () => void
   messagesEndRef: RefObject<HTMLDivElement>
@@ -95,6 +118,7 @@ export function ChatPanel({
   error,
   messages,
   toolLogs,
+  approvals,
   toolLogsOpen,
   onToggleToolLogs,
   messagesEndRef,
@@ -116,6 +140,10 @@ export function ChatPanel({
   const pendingApproval = latestToolLog
     ? parsePendingApproval(latestToolLog.result_raw)
     : null
+  const activePendingApproval = isActivePendingApproval(
+    pendingApproval,
+    approvals,
+  )
 
   return (
     <main className="panel chat-panel">
@@ -173,7 +201,7 @@ export function ChatPanel({
         </div>
       ) : null}
 
-      {pendingApproval && latestToolLog ? (
+      {activePendingApproval && pendingApproval && latestToolLog ? (
         <div className="pending-banner">
           <div className="summary-title-row">
             <span className="summary-title">승인 대기 중</span>
@@ -212,9 +240,9 @@ export function ChatPanel({
                       <span>{log.tool_name}</span>
                       <div className="tool-log-status-group">
                         <span
-                          className={`status-badge ${getExecutionStatus(log.result_raw)}`}
+                          className={`status-badge ${getExecutionStatus(log.result_raw, approvals)}`}
                         >
-                          {getExecutionStatusLabel(log.result_raw)}
+                          {getExecutionStatusLabel(log.result_raw, approvals)}
                         </span>
                         <span>step {log.step_index}</span>
                       </div>
